@@ -12,7 +12,10 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   // Read configuration from package.json
-  var pkgConfig = grunt.file.readJSON('package.json');
+  var pkgConfig = {
+    dist: 'dist/client',
+    src: 'client',
+  }
 
   grunt.initConfig({
     pkg: pkgConfig,

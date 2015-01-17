@@ -11,7 +11,7 @@ module.exports = {
 
   output: {
     filename: 'main.js',
-    publicPath: '/assets/'
+    publicPath: './client/assets/'
   },
 
   cache: true,
@@ -19,7 +19,7 @@ module.exports = {
   devtool: false,
   entry: [
       'webpack/hot/only-dev-server',
-      './src/scripts/components/main.js'
+      './client/scripts/components/main.js'
   ],
 
   stats: {
