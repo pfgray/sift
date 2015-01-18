@@ -13,8 +13,15 @@ module.exports = function (grunt) {
 
   // Read configuration from package.json
   var pkgConfig = {
-    dist: 'dist/client',
-    src: 'client',
+    client:{
+      dist: 'dist/client',
+      src: 'client'
+    },
+    server:{
+      dist: 'dist/server',
+      src: 'server'
+    },
+    dist_root:'dist'
   }
 
   grunt.initConfig({
@@ -34,7 +41,7 @@ module.exports = function (grunt) {
         port: 8000,
         webpack: webpackDevConfig,
         publicPath: '/assets/',
-        contentBase: './<%= pkg.src %>/',
+        contentBase: './<%= pkg.client.src %>/',
       },
 
       start: {
@@ -84,16 +91,22 @@ module.exports = function (grunt) {
           {
             flatten: true,
             expand: true,
-            src: ['<%= pkg.src %>/*'],
-            dest: '<%= pkg.dist %>/',
+            src: ['<%= pkg.client.src %>/*'],
+            dest: '<%= pkg.client.dist %>/',
             filter: 'isFile'
           },
           {
             flatten: true,
             expand: true,
-            src: ['<%= pkg.src %>/images/*'],
-            dest: '<%= pkg.dist %>/images/'
-          },
+            src: ['<%= pkg.client.src %>/images/*'],
+            dest: '<%= pkg.client.dist %>/images/'
+          },{
+            flatten:false,
+            expand: true,
+            src: ['<%= pkg.server.src %>/**/*'],
+            dest: __dirname + '/<%= pkg.dist_root %>/',
+            filter: 'isFile'
+          }
         ]
       }
     },
@@ -103,7 +116,7 @@ module.exports = function (grunt) {
         files: [{
           dot: true,
           src: [
-            '<%= pkg.dist %>'
+            '<%= pkg.client.dist %>'
           ]
         }]
       }
@@ -117,7 +130,6 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'open:dev',
-      'webpack-dev-server'
     ]);
   });
 
