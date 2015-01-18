@@ -6,11 +6,13 @@
 
 var errors = require('./components/errors');
 
-module.exports = function(app) {
+module.exports = function(app, socketio) {
 
   // Insert routes below
-  app.use('/api/events', require('./api/events'));
+  app.use('/api/events', require('./api/events').router);
   //app.use('/api', require('./api/user'));
+
+  require('./api/events').dispatcher(socketio);
 
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|public)/*')

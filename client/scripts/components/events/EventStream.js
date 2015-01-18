@@ -5,22 +5,15 @@ var Event = require('./Event.js');
 
 var EventStream = React.createClass({
   getInitialState: function() {
-    return {events: [{
-      message:"Event 1"
-    },{
-      message:"Event 2"
-    },{
-      message:"Event 3"
-    }]};
+    return {events: []};
   },
   componentDidMount: function() {
-    setInterval(function(){
+    var socket = io();
+    socket.on('event', function(event){
       var eventCount = this.state.events.length;
-      this.state.events.push({
-        message:"This is a new event! #" + (eventCount + 1)
-      });
+      this.state.events.push(event);
       this.setState({events:this.state.events})
-    }.bind(this), 1000);
+    }.bind(this));
   },
   render: function() {
     var events = this.state.events.map(function(event){

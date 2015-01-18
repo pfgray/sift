@@ -7,4 +7,5 @@ var router = express.Router();
 
 router.get('/', controller.index);
 
-module.exports = router;
+module.exports.router = router;
+module.exports.dispatcher = require('./events.dispatcher').dispatcher;
