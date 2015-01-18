@@ -10,6 +10,7 @@
 'use strict';
 
 var _ = require('lodash');
+var dispatcher = require('./events.dispatcher');
 
 // Get list of things
 exports.index = function(req, res) {
@@ -17,9 +18,17 @@ exports.index = function(req, res) {
         events:[{
           message:"Event 1"
         }, {
-          message:"Event 3" 
+          message:"Event 3"
         }, {
           message:"Event 2"
         }]
     });
 };
+
+exports.add = function(req, res) {
+    console.log('sending out: ', req.body);
+    dispatcher.stream(req.body);
+    res.status(200).json({
+        success:true
+    });
+}

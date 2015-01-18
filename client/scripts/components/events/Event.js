@@ -6,7 +6,7 @@ var Event = React.createClass({
   render: function() {
     return (
       <div>
-        {this.props.message}
+        {this.props.data.id} | {this.props.data.data['@context']}
       </div>
     );
   }
