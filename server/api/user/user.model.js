@@ -13,19 +13,20 @@ module.exports = {
             })[0]);
         });
     },
-    findOrCreate:function(user, callback){
+    findOrCreate:function(identifier, user, callback){
         var db = model.getDatabase();
-        db.view('caliper/users', {key:user}, function (err, res) {
+        db.view('caliper/users', {key:identifier}, function (err, res) {
             //TODO: is there a better way to find a single entity?
             console.log('got res: ', res);
             if(res.length < 1){
                 var db = model.getDatabase();
-                user.type = "user";
-                console.log('creating user... ', JSON.stringify(user));
-                db.save(user, function (err, res) {
-                    callback(err, {
+                identifier.type = "user";
+                var newUser = _.merge(user, identifier);
+                console.log('creating user... ', JSON.stringify(newUser));
+                db.save(newUser, function (err, res) {
+                    callback(err, _.merge(newUser, {
                       _id:res.id
-                    });
+                    }));
                 });
             } else {
                 callback(err, _.transform(res, function(result, entity){

@@ -1,0 +1,19 @@
+body{
+  background-image: url("/images/rocks.jpg");
+  background-size: cover;
+  background-position: center center;
+  height:100vh;
+}
+
+.intro-header{
+  margin-top:30vh;
+  font-size:5em;
+  color:#cdcdcd;
+}
+.intro-login .branded-login i{
+  margin-right:0.5em;
+  display:inline-block;
+}
+.intro-header, .intro-subheader, .intro-login {
+  text-align:center;
+}

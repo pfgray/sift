@@ -53,6 +53,7 @@ module.exports = function(app) {
     app.use(errorHandler()); // Error handler - has to be last
   }
 
+  //TODO: move this to passport config file.
   //Setup passport:
   app.use(session({
     secret: 'keyboard cat',
@@ -67,7 +68,7 @@ module.exports = function(app) {
     returnURL: url + '/auth/google/return',
     realm: url + '/'
   }, function(identifier, profile, done) {
-    userModel.findOrCreate({ openId: identifier }, function(err, user) {
+    userModel.findOrCreate({ openid: identifier }, profile , function(err, user) {
       done(err, user);
     });
   }));
