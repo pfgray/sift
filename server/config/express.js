@@ -14,16 +14,16 @@ var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
 var path = require('path');
 var config = require('./environment');
-var passport = require('passport');
-var GoogleStrategy = require('passport-google').Strategy;
-var session = require('express-session');
+var passport_config = require('./passport.js');
 
 module.exports = function(app) {
   var env = app.get('env');
 
-  var scheme = env.scheme || 'http';
-  var domain = env.domain || 'localhost';
-  var port = env.port || 9000;
+  var cfg = {
+    scheme: env.scheme || 'http',
+    domain: env.domain || 'localhost',
+    port: env.port || 9000
+  };
 
   app.set('views', config.root + '/server/views');
   app.set('view engine', 'jade');
@@ -53,30 +53,7 @@ module.exports = function(app) {
     app.use(errorHandler()); // Error handler - has to be last
   }
 
-  //TODO: move this to passport config file.
   //Setup passport:
-  app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true
-  }));
-  app.use(passport.initialize());
-  app.use(passport.session());
-  var url = scheme + '://' + domain + ':' + port;
-  var userModel = require('../api/user/user.model.js');
-  passport.use(new GoogleStrategy({
-    returnURL: url + '/auth/google/return',
-    realm: url + '/'
-  }, function(identifier, profile, done) {
-    userModel.findOrCreate({ openid: identifier }, profile , function(err, user) {
-      done(err, user);
-    });
-  }));
-  passport.serializeUser(function(user, done) {
-    done(null, user);
-  });
-  passport.deserializeUser(function(user, done) {
-    done(null, user);
-  });
+  passport_config.init(app, cfg);
 
 };

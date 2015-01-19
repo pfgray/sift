@@ -1,8 +1,36 @@
+var session = require('express-session');
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+var GoogleStrategy = require('passport-google').Strategy;
 
-var users = require('../api/user/user.model.js');
+var userModel = require('../api/user/user.model.js');
 
+module.exports.init = function(app, config){
+    app.use(session({
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: true
+    }));
+    app.use(passport.initialize());
+    app.use(passport.session());
+    var url = config.scheme + '://' + config.domain + ':' + config.port;
+    passport.use(new GoogleStrategy({
+            returnURL: url + '/dashboard',
+            realm: url + '/'
+        }, function(identifier, profile, done) {
+            userModel.findOrCreate({ openid: identifier }, profile , function(err, user) {
+                done(err, user);
+            });
+        })
+    );
+    passport.serializeUser(function(user, done) {
+        done(null, user);
+    });
+    passport.deserializeUser(function(user, done) {
+        done(null, user);
+    });
+}
+
+/*
 module.exports.init = function(config){
     passport.use(new LocalStrategy(
         function(username, password, done) {
@@ -30,3 +58,4 @@ module.exports.init = function(config){
         });
     });
 }
+*/
