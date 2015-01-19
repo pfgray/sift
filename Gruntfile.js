@@ -158,24 +158,7 @@ module.exports = function (grunt) {
 
   });
 
-  grunt.registerTask('serve', function (target) {
-    if (target === 'dist') {
-      return grunt.task.run(['build', 'open:dist', 'connect:dist']);
-    }
-
-    if (target === 'debug') {
-      return grunt.task.run([
-        'clean:server',
-        'copy:dev',
-        'webpack:dev',
-        'nodemon:dev'
-      ]);
-    }
-
-    grunt.task.run([
-      'open:dev'
-    ]);
-  });
+  grunt.registerTask('serve', ['clean:server', 'copy:dev', 'webpack:dev', 'nodemon:dev']);
 
   grunt.registerTask('test', ['karma']);
 
