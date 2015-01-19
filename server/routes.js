@@ -24,8 +24,8 @@ module.exports = function(app, socketio) {
   // logged in.  Otherwise, authentication has failed.
   app.get('/auth/google/return',
     passport.authenticate('google', {
-      successRedirect: '/',
-      failureRedirect: '/login'
+      successRedirect: '/dashboard',
+      failureRedirect: '/'
     })
   );
 

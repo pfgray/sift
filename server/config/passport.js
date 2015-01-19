@@ -14,7 +14,7 @@ module.exports.init = function(app, config){
     app.use(passport.session());
     var url = config.scheme + '://' + config.domain + ':' + config.port;
     passport.use(new GoogleStrategy({
-            returnURL: url + '/dashboard',
+            returnURL: url + '/auth/google/return',
             realm: url + '/'
         }, function(identifier, profile, done) {
             userModel.findOrCreate({ openid: identifier }, profile , function(err, user) {
