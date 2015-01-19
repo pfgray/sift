@@ -8,19 +8,24 @@ var Grid = require('react-bootstrap/Grid');
 var ButtonGroup = require('react-bootstrap/ButtonGroup');
 var Button = require('react-bootstrap/Button');
 var $ = require('jquery');
+var CryptoJS = require('crypto-js');
 
 require ('./dashboard.css');
 
 var Dashboard = React.createClass({
   mixins: [ Router.Navigation ],
   getInitialState: function() {
-    return {};
+    return {user:null};
   },
   componentDidMount:function(){
     $.ajax({
       url: "/api/me"
     }).done(function(user){
       console.log('I am:', user);
+      user.profilePic = 'http://www.gravatar.com/avatar/' + CryptoJS.MD5(user.emails[0].value);
+      this.setState({
+        user:user
+      });
     }.bind(this))
     .fail(function(error){
       this.transitionTo('/');
@@ -29,7 +34,10 @@ var Dashboard = React.createClass({
   render: function() {
     return (
       <div className="dash-sidebar">
-        This is the dashbar!
+        <div className="user">
+          <img src={this.state.user ? this.state.user.profilePic : ''} />
+          <span className="name">{this.state.user ? this.state.user.displayName : ''}</span>
+        </div>
       </div>
     );
   }

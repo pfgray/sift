@@ -7,6 +7,9 @@
     },
     "users": {
       "map": "function(doc){\n  if(doc.type === 'user'){\n    if(doc.username){\n      emit({username:doc.username}, doc);\n    } \n    if(doc.openid){\n      emit({openid:doc.openid}, doc);\n    }\n  }\n}"
+    },
+    "apiKeys": {
+      "map": "function(doc){\n  if(doc.type === 'user'){\n    if(doc.apiKey){\n      emit(doc.apiKey, doc);\n    }\n  }\n}"
     }
   }
 }

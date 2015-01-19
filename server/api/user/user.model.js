@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var model = require('../../database');
+var keyGenerator = require('../key/key.generator.js');
 
 module.exports = {
     getUser:function(username, callback){
@@ -21,13 +22,17 @@ module.exports = {
             if(res.length < 1){
                 var db = model.getDatabase();
                 identifier.type = "user";
-                var newUser = _.merge(user, identifier);
-                console.log('creating user... ', JSON.stringify(newUser));
-                db.save(newUser, function (err, res) {
-                    callback(err, _.merge(newUser, {
-                      _id:res.id
-                    }));
+                keyGenerator.generateApiKey(function(err, apiKey){
+                    identifier.apiKey = apiKey;
+                    var newUser = _.merge(user, identifier);
+                    console.log('creating user... ', JSON.stringify(newUser));
+                    db.save(newUser, function (err, res) {
+                        callback(err, _.merge(newUser, {
+                          _id:res.id
+                        }));
+                    });
                 });
+
             } else {
                 callback(err, _.transform(res, function(result, entity){
                     return result.push(entity.value);
