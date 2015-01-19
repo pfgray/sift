@@ -5,11 +5,18 @@ var mountFolder = function (connect, dir) {
 };
 
 var webpackDistConfig = require('./webpack.dist.config.js'),
-    webpackDevConfig = require('./webpack.config.js');
+    webpackDevConfig = require('./webpack.dev.config.js');
 
 module.exports = function (grunt) {
   // Let *load-grunt-tasks* require everything
   require('load-grunt-tasks')(grunt);
+
+  var localConfig;
+  try {
+    localConfig = require('./server/config/local.env');
+  } catch(e) {
+    localConfig = {};
+  }
 
   // Read configuration from package.json
   var pkgConfig = {
@@ -28,25 +35,8 @@ module.exports = function (grunt) {
     pkg: pkgConfig,
 
     webpack: {
-      options: webpackDistConfig,
-
-      dist: {
-        cache: false
-      }
-    },
-
-    'webpack-dev-server': {
-      options: {
-        hot: true,
-        port: 8000,
-        webpack: webpackDevConfig,
-        publicPath: '/assets/',
-        contentBase: './<%= pkg.client.src %>/',
-      },
-
-      start: {
-        keepAlive: true,
-      }
+      dist:webpackDistConfig,
+      dev: webpackDevConfig
     },
 
     connect: {
@@ -108,6 +98,20 @@ module.exports = function (grunt) {
             filter: 'isFile'
           }
         ]
+      },
+      dev: {
+        files: [{
+          flatten: true,
+          expand: true,
+          src: ['<%= pkg.client.src %>/*'],
+          dest: './.tmp/',
+          filter: 'isFile'
+        },{
+          flatten: true,
+          expand: true,
+          src: ['<%= pkg.client.src %>/images/*'],
+          dest: './.tmp/images/'
+        }]
       }
     },
 
@@ -116,11 +120,42 @@ module.exports = function (grunt) {
         files: [{
           dot: true,
           src: [
+            '.tmp',
             '<%= pkg.client.dist %>'
           ]
         }]
+      },
+      server: '.tmp'
+    },
+
+    env: {
+      test: {
+        NODE_ENV: 'test'
+      },
+      prod: {
+        NODE_ENV: 'production'
+      },
+      all: localConfig
+    },
+
+    concurrent: {
+      debug: {
+        tasks: [
+          'nodemon',
+          'node-inspector'
+        ],
+        options: {
+          logConcurrentOutput: true
+        }
+      }
+    },
+
+    nodemon: {
+      dev: {
+        script: 'server/app.js'
       }
     }
+
   });
 
   grunt.registerTask('serve', function (target) {
@@ -128,14 +163,23 @@ module.exports = function (grunt) {
       return grunt.task.run(['build', 'open:dist', 'connect:dist']);
     }
 
+    if (target === 'debug') {
+      return grunt.task.run([
+        'clean:server',
+        'copy:dev',
+        'webpack:dev',
+        'nodemon:dev'
+      ]);
+    }
+
     grunt.task.run([
-      'open:dev',
+      'open:dev'
     ]);
   });
 
   grunt.registerTask('test', ['karma']);
 
-  grunt.registerTask('build', ['clean', 'copy', 'webpack']);
+  grunt.registerTask('build', ['clean', 'copy', 'webpack:dist']);
 
   grunt.registerTask('default', []);
 };

@@ -36,9 +36,12 @@ module.exports = function(app) {
   }
 
   if ('development' === env || 'test' === env) {
-    app.use(require('connect-livereload')());
-    app.use(express.static(path.join(config.root, '.tmp')));
-    app.use(express.static(path.join(config.root, 'client')));
+    //app.use(require('connect-livereload')());
+    var tempStaticRoot = path.join(config.root, '.tmp');
+    var clientStaticRoot = path.join(config.root, 'client');
+    console.log('public assets: ', tempStaticRoot, clientStaticRoot);
+    app.use(express.static(tempStaticRoot));
+    app.use(express.static(clientStaticRoot));
     app.set('appPath', 'client');
     app.use(morgan('dev'));
     app.disable('etag');

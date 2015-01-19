@@ -14,7 +14,7 @@ var dispatcher = require('./events.dispatcher');
 
 // Get list of things
 exports.index = function(req, res) {
-    res.json({
+    res.status(200).json({
         events:[{
           message:"Event 1"
         }, {
