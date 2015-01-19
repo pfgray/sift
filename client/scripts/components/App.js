@@ -2,6 +2,8 @@
 
 var React = require('react/addons');
 var ReactTransitionGroup = React.addons.TransitionGroup;
+var Router = require('react-router');
+var { Route, RouteHandler, Link } = Router;
 
 // Export React so the devtools can find it
 (window !== window.top ? window.top : window).React = React;
@@ -15,12 +17,16 @@ require('../../styles/main.css');
 var imageURL = require('../../images/yeoman.png');
 var Intro = require('./intro/Intro.js');
 
-var CaliperStoreApp = React.createClass({
+var App = React.createClass({
+  mixins: [ Router.State ],
   render: function() {
+    var name = this.getRoutes().reverse()[0].name;
     return (
-      <Intro />
+      <div>
+        <RouteHandler key={name}/>
+      </div>
     );
   }
 });
 
-module.exports = CaliperStoreApp;
+module.exports = App;
