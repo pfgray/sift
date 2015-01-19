@@ -1,32 +1,38 @@
 'use strict';
 
 var React = require('react/addons');
+var Router = require('react-router');
 var Col = require('react-bootstrap/Col');
 var Row = require('react-bootstrap/Row');
 var Grid = require('react-bootstrap/Grid');
 var ButtonGroup = require('react-bootstrap/ButtonGroup');
 var Button = require('react-bootstrap/Button');
+var $ = require('jquery');
 
-var Intro = React.createClass({
+require ('./dashboard.css');
+
+var Dashboard = React.createClass({
+  mixins: [ Router.Navigation ],
   getInitialState: function() {
     return {};
   },
+  componentDidMount:function(){
+    $.ajax({
+      url: "/api/me"
+    }).done(function(user){
+      console.log('I am:', user);
+    }.bind(this))
+    .fail(function(error){
+      this.transitionTo('/');
+    }.bind(this));
+  },
   render: function() {
     return (
-      <Grid>
-        <Row>
-          <Col xs={12} md={6} mdOffset={3}>This is the dashboard</Col>
-        </Row>
-        <Row>
-        </Row>
-        <Row>
-          <Col xs={12} md={6} mdOffset={3}>
-              <Button className="branded-login" bsStyle="info">yessss</Button>
-          </Col>
-        </Row>
-      </Grid>
+      <div className="dash-sidebar">
+        This is the dashbar!
+      </div>
     );
   }
 });
 
-module.exports = Intro;
+module.exports = Dashboard;
