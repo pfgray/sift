@@ -12,4 +12,6 @@ var Event = React.createClass({
   }
 });
 
-module.exports = Event;
+module.exports = function(event){
+  return React.createElement(Event, {data: event});
+};

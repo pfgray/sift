@@ -1,0 +1,31 @@
+@default-color: #888;
+@success-color: #32CD32;
+@code-bg-color: #000;
+
+.console-wrapper{
+  height:100vh;
+  position:relative;
+  .console{
+    position:absolute;
+    overflow-y: auto;
+    max-height: 100%;
+    bottom:0;
+    width: 100%;
+    &::-webkit-scrollbar{
+      width: 6px; /* for horizontal scrollbars */
+    }
+    &::-webkit-scrollbar-track{
+      background: rgba(0,0,0,0);
+    }
+    &::-webkit-scrollbar-thumb{
+      background: lighten(@code-bg-color, 30%);
+    }
+  }
+}
+
+.message{
+  color:@default-color;
+  &.success{
+    color:@success-color;
+  }
+}
