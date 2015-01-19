@@ -21,3 +21,20 @@
   color: #bbb;
   font-size:2em;
 }
+
+.codeBlock{
+  text-align: center;
+  color: #bbb;
+  margin-top:3em;
+}
+
+.codeBlock .code-label{
+  font-size: 1.25em;
+}
+
+.codeBlock code{
+  font-size:1em;
+  background-color:#000;
+  color:#25C786;
+  border-radius: 0;
+}

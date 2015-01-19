@@ -19,25 +19,41 @@ var Dashboard = React.createClass({
   },
   componentDidMount:function(){
     $.ajax({
-      url: "/api/me"
+        url: "/api/me"
     }).done(function(user){
-      console.log('I am:', user);
-      user.profilePic = 'http://www.gravatar.com/avatar/' + CryptoJS.MD5(user.emails[0].value);
-      this.setState({
-        user:user
-      });
+        console.log('I am:', user);
+        user.profilePic = 'http://www.gravatar.com/avatar/' + CryptoJS.MD5(user.emails[0].value);
+        this.setState({
+            user:user
+        });
     }.bind(this))
     .fail(function(error){
-      this.transitionTo('/');
+        this.transitionTo('/');
     }.bind(this));
   },
   render: function() {
+    var profile;
+    if(this.state.user){
+        profile = (
+          <div>
+            <div className="user">
+              <img src={this.state.user.profilePic} />
+              <span className="name">{this.state.user.displayName}</span>
+            </div>
+            <div className="codeBlock">
+              <div className="code-label">Api Key:</div>
+              <div><code>{this.state.user.apiKey}</code></div>
+            </div>
+          </div>
+        )
+    } else {
+        profile = (
+           <div></div>
+        )
+    }
     return (
       <div className="dash-sidebar">
-        <div className="user">
-          <img src={this.state.user ? this.state.user.profilePic : ''} />
-          <span className="name">{this.state.user ? this.state.user.displayName : ''}</span>
-        </div>
+        {profile}
       </div>
     );
   }
