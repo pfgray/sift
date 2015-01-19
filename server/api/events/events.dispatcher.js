@@ -2,24 +2,34 @@
 
 var _ = require('lodash');
 var model = require('./events.model.js');
+var apiKeyModel = require('../key/key.model.js');
 
 var eventStream = {
-    listeners:[],
-    push:function(event){
-        //TODO: persist to caliper db
-        console.log(this.listeners);
-        _.each(this.listeners, function(listener){
-            listener(event);
-        });
+    //listeners will hold a map, where the key is
+    //a user's id, and the value is an array of
+    //listeners listening to that user's event stream.
+    listeners:{},
+    pushEvent:function(userid, event){
+        if(this.listeners[userid]){
+            _.each(this.listeners[userid], function(listener){
+                listener(event);
+            });
+        }
     },
-    addListener:function(listener){
-        this.listeners.push(listener);
-        console.log('added listener, now listeners count: ', this.listeners.length);
+    addListener:function(userid, listener){
+        if(!this.listeners[userid]){
+            this.listeners[userid] = [];
+            this.listeners[userid].push(listener);
+        } else {
+            this.listeners[userid].push(listener);
+        }
     },
-    removeListener:function(listener){
-        var index = this.listeners.indexOf(listener);
-        if (index > -1) {
-            this.listeners.splice(index, 1);
+    removeListener:function(userid, listener){
+        if(this.listeners[userid]){
+            var index = this.listeners[userid].indexOf(listener);
+            if (index > -1) {
+                this.listeners[userid].splice(index, 1);
+            }
         }
     }
 };
@@ -28,19 +38,33 @@ var eventStream = {
 module.exports.dispatcher = function(io) {
     io.on('connection', function(socket){
         console.log('a user connected');
-        var eventCount = 0;
+        var disconnected = false;
+        var connectedUserId = null
         var listener = function(event){
             socket.emit('event', event);
         };
-        eventStream.addListener(listener);
+
+        socket.on('connectStream', function(apiKey){
+            console.log('attaching to user stream for apiKey: ', apiKey);
+            apiKeyModel.getUserForApiKey(apiKey, function(err, user){
+                if(!disconnected && user){
+                    console.log('adding listener for event stream, user ', JSON.stringify(user));
+                    eventStream.addListener(user._id, listener);
+                    connectedUserId = user._id;
+                }
+            });
+        });
         socket.on('disconnect', function(){
-            eventStream.removeListener(listener);
+            disconnected = true;
+            if(connectedUserId){
+                eventStream.removeListener(connectedUserId, listener);
+            }
         });
     });
 };
 
-module.exports.stream = function(event){
-    model.storeEvent(event, function(){
-        eventStream.push(event);
+module.exports.stream = function(userid, event){
+    model.storeEvent(userid, event, function(){
+        eventStream.pushEvent(userid, event);
     });
 };

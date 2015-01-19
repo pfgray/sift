@@ -2,6 +2,7 @@
 
 var React = require('react/addons');
 var Router = require('react-router');
+var { Route, DefaultRoute, RouteHandler, Link } = Router;
 var Col = require('react-bootstrap/Col');
 var Row = require('react-bootstrap/Row');
 var Grid = require('react-bootstrap/Grid');
@@ -23,7 +24,7 @@ var Dashboard = React.createClass({
     }).done(function(user){
         console.log('I am:', user);
         user.profilePic = 'http://www.gravatar.com/avatar/' + CryptoJS.MD5(user.emails[0].value);
-        user.eventsUrl = window.location.origin + '/users/' + user._id + '/events';
+        user.eventsUrl = window.location.origin + '/api/users/' + user._id + '/events';
         this.setState({
             user:user
         });
@@ -51,10 +52,11 @@ var Dashboard = React.createClass({
             </div>
             <div className="codeBlock">
               <div className="code-label">Sample curl:</div>
-              <div><code>curl -X POST \ <br />
-                  &nbsp;&nbsp;-H "Authorization: {this.state.user.apiKey}" \ <br />
-                  &nbsp;&nbsp;--data @/path/to/event.json \ <br />
-                  &nbsp;&nbsp;{this.state.user.eventsUrl}
+              <div><code>curl -X POST \<br />
+                  &nbsp;&nbsp;{this.state.user.eventsUrl} \<br />
+                  &nbsp;&nbsp;-H "Authorization: {this.state.user.apiKey}" \<br />
+                  &nbsp;&nbsp;-H "Content-Type: application/json" \<br />
+                  &nbsp;&nbsp;--data @/path/to/event.json
               </code></div>
             </div>
           </div>
@@ -65,8 +67,13 @@ var Dashboard = React.createClass({
         )
     }
     return (
-      <div className="dash-sidebar">
-        {profile}
+      <div>
+        <div className="dash-sidebar">
+          {profile}
+        </div>
+        <div className="dash-main">
+          <RouteHandler user={this.state.user}/>
+        </div>
       </div>
     );
   }

@@ -10,9 +10,12 @@ var passport = require('passport');
 module.exports = function(app, socketio) {
 
   // Insert routes below
-  app.use('/api/events', require('./api/events').router);
+  app.use('/api', require('./api/events').router);
   app.use('/api', require('./api/user'));
   require('./api/events').dispatcher(socketio);
+
+
+
 
   // Redirect the user to Google for authentication.  When complete, Google
   // will redirect the user back to the application at
