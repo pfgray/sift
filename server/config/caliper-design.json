@@ -1,6 +1,12 @@
 {
-   "_id":"_design/caliper",
-   "language":"javascript",
-   "views":{
-   }
+  "_id":"_design/caliper",
+  "language":"javascript",
+  "views":{
+    "events":{
+      "map": "function(doc){\n  if(doc.type === 'caliperEvent'){\n    emit(doc._id, doc);\n  }\n}"
+    },
+    "users": {
+      "map": "function(doc){\n  if(doc.type === 'user'){\n    if(doc.username){\n      emit({username:doc.username}, {_id:doc._id});\n    } \n    if(doc.openid){\n      emit({openid:doc.openid}, {_id:doc._id});\n    }\n  }\n}"
+    }
+  }
 }

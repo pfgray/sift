@@ -19,3 +19,7 @@ exports.login = function(req, res) {
         }
     });
 };
+
+exports.currentUser = function(req, res){
+    res.status(200).json(req.user);
+}

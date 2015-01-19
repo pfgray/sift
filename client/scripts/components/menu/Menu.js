@@ -11,6 +11,7 @@ var Menu = React.createClass({
         This is the menu!
         <ButtonToolbar>
             <Button>Default</Button>
+            <a href="/auth/google">Sign In with Google</a>
         </ButtonToolbar>
       </div>
     );
