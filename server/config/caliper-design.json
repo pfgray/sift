@@ -1,9 +1,6 @@
 {
    "_id":"_design/caliper",
    "language":"javascript",
-   "lists": {
-       "unique_apps": "function(){return 'zoom!'}"
-   },
    "views":{
    }
 }

@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
+var model = require('./events.model.js');
 
 var eventStream = {
     listeners:[],
@@ -39,5 +40,7 @@ module.exports.dispatcher = function(io) {
 };
 
 module.exports.stream = function(event){
-    eventStream.push(event);
+    model.storeEvent(event, function(){
+        eventStream.push(event);
+    });
 };
