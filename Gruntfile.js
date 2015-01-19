@@ -152,7 +152,10 @@ module.exports = function (grunt) {
 
     nodemon: {
       dev: {
-        script: 'server/app.js'
+        script: 'server/app.js',
+        options:{
+          ignore: ['client/', '.tmp/']
+        }
       }
     }
 

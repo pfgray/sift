@@ -1,0 +1,62 @@
+@bg-color: #222;
+@text-color: #bbb;
+@code-color: #25C786;
+@code-bg-color: #000;
+
+.dash-sidebar{
+  background-color:@bg-color;
+  height:100vh;
+  width:25em;
+}
+
+.user{
+  text-align: center;
+  padding-top:3em;
+}
+.user *{
+  vertical-align:middle;
+}
+.user img{
+  border-radius: 100%;
+  height:5em;
+}
+.user span.name{
+  display:inline-block;
+  margin-left:0.5em;
+  color: @text-color;
+  font-size:2em;
+}
+.codeBlock{
+  text-align: center;
+  color: @text-color;
+  margin-top:1em;
+  &:first-of-type{
+    margin-top:3em;
+  }
+
+  .code-label{
+    font-size: 1.25em;
+  }
+  code{
+    white-space: nowrap;
+    text-align:left;
+    font-size:1em;
+    background-color:@code-bg-color;
+    color:@code-color;
+    border-radius: 0;
+    width: 80%;
+    display: block;
+    margin: 0 auto;
+    overflow:hidden;
+    overflow-x: auto;
+    &::-webkit-scrollbar{
+      height: 3px; /* for horizontal scrollbars */
+    }
+    &::-webkit-scrollbar-track{
+      background: rgba(0,0,0,0);
+    }
+    &::-webkit-scrollbar-thumb{
+      background: lighten(@code-bg-color, 30%);
+    }
+  }
+}

@@ -10,7 +10,7 @@ var Button = require('react-bootstrap/Button');
 var $ = require('jquery');
 var CryptoJS = require('crypto-js');
 
-require ('./dashboard.css');
+require ('./dashboard.less');
 
 var Dashboard = React.createClass({
   mixins: [ Router.Navigation ],
@@ -23,6 +23,7 @@ var Dashboard = React.createClass({
     }).done(function(user){
         console.log('I am:', user);
         user.profilePic = 'http://www.gravatar.com/avatar/' + CryptoJS.MD5(user.emails[0].value);
+        user.eventsUrl = window.location.origin + '/users/' + user._id + '/events';
         this.setState({
             user:user
         });
@@ -37,12 +38,24 @@ var Dashboard = React.createClass({
         profile = (
           <div>
             <div className="user">
-              <img src={this.state.user.profilePic} />
+              <img src={this.state.user.profilePic + '?s=200'} />
               <span className="name">{this.state.user.displayName}</span>
             </div>
             <div className="codeBlock">
-              <div className="code-label">Api Key:</div>
+              <div className="code-label">Api key:</div>
               <div><code>{this.state.user.apiKey}</code></div>
+            </div>
+            <div className="codeBlock">
+              <div className="code-label">Events endpoint:</div>
+              <div><code>{this.state.user.eventsUrl}</code></div>
+            </div>
+            <div className="codeBlock">
+              <div className="code-label">Sample curl:</div>
+              <div><code>curl -X POST \ <br />
+                  &nbsp;&nbsp;-H "Authorization: {this.state.user.apiKey}" \ <br />
+                  &nbsp;&nbsp;--data @/path/to/event.json \ <br />
+                  &nbsp;&nbsp;{this.state.user.eventsUrl}
+              </code></div>
             </div>
           </div>
         )
