@@ -17,6 +17,10 @@ module.exports = {
     findOrCreate:function(identifier, user, callback){
         var db = model.getDatabase();
         db.view('caliper/users', {key:identifier}, function (err, res) {
+            if(err){
+                callback(err);
+                return;
+            }
             //TODO: is there a better way to find a single entity?
             console.log('got res: ', res);
             if(res.length < 1){
