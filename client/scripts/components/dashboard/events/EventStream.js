@@ -21,6 +21,12 @@ var EventStream = React.createClass({
     return {log: []};
   },
   componentDidMount: function(){
+    /*
+      setInterval(function(){
+          this.state.log.push(new Message("connecting to: [" + window.location.origin + "]..."));
+          this.setState();
+      }.bind(this), 10000);
+      */
   },
   componentWillReceiveProps: function(nextProps){
     if(nextProps.user){

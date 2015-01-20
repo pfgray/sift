@@ -19,7 +19,8 @@ module.exports = {
     getEventCountForUser:function(userid, afterDate, callback){
         var db = model.getDatabase();
         var startkey = afterDate ? [userid,  afterDate] : [userid];
-        var endkey   = afterDate ? [userid, new Date()] : [userid, {}];
+        var endkey   = afterDate ? [userid, new Date().toJSON()] : [userid, {}];
+        console.log('querying dates: ', startkey, endkey);
         db.view('caliper/events_by_user', {
           startkey: startkey,
           endkey: endkey,

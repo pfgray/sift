@@ -1,3 +1,5 @@
+@import "../../../../styles/mixins.less";
+
 @default-color: #888;
 @success-color: #32CD32;
 @code-bg-color: #000;
@@ -11,15 +13,7 @@
     max-height: 100%;
     bottom:0;
     width: 100%;
-    &::-webkit-scrollbar{
-      width: 6px; /* for horizontal scrollbars */
-    }
-    &::-webkit-scrollbar-track{
-      background: rgba(0,0,0,0);
-    }
-    &::-webkit-scrollbar-thumb{
-      background: lighten(@code-bg-color, 30%);
-    }
+    .thin-scrollbar(6px, @default-color);
   }
 }
 

@@ -17,13 +17,11 @@ var eventsModel = require('./events.model');
 
 // Get list of things
 exports.total = function(req, res) {
-  /*
     if(!req.user){
       res.status(400).json({error:"missing authentication"});
       return
     };
-    */
-    var userId = "5cb276f3c3eea81416319659e000b79d"; //req.user._id;
+    var userId = req.user._id;
 
     async.series([function(cb){
         eventsModel.getEventCountForUser(userId, null, function(err, count){

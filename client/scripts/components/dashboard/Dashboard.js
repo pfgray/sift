@@ -20,7 +20,8 @@ var Dashboard = React.createClass({
     return {user:null,totalEvents:null};
   },
   componentDidMount:function(){
-    var pastDate = JSON.stringify(new Date((new Date()).getTime() - 5 * 60000));
+    var pastMinutes = 5;
+    var pastDate = JSON.stringify(new Date((new Date()).getTime() - pastMinutes * 60000));
     $.when($.ajax("/api/me"), $.ajax("/api/me/eventCount?afterDate=" + pastDate))
     .done(function(user, eventCount){
         user = user[0];
@@ -32,7 +33,7 @@ var Dashboard = React.createClass({
         this.setState({
             user:user,
             totalEvents: eventCount.totalEvents,
-            eventsPerMinute: eventCount.totalEventsAfterDate
+            eventsPerMinute: eventCount.totalEventsAfterDate / pastMinutes
         });
     }.bind(this))
     .fail(function(error){

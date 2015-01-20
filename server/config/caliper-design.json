@@ -13,7 +13,7 @@
     },
     "events_by_user": {
       "map": "function(doc){\n  if(doc.type === 'caliperEvent'){\n    emit([doc.scoped_caliper_user_id, doc.recieved], doc);\n  }\n}",
-      "reduce": "function (key, values, rereduce) {\n    return values.length;\n}"
+      "reduce": "function (key, values, rereduce) {\n  if (rereduce) {\n    return sum(values);\n  } else {\n    return values.length;\n  }\n}"
     }
   }
 }
