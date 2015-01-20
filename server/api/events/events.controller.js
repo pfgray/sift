@@ -10,20 +10,47 @@
 'use strict';
 
 var _ = require('lodash');
+var async = require('async');
 var dispatcher = require('./events.dispatcher');
 var apiKeyModel = require('../key/key.model');
+var eventsModel = require('./events.model');
 
 // Get list of things
-exports.index = function(req, res) {
-    res.status(200).json({
-        events:[{
-          message:"Event 1"
-        }, {
-          message:"Event 3"
-        }, {
-          message:"Event 2"
-        }]
+exports.total = function(req, res) {
+  /*
+    if(!req.user){
+      res.status(400).json({error:"missing authentication"});
+      return
+    };
+    */
+    var userId = "5cb276f3c3eea81416319659e000b79d"; //req.user._id;
+
+    async.series([function(cb){
+        eventsModel.getEventCountForUser(userId, null, function(err, count){
+            console.log('got count:', count);
+            cb(err, count ? count : 0);
+        });
+    }, function(cb){
+        if(req.query.afterDate){
+            eventsModel.getEventCountForUser(userId, JSON.parse(req.query.afterDate), function(err, count){
+                console.log('got totalAfterDate:', count);
+                cb(err, count ? count : 0);
+            });
+        } else {
+            cb(null, null);
+        }
+    }],function(err, results){
+      if(err){
+          res.status(500).json({error:"db connection failed"});
+      } else {
+          res.status(200).json({
+              totalEvents:results[0],
+              totalEventsAfterDate:results[1]
+          });
+      }
     });
+
+
 };
 
 exports.add = function(req, res) {

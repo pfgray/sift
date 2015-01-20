@@ -1,6 +1,8 @@
-@bg-color: #222;
-@text-color: #bbb;
+@import "../../../styles/mixins.less";
+
 @code-color: #25C786;
+@events-color: #C72573;
+@events-per-minute-color: #C7C725;
 @code-bg-color: #000;
 @sidebar-width: 25em;
 
@@ -9,6 +11,8 @@
   height:100vh;
   width:@sidebar-width;
   position: fixed;
+  overflow-y:auto;
+  .thin-scrollbar(3px, @bg-color);
 }
 
 .user{
@@ -28,38 +32,45 @@
   color: @text-color;
   font-size:2em;
 }
-.codeBlock{
+.code-block, .total-block{
   text-align: center;
   color: @text-color;
-  margin-top:1em;
-  &:first-of-type{
-    margin-top:3em;
+  margin-top:3em;
+  ~ .code-block, ~ .total-block{
+    margin-top:1em;
   }
 
-  .code-label{
+  .code-label, .total-label{
     font-size: 1.25em;
+    color: @text-color;
   }
+
+  .total {
+    height:1.5em;
+    font-size:4em;
+  }
+
+  &.events .total{
+    color:@events-color;
+  }
+  &.events-per-minute .total{
+    color:@events-per-minute-color
+  }
+
   code{
+    padding:0.5em;
     white-space: nowrap;
     text-align:left;
     font-size:1em;
     background-color:@code-bg-color;
     color:@code-color;
     border-radius: 0;
-    width: 80%;
+    width: 87%;
     display: block;
     margin: 0 auto;
     overflow:hidden;
     overflow-x: auto;
-    &::-webkit-scrollbar{
-      height: 3px; /* for horizontal scrollbars */
-    }
-    &::-webkit-scrollbar-track{
-      background: rgba(0,0,0,0);
-    }
-    &::-webkit-scrollbar-thumb{
-      background: lighten(@code-bg-color, 30%);
-    }
+    .thin-scrollbar(3px, @code-bg-color);
   }
 }
 

@@ -1,0 +1,15 @@
+@bg-color: #222;
+@text-color: #bbb;
+
+.thin-scrollbar(@size, @ts-bg-color) {
+  &::-webkit-scrollbar{
+    height: @size; /* for vertical scrollbars */
+    width:  @size; /* for horizontal scrollbars */
+  }
+  &::-webkit-scrollbar-track{
+    background: rgba(0,0,0,0);
+  }
+  &::-webkit-scrollbar-thumb{
+    background: lighten(@ts-bg-color, 30%);
+  }
+}

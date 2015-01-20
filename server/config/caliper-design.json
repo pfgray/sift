@@ -10,6 +10,10 @@
     },
     "apiKeys": {
       "map": "function(doc){\n  if(doc.type === 'user'){\n    if(doc.apiKey){\n      emit(doc.apiKey, doc);\n    }\n  }\n}"
+    },
+    "events_by_user": {
+      "map": "function(doc){\n  if(doc.type === 'caliperEvent'){\n    emit([doc.scoped_caliper_user_id, doc.recieved], doc);\n  }\n}",
+      "reduce": "function (key, values, rereduce) {\n    return values.length;\n}"
     }
   }
 }

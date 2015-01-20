@@ -12,6 +12,7 @@ var EventStream = React.createClass({
   eventSocketListener:function(event){
     console.log('got event: ', event);
     this.state.log.push(new Event(event));
+    this.setState({});
   },
   getInitialState: function() {
     //TODO: I think it may be bad to
