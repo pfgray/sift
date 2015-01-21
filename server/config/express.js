@@ -20,9 +20,9 @@ module.exports = function(app) {
   var env = app.get('env');
 
   var cfg = {
-    scheme: env.scheme || 'http',
-    domain: env.domain || 'localhost',
-    port: env.port || 9000
+    protocol: process.env.HOST_PROTOCOL || 'http',
+    domain: process.env.HOST_DOMAIN || 'localhost',
+    port: process.env.HOST_PORT || 9000
   };
 
   app.set('views', config.root + '/server/views');
@@ -34,7 +34,7 @@ module.exports = function(app) {
   app.use(cookieParser());
 
   if ('production' === env) {
-    app.use(favicon(path.join(config.root, 'public', 'favicon.ico')));
+    app.use(favicon(path.join(config.root, 'client', 'favicon.ico')));
     app.use(express.static(path.join(config.root, 'client')));
     app.set('appPath', config.root + '/client');
     app.use(morgan('dev'));

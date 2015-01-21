@@ -12,7 +12,7 @@ module.exports.init = function(app, config){
     }));
     app.use(passport.initialize());
     app.use(passport.session());
-    var url = config.scheme + '://' + config.domain + ':' + config.port;
+    var url = config.protocol + '://' + config.domain + ':' + config.port;
     passport.use(new GoogleStrategy({
             returnURL: url + '/auth/google/return',
             realm: url + '/'

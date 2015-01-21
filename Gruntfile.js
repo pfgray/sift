@@ -39,31 +39,11 @@ module.exports = function (grunt) {
       dev: webpackDevConfig
     },
 
-    connect: {
-      options: {
-        port: 8000
-      },
-
-      dist: {
-        options: {
-          keepalive: true,
-          middleware: function (connect) {
-            return [
-              mountFolder(connect, pkgConfig.dist)
-            ];
-          }
-        }
-      }
-    },
-
     open: {
       options: {
         delay: 500
       },
       dev: {
-        path: 'http://localhost:<%= connect.options.port %>/webpack-dev-server/'
-      },
-      dist: {
         path: 'http://localhost:<%= connect.options.port %>/'
       }
     },
@@ -84,8 +64,7 @@ module.exports = function (grunt) {
             src: ['<%= pkg.client.src %>/*'],
             dest: '<%= pkg.client.dist %>/',
             filter: 'isFile'
-          },
-          {
+          },{
             flatten: true,
             expand: true,
             src: ['<%= pkg.client.src %>/images/*'],
@@ -126,28 +105,6 @@ module.exports = function (grunt) {
         }]
       },
       server: '.tmp'
-    },
-
-    env: {
-      test: {
-        NODE_ENV: 'test'
-      },
-      prod: {
-        NODE_ENV: 'production'
-      },
-      all: localConfig
-    },
-
-    concurrent: {
-      debug: {
-        tasks: [
-          'nodemon',
-          'node-inspector'
-        ],
-        options: {
-          logConcurrentOutput: true
-        }
-      }
     },
 
     nodemon: {
