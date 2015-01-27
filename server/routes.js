@@ -18,7 +18,7 @@ module.exports = function(app, socketio) {
   // Redirect the user to Google for authentication.  When complete, Google
   // will redirect the user back to the application at
   //     /auth/google/return
-  app.get('/auth/google', passport.authenticate('google', {scope: 'https://www.googleapis.com/auth/plus.login'}));
+  app.get('/auth/google', passport.authenticate('google', {scope: 'profile'}));
 
   // Google will redirect the user to this URL after authentication.  Finish
   // the process by verifying the assertion.  If valid, the user will be
@@ -29,7 +29,6 @@ module.exports = function(app, socketio) {
           // Successful authentication, redirect home.
           res.redirect('/dashboard');
   });
-
 
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|public)/*')
