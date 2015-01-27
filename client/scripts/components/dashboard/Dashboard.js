@@ -27,7 +27,6 @@ var Dashboard = React.createClass({
         user = user[0];
         eventCount = eventCount[0];
         console.log('I am:', user, 'with number of events: ', eventCount);
-        user.profilePic = 'http://www.gravatar.com/avatar/' + CryptoJS.MD5(user.emails[0].value);
         user.eventsUrl = window.location.origin + '/api/users/' + user._id + '/events';
         //TODO: dynamically change eventsPerMinute every 15 seconds or so...
         this.setState({
@@ -47,7 +46,7 @@ var Dashboard = React.createClass({
         profile = (
           <div>
             <div className="user">
-              <img src={this.state.user.profilePic + '?s=200'} />
+              <img src={this.state.user.picture} />
               <span className="name">{this.state.user.displayName}</span>
             </div>
             <div className="code-block">
