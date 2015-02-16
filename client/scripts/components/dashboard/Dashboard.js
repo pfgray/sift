@@ -15,7 +15,7 @@ var CryptoJS = require('crypto-js');
 require ('./dashboard.less');
 
 var Dashboard = React.createClass({
-  mixins: [ Router.Navigation ],
+  mixins: [ Router.Navigation, Router.State ],
   getInitialState: function() {
     return {user:null,totalEvents:null};
   },
@@ -38,7 +38,6 @@ var Dashboard = React.createClass({
     .fail(function(error){
         this.transitionTo('/');
     }.bind(this));
-
   },
   render: function() {
     var profile;
@@ -70,7 +69,11 @@ var Dashboard = React.createClass({
             <Total label="Events per minute:" total={this.state.eventsPerMinute} className="events-per-minute" />
 
             <div className="code-block">
-              <Button disabled><i className="fa fa-area-chart"></i> Graph</Button>
+              {
+                this.isActive('graphs') ?
+                  <Link to="dashboard"><Button><i className="fa fa-tasks"></i> Stream</Button></Link>:
+                  <Link to="graphs"><Button><i className="fa fa-area-chart"></i> Graph</Button></Link>
+              }
             </div>
           </div>
         )

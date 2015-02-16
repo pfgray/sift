@@ -3,7 +3,8 @@ var React = require('react'),
     App = require('./App'),
     Intro = require('./intro/Intro'),
     Dashboard = require('./dashboard/Dashboard'),
-    EventStream = require('./dashboard/events/EventStream');
+    EventStream = require('./dashboard/events/EventStream'),
+    GridView = require('./dashboard/graphs/GridView');
 var Router = require('react-router');
 var { Route, RouteHandler, Link } = Router;
 
@@ -14,6 +15,7 @@ var routes = (
     <Route name='intro' path='/' handler={Intro}></Route>
     <Route name='dashboard' path='/dashboard' handler={Dashboard}>
       <DefaultRoute name='eventstream' handler={EventStream}></DefaultRoute>
+      <Route name='graphs' path='/dashboard/graphs' handler={GridView}></Route>
     </Route>
   </Route>
 );
