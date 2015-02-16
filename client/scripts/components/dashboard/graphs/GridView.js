@@ -7,6 +7,12 @@ var PartyGraph = require('./PartyGraph.js');
 require('./grid.less');
 
 var Grid = React.createClass({
+  componentWillReceiveProps: function(nextProps){
+    console.log('got another stream: ', nextProps.eventStream);
+  },
+  componentDidMount:function(){
+    console.log('got stream: ', this.props.eventStream);
+  },
   render: function() {
     return (
       <div className='grid'>

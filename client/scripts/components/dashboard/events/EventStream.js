@@ -8,7 +8,6 @@ var _ = require('lodash');
 require('./console.less');
 
 var EventStream = React.createClass({
-  eventSocket:null,
   eventSocketListener:function(event){
     console.log('got event: ', event);
     this.state.log.push(new Event(event));
@@ -20,27 +19,14 @@ var EventStream = React.createClass({
     // in this object's state.
     return {log: []};
   },
-  componentDidMount: function(){
-    /*
-      setInterval(function(){
-          this.state.log.push(new Message("connecting to: [" + window.location.origin + "]..."));
-          this.setState();
-      }.bind(this), 10000);
-      */
-  },
   componentWillReceiveProps: function(nextProps){
-    if(nextProps.user){
-      this.eventSocket = io();
-      this.state.log.push(new Message("connecting to: [" + window.location.origin + "]..."));
-      console.log('log now contains: ', this.state.log);
-      this.eventSocket.on('event', this.eventSocketListener);
-      this.eventSocket.emit('connectStream', nextProps.user.apiKey);
-      this.state.log.push(new Message("[connected]", "success"));
-    }
+    this.state.log.push(new Message("connecting to: [" + window.location.origin + "]..."));
+    this.state.log.push(new Message("[connected]", "success"));
+    nextProps.eventStream.on('event', this.eventSocketListener);
   },
   componentWillUnmount: function(){
-    if(this.eventSocket){
-      this.eventSocket.removeListener('event', this.eventSocketListener);
+    if(this.props.eventStream){
+      this.props.eventStream.removeListener('event', this.eventSocketListener);
     }
   },
   render: function() {

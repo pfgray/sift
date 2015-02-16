@@ -8,7 +8,6 @@ var Dashboard = React.createClass({
   },
   render: function() {
     var total;
-    console.log('***got total:', this.props.total);
     if(this.props.total || this.props.total === 0){
       total = (<div className="total">{this.props.total}</div>);
     } else {

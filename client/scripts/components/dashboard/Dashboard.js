@@ -9,8 +9,8 @@ var Grid = require('react-bootstrap/Grid');
 var ButtonGroup = require('react-bootstrap/ButtonGroup');
 var Button = require('react-bootstrap/Button');
 var Total = require('./Total.js');
-var $ = require('jquery');
 var CryptoJS = require('crypto-js');
+var eventService = require('./EventService.js');
 
 require ('./dashboard.less');
 
@@ -22,20 +22,17 @@ var Dashboard = React.createClass({
   componentDidMount:function(){
     var pastMinutes = 5;
     var pastDate = JSON.stringify(new Date((new Date()).getTime() - pastMinutes * 60000));
-    $.when($.ajax("/api/me"), $.ajax("/api/me/eventCount?afterDate=" + pastDate))
-    .done(function(user, eventCount){
-        user = user[0];
-        eventCount = eventCount[0];
-        console.log('I am:', user, 'with number of events: ', eventCount);
-        user.eventsUrl = window.location.origin + '/api/users/' + user._id + '/events';
-        //TODO: dynamically change eventsPerMinute every 15 seconds or so...
+    eventService.getCurrentUserAndEventCount(pastDate, function(user, eventCount){
+        //initiate stream
+        var stream = eventService.getEventStreamForUser(user);
+
         this.setState({
             user:user,
             totalEvents: eventCount.totalEvents,
-            eventsPerMinute: eventCount.totalEventsAfterDate / pastMinutes
+            eventsPerMinute: eventCount.totalEventsAfterDate / pastMinutes,
+            eventStream:stream
         });
-    }.bind(this))
-    .fail(function(error){
+    }.bind(this), function(error){
         this.transitionTo('/');
     }.bind(this));
   },
@@ -88,7 +85,7 @@ var Dashboard = React.createClass({
           {profile}
         </div>
         <div className="dash-main">
-          <RouteHandler user={this.state.user}/>
+          <RouteHandler user={this.state.user} eventStream={this.state.eventStream}/>
         </div>
       </div>
     );
