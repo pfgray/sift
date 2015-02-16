@@ -20,12 +20,18 @@ var Dashboard = React.createClass({
   getInitialState: function() {
     return {user:null,totalEvents:null};
   },
+  incrementEventCount: function() {
+    this.setState({
+      totalEvents: this.state.totalEvents+1
+    });
+  },
   componentDidMount:function(){
     var pastMinutes = 5;
     var pastDate = JSON.stringify(new Date((new Date()).getTime() - pastMinutes * 60000));
     eventService.getCurrentUserAndEventCount(pastDate, function(user, eventCount){
         //initiate stream
         var stream = eventService.getEventStreamForUser(user);
+        stream.on('event', this.incrementEventCount);
 
         this.setState({
             user:user,

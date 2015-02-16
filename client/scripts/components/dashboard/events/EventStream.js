@@ -9,7 +9,6 @@ require('./console.less');
 
 var EventStream = React.createClass({
   eventSocketListener:function(event){
-    console.log('got event: ', event);
     this.state.log.push(new Event(event));
     this.setState({});
   },
@@ -19,10 +18,14 @@ var EventStream = React.createClass({
     // in this object's state.
     return {log: []};
   },
-  componentWillReceiveProps: function(nextProps){
+  componentDidMount: function(nextProps){
     this.state.log.push(new Message("connecting to: [" + window.location.origin + "]..."));
     this.state.log.push(new Message("[connected]", "success"));
-    nextProps.eventStream.on('event', this.eventSocketListener);
+  },
+  componentWillReceiveProps: function(nextProps){
+    if(!this.props.eventStream){
+      nextProps.eventStream.on('event', this.eventSocketListener);
+    }
   },
   componentWillUnmount: function(){
     if(this.props.eventStream){
