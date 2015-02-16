@@ -25,7 +25,7 @@ var PartyGraph = React.createClass({
         y:0
       });
     }
-    function render(){
+    function draw(){
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -37,9 +37,12 @@ var PartyGraph = React.createClass({
             ctx.fillStyle = ball.color;
             ctx.fill();
         });
-        requestAnimationFrame(render);
+        requestAnimationFrame(draw);
     }
-    render();
+    draw();
+  },
+  componentWillUnmount: function(){
+    model = [];
   },
   render: function() {
     return (
