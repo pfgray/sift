@@ -9,6 +9,7 @@ var Grid = require('react-bootstrap/Grid');
 var ButtonGroup = require('react-bootstrap/ButtonGroup');
 var Button = require('react-bootstrap/Button');
 var Total = require('./Total.js');
+var UserProfile = require('./UserProfile.js');
 var CryptoJS = require('crypto-js');
 var eventService = require('./EventService.js');
 
@@ -41,27 +42,7 @@ var Dashboard = React.createClass({
     if(this.state.user){
         profile = (
           <div>
-            <div className="user">
-              <img src={this.state.user.picture} />
-              <span className="name">{this.state.user.displayName}</span>
-            </div>
-            <div className="code-block">
-              <div className="code-label">Api key:</div>
-              <div><code>{this.state.user.apiKey}</code></div>
-            </div>
-            <div className="code-block">
-              <div className="code-label">Events endpoint:</div>
-              <div><code>{this.state.user.eventsUrl}</code></div>
-            </div>
-            <div className="code-block">
-              <div className="code-label">Sample curl:</div>
-              <div><code>curl -X POST \<br />
-                  &nbsp;&nbsp;{this.state.user.eventsUrl} \<br />
-                  &nbsp;&nbsp;-H "Authorization: {this.state.user.apiKey}" \<br />
-                  &nbsp;&nbsp;-H "Content-Type: application/json" \<br />
-                  &nbsp;&nbsp;--data @/path/to/event.json
-              </code></div>
-            </div>
+            <UserProfile user={this.state.user} />
             <Total label="Total events captured:" total={this.state.totalEvents} className="events" />
             <Total label="Events per minute:" total={this.state.eventsPerMinute} className="events-per-minute" />
 
@@ -75,9 +56,8 @@ var Dashboard = React.createClass({
           </div>
         )
     } else {
-        profile = (
-           <div></div>
-        )
+        //TODO: add loading icon here?
+        profile = (<div></div>)
     }
     return (
       <div>
