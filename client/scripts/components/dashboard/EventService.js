@@ -3,7 +3,7 @@ var $ = require('jquery');
 
 var EventService = {
     getCurrentUserAndEventCount: function(pastDate, successCallback, errorCallback){
-        $.when($.ajax("/api/me"), $.ajax("/api/me/eventCount?afterDate=" + pastDate))
+        $.when($.ajax("/api/me"), $.ajax("/api/me/eventCount?afterDate=" + JSON.stringify(pastDate)))
         .done(function(user, eventCount){
             console.log('resolved user request...');
             user = user[0];
@@ -19,6 +19,11 @@ var EventService = {
         var eventSocket = io();
         eventSocket.emit('connectStream', user.apiKey);
         return eventSocket;
+    },
+    getEventCountMap: function(pastDate, successCallback, errorCallback){
+        $.ajax("/api/me/eventsByType?afterDate=" + JSON.stringify(pastDate))
+        .done(successCallback)
+        .fail(errorCallback);
     }
 };
 

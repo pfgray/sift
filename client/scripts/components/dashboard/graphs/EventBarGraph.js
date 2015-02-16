@@ -1,6 +1,8 @@
 'use strict';
 
 var React = require('react/addons');
+var eventService = require('../EventService.js');
+var dates = require('../DateService.js');
 
 require('./grid.less');
 
@@ -28,6 +30,11 @@ var EventBarGraph = React.createClass({
     var ctx = canvas.getContext('2d');
 
     //grab the data from the server & add it to the model.
+    eventService.getEventCountMap(dates.getMinutesInPast(60), function(events){
+        console.log('got events:', events);
+    },function(err){
+      console.log(err);
+    })
 
     function render(){
         canvas.width = canvas.offsetWidth;

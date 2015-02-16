@@ -12,6 +12,7 @@ var Total = require('./Total.js');
 var UserProfile = require('./UserProfile.js');
 var CryptoJS = require('crypto-js');
 var eventService = require('./EventService.js');
+var dates = require('./DateService.js');
 
 require ('./dashboard.less');
 
@@ -26,9 +27,8 @@ var Dashboard = React.createClass({
     });
   },
   componentDidMount:function(){
-    var pastMinutes = 5;
-    var pastDate = JSON.stringify(new Date((new Date()).getTime() - pastMinutes * 60000));
-    eventService.getCurrentUserAndEventCount(pastDate, function(user, eventCount){
+    var MINUTE_COUNT = 5;
+    eventService.getCurrentUserAndEventCount(dates.getMinutesInPast(MINUTE_COUNT), function(user, eventCount){
         //initiate stream
         var stream = eventService.getEventStreamForUser(user);
         stream.on('event', this.incrementEventCount);
@@ -36,7 +36,7 @@ var Dashboard = React.createClass({
         this.setState({
             user:user,
             totalEvents: eventCount.totalEvents,
-            eventsPerMinute: eventCount.totalEventsAfterDate / pastMinutes,
+            eventsPerMinute: eventCount.totalEventsAfterDate / MINUTE_COUNT,
             eventStream:stream
         });
     }.bind(this), function(error){
