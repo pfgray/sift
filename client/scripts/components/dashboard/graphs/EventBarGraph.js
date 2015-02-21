@@ -31,9 +31,8 @@ var EventBarGraph = React.createClass({
 
     //grab the data from the server & add it to the model.
     eventService.getEventCountMap(dates.getMinutesInPast(60), function(events){
-        console.log('got events:', events);
     },function(err){
-      console.log(err);
+        console.error(err);
     })
 
     function render(){

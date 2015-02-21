@@ -19,9 +19,9 @@ require ('./dashboard.less');
 var Dashboard = React.createClass({
   mixins: [ Router.Navigation, Router.State ],
   getInitialState: function() {
-    return {user:null,totalEvents:null};
+    return {user:null,totalEvents:null,eventStream:null};
   },
-  incrementEventCount: function() {
+  incrementEventCount: function(event){
     this.setState({
       totalEvents: this.state.totalEvents+1
     });
@@ -43,6 +43,9 @@ var Dashboard = React.createClass({
         this.transitionTo('/');
     }.bind(this));
   },
+  componentWillUnmount: function(){
+    this.state.eventStream.removeEventListener('event', this.incrementEventCount);
+  },
   render: function() {
     var profile;
     if(this.state.user){
@@ -55,7 +58,7 @@ var Dashboard = React.createClass({
             <div className="code-block">
               {
                 this.isActive('graphs') ?
-                  <Link to="dashboard"><Button><i className="fa fa-tasks"></i> Stream</Button></Link>:
+                  <Link to="eventstream"><Button><i className="fa fa-tasks"></i> Stream</Button></Link>:
                   <Link to="graphs"><Button><i className="fa fa-area-chart"></i> Graph</Button></Link>
               }
             </div>

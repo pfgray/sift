@@ -8,10 +8,8 @@ require('./grid.less');
 
 var Grid = React.createClass({
   componentWillReceiveProps: function(nextProps){
-    console.log('got another stream: ', nextProps.eventStream);
   },
   componentDidMount:function(){
-    console.log('got stream: ', this.props.eventStream);
   },
   render: function() {
     return (

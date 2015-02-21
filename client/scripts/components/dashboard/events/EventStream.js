@@ -8,9 +8,9 @@ var _ = require('lodash');
 require('./console.less');
 
 var EventStream = React.createClass({
-  eventSocketListener:function(event){
-    this.state.log.push(new Event(event));
-    this.setState({});
+  addEvent:function(event){
+      this.state.log.push(new Event(event));
+      this.setState({});
   },
   getInitialState: function() {
     //TODO: I think it may be bad to
@@ -18,19 +18,27 @@ var EventStream = React.createClass({
     // in this object's state.
     return {log: []};
   },
-  componentDidMount: function(nextProps){
+  initiateEventListener:function(stream){
+    if(stream){
+      stream.on('event', this.addEvent);
+    }
+  },
+  removeEventListener:function(){
+    if(this.props.eventStream){
+      this.props.eventStream.removeEventListener('event', this.addEvent);
+    }
+  },
+  componentDidMount: function(){
     this.state.log.push(new Message("connecting to: [" + window.location.origin + "]..."));
     this.state.log.push(new Message("[connected]", "success"));
+    this.initiateEventListener(this.props.eventStream);
   },
   componentWillReceiveProps: function(nextProps){
-    if(!this.props.eventStream){
-      nextProps.eventStream.on('event', this.eventSocketListener);
-    }
+    this.removeEventListener();
+    this.initiateEventListener(nextProps.eventStream);
   },
   componentWillUnmount: function(){
-    if(this.props.eventStream){
-      this.props.eventStream.removeListener('event', this.eventSocketListener);
-    }
+    this.removeEventListener();
   },
   render: function() {
     return (
