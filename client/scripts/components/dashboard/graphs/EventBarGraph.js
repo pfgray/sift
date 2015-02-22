@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react/addons');
-var eventService = require('../EventService.js');
+var eventService = require('../events/EventService.js');
 var dates = require('../DateService.js');
 
 require('./grid.less');
@@ -32,7 +32,7 @@ var EventBarGraph = React.createClass({
     //grab the data from the server & add it to the model.
     eventService.getEventCountMap(dates.getMinutesInPast(60), function(events){
     },function(err){
-        console.error(err);
+        console.log('got errror:', err);
     })
 
     function render(){

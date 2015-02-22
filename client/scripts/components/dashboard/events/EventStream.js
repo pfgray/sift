@@ -2,6 +2,7 @@
 
 var React = require('react/addons');
 var Event = require('./Event.js');
+var eventService = require('./EventService.js');
 var Message = require('./Message.js');
 var _ = require('lodash');
 
@@ -10,6 +11,12 @@ require('./console.less');
 var EventStream = React.createClass({
   addEvent:function(event){
       this.state.log.push(new Event(event));
+      this.setState({});
+  },
+  addEvents:function(events){
+      events.forEach(function(event){
+          this.state.log.push(new Event(event));
+      }.bind(this));
       this.setState({});
   },
   getInitialState: function() {
@@ -32,6 +39,7 @@ var EventStream = React.createClass({
     this.state.log.push(new Message("connecting to: [" + window.location.origin + "]..."));
     this.state.log.push(new Message("[connected]", "success"));
     this.initiateEventListener(this.props.eventStream);
+    this.addEvents(eventService.getCachedEvents());
   },
   componentWillReceiveProps: function(nextProps){
     this.removeEventListener();

@@ -11,7 +11,7 @@ var Button = require('react-bootstrap/Button');
 var Total = require('./Total.js');
 var UserProfile = require('./UserProfile.js');
 var CryptoJS = require('crypto-js');
-var eventService = require('./EventService.js');
+var eventService = require('./events/EventService.js');
 var dates = require('./DateService.js');
 
 require ('./dashboard.less');
@@ -19,7 +19,12 @@ require ('./dashboard.less');
 var Dashboard = React.createClass({
   mixins: [ Router.Navigation, Router.State ],
   getInitialState: function() {
-    return {user:null,totalEvents:null,eventStream:null};
+    return {
+      user:null,
+      totalEvents:null,
+      eventStream:null,
+      initiated:false
+    };
   },
   incrementEventCount: function(event){
     this.setState({
@@ -30,7 +35,11 @@ var Dashboard = React.createClass({
     var MINUTE_COUNT = 5;
     eventService.getCurrentUserAndEventCount(dates.getMinutesInPast(MINUTE_COUNT), function(user, eventCount){
         //initiate stream
-        var stream = eventService.getEventStreamForUser(user);
+        var stream = eventService.getEventStreamForUser(user, function(initialEvents){
+            this.setState({
+                initiated:true
+            });
+        }.bind(this));
         stream.on('event', this.incrementEventCount);
 
         this.setState({
@@ -40,11 +49,14 @@ var Dashboard = React.createClass({
             eventStream:stream
         });
     }.bind(this), function(error){
-        this.transitionTo('/');
+        console.log('got error, going to intro...');
+        this.transitionTo('intro');
     }.bind(this));
   },
   componentWillUnmount: function(){
-    this.state.eventStream.removeEventListener('event', this.incrementEventCount);
+    if(this.state.eventStream){
+      this.state.eventStream.removeEventListener('event', this.incrementEventCount);
+    }
   },
   render: function() {
     var profile;
@@ -58,7 +70,7 @@ var Dashboard = React.createClass({
             <div className="code-block">
               {
                 this.isActive('graphs') ?
-                  <Link to="eventstream"><Button><i className="fa fa-tasks"></i> Stream</Button></Link>:
+                  <Link to="dashboard"><Button><i className="fa fa-tasks"></i> Stream</Button></Link>:
                   <Link to="graphs"><Button><i className="fa fa-area-chart"></i> Graph</Button></Link>
               }
             </div>
@@ -68,13 +80,14 @@ var Dashboard = React.createClass({
         //TODO: add loading icon here?
         profile = (<div></div>)
     }
+    var subRoute = !this.state.initiated ? (<div />) : (<RouteHandler user={this.state.user} eventStream={this.state.eventStream}/>)
     return (
       <div>
         <div className="dash-sidebar">
           {profile}
         </div>
         <div className="dash-main">
-          <RouteHandler user={this.state.user} eventStream={this.state.eventStream}/>
+          {subRoute}
         </div>
       </div>
     );
