@@ -4,12 +4,27 @@ var _ = require('lodash');
 var model = require('./events.model.js');
 var apiKeyModel = require('../key/key.model.js');
 
+var eventCache = {};
+var eventCacheLimit = 30;
+
+var cacheEvent = function(userid, event){
+    if(!eventCache[userid]){
+        eventCache[userid] = [];
+    }
+    eventCache[userid].push(event);
+    if(eventCache[userid].length > eventCacheLimit){
+        eventCache[userid].shift();
+    }
+}
+
+
 var eventStream = {
     //listeners will hold a map, where the key is
     //a user's id, and the value is an array of
     //listeners listening to that user's event stream.
     listeners:{},
     pushEvent:function(userid, event){
+        cacheEvent(userid, event);
         if(this.listeners[userid]){
             _.each(this.listeners[userid], function(listener){
                 listener(event);
@@ -51,6 +66,8 @@ module.exports.dispatcher = function(io) {
                     console.log('adding listener for event stream, user ', JSON.stringify(user));
                     eventStream.addListener(user._id, listener);
                     connectedUserId = user._id;
+                    var cachedEvents = eventCache[user._id];
+                    socket.emit('initialEvents', cachedEvents || []);
                 }
             });
         });
@@ -64,7 +81,7 @@ module.exports.dispatcher = function(io) {
 };
 
 module.exports.stream = function(userid, event){
-    model.storeEvent(userid, event, function(){
-        eventStream.pushEvent(userid, event);
+    model.storeEvent(userid, event, function(err, storedEvent){
+        eventStream.pushEvent(userid, storedEvent);
     });
 };

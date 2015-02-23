@@ -18,8 +18,8 @@ var eventsModel = require('./events.model');
 // Get list of things
 exports.total = function(req, res) {
     if(!req.user){
-      res.status(400).json({error:"missing authentication"});
-      return
+        res.status(400).json({error:"missing authentication"});
+        return;
     };
     var userId = req.user._id;
 
@@ -38,17 +38,28 @@ exports.total = function(req, res) {
             cb(null, null);
         }
     }],function(err, results){
-      if(err){
-          res.status(500).json({error:"db connection failed"});
-      } else {
-          res.status(200).json({
-              totalEvents:results[0],
-              totalEventsAfterDate:results[1]
-          });
-      }
+        if(err){
+            res.status(500).json({error:"db connection failed"});
+        } else {
+            res.status(200).json({
+                totalEvents:results[0],
+                totalEventsAfterDate:results[1]
+            });
+        }
     });
+};
 
+exports.eventsByType = function(req, res) {
+    if(!req.user){
+        res.status(400).json({error:"missing authentication"});
+        return;
+    };
+    var userId = req.user._id;
+    var afterDate = req.query.afterDate ? JSON.parse(req.query.afterDate) : null;
 
+    eventsModel.getEventsByTypeAfterDate(userId, afterDate, function(err, events){
+        res.json(events);
+    });
 };
 
 exports.add = function(req, res) {
@@ -74,7 +85,7 @@ exports.add = function(req, res) {
                 res.status(200).json({
                     success:true
                 });
-            }
+            };
             //if the request body is an array, process all of the events
             if(_.isArray(req.body)){
                 _.each(req.body, function(event){

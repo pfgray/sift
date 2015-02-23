@@ -1,7 +1,7 @@
 @bg-color: #222;
 @text-color: #bbb;
 
-.thin-scrollbar(@size, @ts-bg-color) {
+.thin-scrollbar(@size, @ts-bg-color, @rounded: 0) {
   &::-webkit-scrollbar{
     height: @size; /* for vertical scrollbars */
     width:  @size; /* for horizontal scrollbars */
@@ -10,6 +10,7 @@
     background: rgba(0,0,0,0);
   }
   &::-webkit-scrollbar-thumb{
+    border-radius: @rounded;
     background: lighten(@ts-bg-color, 30%);
   }
 }

@@ -7,6 +7,7 @@ var router = express.Router();
 
 router.post('/users/:userid/events', controller.add);
 router.get('/me/eventCount', controller.total);
+router.get('/me/eventsByType', controller.eventsByType);
 
 module.exports.router = router;
 module.exports.dispatcher = require('./events.dispatcher').dispatcher;

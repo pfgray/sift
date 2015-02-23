@@ -15,9 +15,12 @@ var errorHandler = require('errorhandler');
 var path = require('path');
 var config = require('./environment');
 var passport_config = require('./passport.js');
+var cors = cors = require('cors');
 
 module.exports = function(app) {
   var env = app.get('env');
+
+  app.use(cors());
 
   var cfg = {
     protocol: process.env.HOST_PROTOCOL || 'http',

@@ -1,0 +1,19 @@
+@import "../../../../styles/mixins.less";
+
+.grid{
+  height:100%;
+
+  .halfGrid{
+      height:50%;
+
+      &:first-child{
+        border-bottom:1px solid @bg-color;
+      }
+  }
+}
+
+canvas.fill{
+    display:block;
+    height:100%;
+    width:100%;
+}

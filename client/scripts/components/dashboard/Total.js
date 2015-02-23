@@ -2,13 +2,9 @@
 
 var React = require('react/addons');
 
-var Dashboard = React.createClass({
-  componentWillReceiveProps: function(nextProps){
-    console.log('Recieved new Props: ', nextProps, 'current props are:', this.props);
-  },
+var Total = React.createClass({
   render: function() {
     var total;
-    console.log('***got total:', this.props.total);
     if(this.props.total || this.props.total === 0){
       total = (<div className="total">{this.props.total}</div>);
     } else {
@@ -23,4 +19,4 @@ var Dashboard = React.createClass({
   }
 });
 
-module.exports = Dashboard;
+module.exports = Total;

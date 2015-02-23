@@ -9,75 +9,81 @@ var Grid = require('react-bootstrap/Grid');
 var ButtonGroup = require('react-bootstrap/ButtonGroup');
 var Button = require('react-bootstrap/Button');
 var Total = require('./Total.js');
-var $ = require('jquery');
+var UserProfile = require('./UserProfile.js');
 var CryptoJS = require('crypto-js');
+var eventService = require('./events/EventService.js');
+var dates = require('./DateService.js');
 
 require ('./dashboard.less');
 
 var Dashboard = React.createClass({
-  mixins: [ Router.Navigation ],
+  mixins: [ Router.Navigation, Router.State ],
   getInitialState: function() {
-    return {user:null,totalEvents:null};
+    return {
+      user:null,
+      totalEvents:null,
+      eventStream:null,
+      initiated:false
+    };
+  },
+  incrementEventCount: function(event){
+    this.setState({
+      totalEvents: this.state.totalEvents+1
+    });
   },
   componentDidMount:function(){
-    var pastMinutes = 5;
-    var pastDate = JSON.stringify(new Date((new Date()).getTime() - pastMinutes * 60000));
-    $.when($.ajax("/api/me"), $.ajax("/api/me/eventCount?afterDate=" + pastDate))
-    .done(function(user, eventCount){
-        user = user[0];
-        eventCount = eventCount[0];
-        console.log('I am:', user, 'with number of events: ', eventCount);
-        user.eventsUrl = window.location.origin + '/api/users/' + user._id + '/events';
-        //TODO: dynamically change eventsPerMinute every 15 seconds or so...
+    var MINUTE_COUNT = 5;
+    eventService.getCurrentUserAndEventCount(dates.getMinutesInPast(MINUTE_COUNT), function(user, eventCount){
+        //initiate stream
+        var stream = eventService.getEventStreamForUser(user, function(initialEvents){
+            this.setState({
+                initiated:true
+            });
+        }.bind(this));
+        stream.on('event', this.incrementEventCount);
+
         this.setState({
             user:user,
             totalEvents: eventCount.totalEvents,
-            eventsPerMinute: eventCount.totalEventsAfterDate / pastMinutes
+            eventsPerMinute: eventCount.totalEventsAfterDate / MINUTE_COUNT,
+            eventStream:stream
         });
-    }.bind(this))
-    .fail(function(error){
-        this.transitionTo('/');
+    }.bind(this), function(error){
+        console.log('got error, going to intro...');
+        this.transitionTo('intro');
     }.bind(this));
-
+  },
+  componentWillUnmount: function(){
+    if(this.state.eventStream){
+      this.state.eventStream.removeEventListener('event', this.incrementEventCount);
+    }
   },
   render: function() {
-    var profile;
+    var profile, subRoute;
     if(this.state.user){
         profile = (
           <div>
-            <div className="user">
-              <img src={this.state.user.picture} />
-              <span className="name">{this.state.user.displayName}</span>
-            </div>
-            <div className="code-block">
-              <div className="code-label">Api key:</div>
-              <div><code>{this.state.user.apiKey}</code></div>
-            </div>
-            <div className="code-block">
-              <div className="code-label">Events endpoint:</div>
-              <div><code>{this.state.user.eventsUrl}</code></div>
-            </div>
-            <div className="code-block">
-              <div className="code-label">Sample curl:</div>
-              <div><code>curl -X POST \<br />
-                  &nbsp;&nbsp;{this.state.user.eventsUrl} \<br />
-                  &nbsp;&nbsp;-H "Authorization: {this.state.user.apiKey}" \<br />
-                  &nbsp;&nbsp;-H "Content-Type: application/json" \<br />
-                  &nbsp;&nbsp;--data @/path/to/event.json
-              </code></div>
-            </div>
+            <UserProfile user={this.state.user} />
             <Total label="Total events captured:" total={this.state.totalEvents} className="events" />
             <Total label="Events per minute:" total={this.state.eventsPerMinute} className="events-per-minute" />
-
+{/*}
             <div className="code-block">
-              <Button disabled><i className="fa fa-area-chart"></i> Graph</Button>
+              {
+                this.isActive('graphs') ?
+                  <Link to="dashboard"><Button><i className="fa fa-tasks"></i> Stream</Button></Link>:
+                  <Link to="graphs"><Button><i className="fa fa-area-chart"></i> Graph</Button></Link>
+              }
             </div>
+*/}
           </div>
-        )
+        );
+        subRoute = !this.state.initiated ?
+            (<div className="subroute-spinner"><i className="fa fa-refresh fa-spin"></i></div>) :
+            (<RouteHandler user={this.state.user} eventStream={this.state.eventStream}/>);
     } else {
-        profile = (
-           <div></div>
-        )
+        //TODO: add loading icon here?
+        profile = (<div className="sidebar-spinner"><i className="fa fa-refresh fa-spin"></i></div>)
+        subRoute = (<div />);
     }
     return (
       <div>
@@ -85,7 +91,9 @@ var Dashboard = React.createClass({
           {profile}
         </div>
         <div className="dash-main">
-          <RouteHandler user={this.state.user}/>
+          <div className='console-wrapper'>
+            {subRoute}
+          </div>
         </div>
       </div>
     );
