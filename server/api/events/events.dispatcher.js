@@ -7,7 +7,6 @@ var apiKeyModel = require('../key/key.model.js');
 var eventCache = {};
 var eventCacheLimit = 30;
 
-
 var cacheEvent = function(userid, event){
     if(!eventCache[userid]){
         eventCache[userid] = [];
@@ -82,7 +81,7 @@ module.exports.dispatcher = function(io) {
 };
 
 module.exports.stream = function(userid, event){
-    model.storeEvent(userid, event, function(){
-        eventStream.pushEvent(userid, event);
+    model.storeEvent(userid, event, function(err, storedEvent){
+        eventStream.pushEvent(userid, storedEvent);
     });
 };

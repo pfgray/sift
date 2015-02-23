@@ -13,7 +13,7 @@ module.exports = {
         };
         var db = model.getDatabase();
         db.save(toStore, function (err, res) {
-            callback(err, res);
+            callback(err, toStore, res);
         });
     },
     getEventCountForUser:function(userid, afterDate, callback){
