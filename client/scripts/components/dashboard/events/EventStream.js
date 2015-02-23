@@ -48,12 +48,22 @@ var EventStream = React.createClass({
   componentWillUnmount: function(){
     this.removeEventListener();
   },
+  componentWillUpdate: function() {
+    var node = this.getDOMNode();
+    console.log('got dom node: ', node);
+    this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
+    console.log('should:', this.shouldScrollBottom);
+  },
+  componentDidUpdate: function() {
+    if (this.shouldScrollBottom) {
+      var node = this.getDOMNode();
+      node.scrollTop = node.scrollHeight
+    }
+  },
   render: function() {
     return (
-      <div className='console-wrapper'>
-        <div className='console'>
-          {this.state.log}
-        </div>
+      <div className='console'>
+        {this.state.log}
       </div>
     );
   }

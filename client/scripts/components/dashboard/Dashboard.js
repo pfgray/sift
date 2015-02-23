@@ -59,14 +59,14 @@ var Dashboard = React.createClass({
     }
   },
   render: function() {
-    var profile;
+    var profile, subRoute;
     if(this.state.user){
         profile = (
           <div>
             <UserProfile user={this.state.user} />
             <Total label="Total events captured:" total={this.state.totalEvents} className="events" />
             <Total label="Events per minute:" total={this.state.eventsPerMinute} className="events-per-minute" />
-
+{/*}
             <div className="code-block">
               {
                 this.isActive('graphs') ?
@@ -74,20 +74,26 @@ var Dashboard = React.createClass({
                   <Link to="graphs"><Button><i className="fa fa-area-chart"></i> Graph</Button></Link>
               }
             </div>
+*/}
           </div>
-        )
+        );
+        subRoute = !this.state.initiated ?
+            (<div className="subroute-spinner"><i className="fa fa-refresh fa-spin"></i></div>) :
+            (<RouteHandler user={this.state.user} eventStream={this.state.eventStream}/>);
     } else {
         //TODO: add loading icon here?
-        profile = (<div></div>)
+        profile = (<div className="sidebar-spinner"><i className="fa fa-refresh fa-spin"></i></div>)
+        subRoute = (<div />);
     }
-    var subRoute = !this.state.initiated ? (<div />) : (<RouteHandler user={this.state.user} eventStream={this.state.eventStream}/>)
     return (
       <div>
         <div className="dash-sidebar">
           {profile}
         </div>
         <div className="dash-main">
-          {subRoute}
+          <div className='console-wrapper'>
+            {subRoute}
+          </div>
         </div>
       </div>
     );

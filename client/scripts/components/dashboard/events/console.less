@@ -8,12 +8,14 @@
   height:100vh;
   position:relative;
   .console{
+    padding-left:0.5em;
+    font-size:1.25em;
     position:absolute;
     overflow-y: auto;
     max-height: 100%;
     bottom:0;
     width: 100%;
-    .thin-scrollbar(6px, @default-color);
+    .thin-scrollbar(6px, darken(#25c786, 30%), 10px);
   }
 }
 
