@@ -14,13 +14,12 @@ var Event = React.createClass({
   	});
   },
   render: function() {
-  	var event = this.props.data.caliperObject['@type'];
-  	var action = this.props.data.caliperObject['action'];
-  	var actor = this.props.data.caliperObject.actor.name;
+    var event = this.props.data.caliperObject['@type'];
+    var action = this.props.data.caliperObject['action'] || '';
+    var actor = this.props.data.caliperObject.actor ? this.props.data.caliperObject.actor.name : '';
 
-
-  	var eventLabel = event.substring(event.lastIndexOf("/") + 1);
-  	var actionLabel = action.substring(action.lastIndexOf("#") + 1);
+    var eventLabel = event ? event.substring(event.lastIndexOf("/") + 1) : '';
+    var actionLabel = action ? action.substring(action.lastIndexOf("#") + 1) : '';
 
     return (
       <div>
