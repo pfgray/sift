@@ -50,14 +50,12 @@ var EventStream = React.createClass({
   },
   componentWillUpdate: function() {
     var node = this.getDOMNode();
-    console.log('got dom node: ', node);
     this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
-    console.log('should:', this.shouldScrollBottom);
   },
   componentDidUpdate: function() {
     if (this.shouldScrollBottom) {
       var node = this.getDOMNode();
-      node.scrollTop = node.scrollHeight
+      node.scrollTop = node.scrollHeight;
     }
   },
   render: function() {

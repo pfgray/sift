@@ -14,9 +14,17 @@ var Event = React.createClass({
   	});
   },
   render: function() {
-    var event = this.props.data.caliperObject['@type'];
-    var action = this.props.data.caliperObject['action'] || '';
-    var actor = this.props.data.caliperObject.actor ? this.props.data.caliperObject.actor.name : '';
+    //support the new envelope, eventually this will be the default,
+    // but for now we need to stll support the poc code.
+    var caliperObject = this.props.data.caliperObject;
+    console.log('got data:', caliperObject);
+    if(caliperObject['@context'] === 'http://purl.imsglobal.org/caliper/ctx/v1/Envelope'){
+        caliperObject = caliperObject.data[0];//lol, todo: make this better
+    }
+    console.log('now going with caliperObject: ', caliperObject);
+    var event = caliperObject['@type'];
+    var action = caliperObject.action || '';
+    var actor = caliperObject.actor ? caliperObject.actor.name : '';
 
     var eventLabel = event ? event.substring(event.lastIndexOf("/") + 1) : '';
     var actionLabel = action ? action.substring(action.lastIndexOf("#") + 1) : '';

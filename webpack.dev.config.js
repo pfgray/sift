@@ -7,6 +7,7 @@
 'use strict';
 
 var webpack = require('webpack');
+var path = require('path');
 
 module.exports = {
 
@@ -42,7 +43,8 @@ module.exports = {
     }],
     loaders: [{
       test: /\.js$/,
-      loader: 'react-hot!jsx-loader?harmony'
+      loader: 'react-hot!jsx-loader?harmony',
+      include: path.join(__dirname, 'client')
     }, {
       test: /\.less/,
       loader: 'style-loader!css-loader!less-loader'
