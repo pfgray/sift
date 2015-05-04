@@ -1,4 +1,4 @@
-FROM dockerfile/ubuntu
+FROM ubuntu
 
 RUN add-apt-repository ppa:chris-lea/node.js
 RUN apt-get update
