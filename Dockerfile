@@ -1,4 +1,8 @@
-FROM dockerfile/nodejs
+FROM dockerfile/ubuntu
+
+RUN add-apt-repository ppa:chris-lea/node.js
+RUN apt-get update
+RUN apt-get install -y nodejs
 
 ADD ./ /app
 WORKDIR /app
