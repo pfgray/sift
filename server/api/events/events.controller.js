@@ -20,7 +20,7 @@ exports.total = function(req, res) {
     if(!req.user){
         res.status(400).json({error:"missing authentication"});
         return;
-    };
+    }
     var userId = req.user._id;
 
     async.series([function(cb){
@@ -53,7 +53,7 @@ exports.eventsByType = function(req, res) {
     if(!req.user){
         res.status(400).json({error:"missing authentication"});
         return;
-    };
+    }
     var userId = req.user._id;
     var afterDate = req.query.afterDate ? JSON.parse(req.query.afterDate) : null;
 

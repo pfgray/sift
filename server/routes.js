@@ -6,6 +6,7 @@
 
 var errors = require('./components/errors');
 var passport = require('passport');
+var anonLogin = require('./config/anonymous.login');
 
 module.exports = function(app, socketio) {
 
@@ -29,6 +30,8 @@ module.exports = function(app, socketio) {
           // Successful authentication, redirect home.
           res.redirect('/dashboard');
   });
+
+  app.get('/auth/anonymous', anonLogin.login);
 
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|public)/*')

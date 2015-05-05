@@ -16,6 +16,9 @@ var Intro = React.createClass({
   signInGoogle: function(event) {
     window.location = "/auth/google";
   },
+  signInAnon: function(event) {
+    window.location = "/auth/anonymous";
+  },
   render: function() {
     return (
       <Grid>
@@ -27,6 +30,11 @@ var Intro = React.createClass({
         <Row className="intro-login">
           <Col xs={12} md={6} mdOffset={3}>
               <Button onClick={this.signInGoogle} className="branded-login" bsStyle="info"><i className="fa fa-google"></i>Sign In with Google</Button>
+          </Col>
+        </Row>
+        <Row className="intro-login">
+          <Col xs={12} md={6} mdOffset={3}>
+              <Button onClick={this.signInAnon} className="branded-login" bsStyle=""><i className="fa fa-user"></i>Use Anonymously</Button>
           </Col>
         </Row>
       </Grid>
