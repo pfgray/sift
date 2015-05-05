@@ -5,8 +5,9 @@ var userModel = require('../api/user/user.model.js');
 
 module.exports.login = function(req, res, next){
     userModel.findOrCreate({
-        custom_id: "anonymous"
+        username:"anonymous"
     }, {
+        username:"anonymous",
         displayName:"Anonymous"
     }, function(err, user) {
         req.login(user, function(err) {
