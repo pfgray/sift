@@ -18,4 +18,4 @@ echo "starting app with: " \
      "    HOST_DOMAIN:$HOST_DOMAIN\n"\
      "    HOST_PORT:$HOST_PORT\n"
 
-nodejs /app/dist/server/app.js
+node /app/dist/server/app.js
