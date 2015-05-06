@@ -1,7 +1,4 @@
-FROM fedora
-
-RUN yum -y update && yum clean all
-RUN yum -y install npm && yum clean all
+FROM google/nodejs
 
 ADD ./ /app
 WORKDIR /app
