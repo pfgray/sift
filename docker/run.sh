@@ -6,8 +6,8 @@
 [ -z "$HOST_DOMAIN" ] && export HOST_DOMAIN=localhost
 [ -z "$HOST_PORT" ] && export HOST_PORT=9000
 
-[ -z "$GOOGLE_CLIENT_ID" ] && export GOOGLE_CLIENT_ID=test_id
-[ -z "$GOOGLE_CLIENT_SECRET" ] && export GOOGLE_CLIENT_SECRET=test_secret
+[ -z "$CALIPER_GOOGLE_CLIENT_ID" ] && export CALIPER_GOOGLE_CLIENT_ID=test_id
+[ -z "$CALIPER_GOOGLE_CLIENT_SECRET" ] && export CALIPER_GOOGLE_CLIENT_SECRET=test_secret
 
 echo "starting app with: " \
      "    NODE_ENV:$NODE_ENV\n"\

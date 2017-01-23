@@ -30,7 +30,7 @@ module.exports = {
           // do something if there's an error
           if(!err){
             updateDesign(couch_design);
-            console.log('database' + config.couch.db_name + ' created successfully');
+            console.log('database ' + config.couch.db_name + ' created successfully');
             // populate design documents
           } else {
             console.log('Error creating database: ' + config.couch.db_name + '...', err);

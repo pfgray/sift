@@ -7,44 +7,38 @@ var Event = React.createClass({
   getInitialState: function(){
     return {jsonVisible:false};
   },
-  switchJson:function(){
+  switchJson: function(){
   	console.log('got called...');
   	this.setState({
   		jsonVisible: !this.state.jsonVisible
   	});
   },
   render: function() {
+    console.log("Now rendering Event: ", this.props);
     //support the new envelope, eventually this will be the default,
     // but for now we need to stll support the poc code.
-    var caliperObject = this.props.data.caliperObject;
-    console.log('got data:', caliperObject);
-    if(caliperObject['@context'] === 'http://purl.imsglobal.org/caliper/ctx/v1/Envelope'){
-        caliperObject = caliperObject.data[0];//lol, todo: make this better
-    }
-    console.log('now going with caliperObject: ', caliperObject);
-    var event = caliperObject['@type'];
-    var action = caliperObject.action || '';
-    var actor = caliperObject.actor ? caliperObject.actor.name : '';
+    var action = this.props.action || '';
+    var actor = this.props.actor ? this.props.actor['@id'] : '';
+    var object = this.props.object ? this.props.object['@type'] : '';
+    var objectText = object ? object.substring(object.lastIndexOf("/") + 1) : '';
 
-    var eventLabel = event ? event.substring(event.lastIndexOf("/") + 1) : '';
+    var objectLabel = this.props.object ? `${objectText} (${this.props.object['@id']})`: '';
     var actionLabel = action ? action.substring(action.lastIndexOf("#") + 1) : '';
 
     return (
       <div>
-        <div className='event'>
-          <span onClick={this.switchJson} className='type'>{eventLabel}</span>
-          <span className='action'>{actionLabel}</span>
+        <div className='event' onClick={() => this.switchJson()}>
           <span className='actor'>{actor}</span>
-          <span className='time'>{moment(this.props.data.recieved).format('MMMM Do YYYY, h:mm:ss a')}</span>
+          <span className='action'>{actionLabel}</span>
+          <span className='type'>{objectLabel}</span>
+          <span className='time'>{moment(this.props.eventTime).format('MMMM Do YYYY, h:mm:ss a')}</span>
         </div>
         <pre className={this.state.jsonVisible ? 'event-json' : 'hidden'}>
-          {JSON.stringify(this.props.data.caliperObject, null, 2)}
+          {JSON.stringify(this.props, null, 2)}
         </pre>
       </div>
     );
   }
 });
 
-module.exports = function(event){
-  return React.createElement(Event, {data: event});
-};
+module.exports = Event;
