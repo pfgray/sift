@@ -1,4 +1,4 @@
-FROM google/nodejs
+FROM node
 
 ADD ./ /app
 WORKDIR /app
