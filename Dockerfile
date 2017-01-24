@@ -2,9 +2,8 @@ FROM google/nodejs
 
 ADD ./ /app
 WORKDIR /app
-RUN npm install grunt-cli -g
 RUN npm install
-RUN grunt build
+RUN npm run build
 
 EXPOSE 9000
 
