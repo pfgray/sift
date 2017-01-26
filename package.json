@@ -1,15 +1,4 @@
 {
-  "name": "caliperstore",
-  "version": "0.0.0",
-  "description": "",
-  "repository": "",
-  "private": true,
-  "src": "src",
-  "test": "test",
-  "dist": "dist",
-  "main": "server/app.js",
-  "mainInput": "main",
-  "mainOutput": "main",
   "scripts": {
     "start": "grunt serve",
     "build": "grunt build"
@@ -61,7 +50,6 @@
     "karma-chrome-launcher": "~0.1.4",
     "karma-firefox-launcher": "~0.1.3",
     "karma-jasmine": "~0.1.5",
-    "karma-phantomjs-launcher": "~0.1.3",
     "karma-script-launcher": "~0.1.0",
     "karma-webpack": "~1.2.2",
     "less": "^2.7.2",
