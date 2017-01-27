@@ -13,7 +13,7 @@ module.exports = {
 
   output: {
     publicPath: '/assets/',
-    path: './.tmp/assets',
+    path: __dirname + '/.tmp/assets',
     filename: 'main.js'
   },
 
