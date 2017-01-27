@@ -9,6 +9,12 @@
 var webpack = require('webpack');
 var path = require('path');
 
+// PATHS
+var PATHS = {
+  app: __dirname + '/client',
+  target: __dirname + '/dist'
+};
+
 module.exports = {
 
   output: {
@@ -22,8 +28,9 @@ module.exports = {
   devtool: false,
   watch:true,
   entry: [
+      'webpack-dev-server/client?http://localhost:9001/',
       'webpack/hot/only-dev-server',
-      './client/scripts/components/main.js'
+      __dirname + '/client/scripts/components/main.js'
   ],
 
   stats: {
@@ -36,15 +43,14 @@ module.exports = {
     extensions: ['', '.js']
   },
   module: {
-    preLoaders: [{
-      test: '\\.js$',
-      exclude: 'node_modules',
-      loader: 'jshint'
-    }],
     loaders: [{
       test: /\.js$/,
-      loader: 'react-hot!jsx-loader?harmony',
-      include: path.join(__dirname, 'client')
+      loader: 'react-hot!babel?' + JSON.stringify({
+        plugins: ['transform-runtime'],
+        presets: ['react', 'es2015', 'stage-1']
+      }),
+      include: PATHS.app,
+      exclude: /node_modules/,
     }, {
       test: /\.less/,
       loader: 'style-loader!css-loader!less-loader'

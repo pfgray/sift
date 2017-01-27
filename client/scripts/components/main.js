@@ -5,6 +5,7 @@ var React = require('react'),
     Dashboard = require('./dashboard/Dashboard'),
     EventStream = require('./dashboard/events/EventStream'),
     GridView = require('./dashboard/graphs/GridView');
+var Admin = require('./admin/Admin');
 var Router = require('react-router');
 var { Route, RouteHandler, Link } = Router;
 
@@ -13,6 +14,7 @@ var content = document.getElementById('content');
 var routes = (
   <Route handler={App}>
     <Route name='intro' path='/' handler={Intro}></Route>
+    <Route name='admin' path='/admin' handler={Admin}></Route>
     <Route name='dashboard' path='/dashboard' handler={Dashboard}>
       <DefaultRoute name='eventstream' handler={EventStream}></DefaultRoute>
       <Route name='graphs' path='/dashboard/graphs' handler={GridView}></Route>

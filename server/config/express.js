@@ -15,7 +15,8 @@ var errorHandler = require('errorhandler');
 var path = require('path');
 var config = require('./environment');
 var passport_config = require('./passport.js');
-var cors = cors = require('cors');
+var cors = require('cors');
+var httpProxy = require('http-proxy');
 
 module.exports = function(app) {
   var env = app.get('env');
@@ -44,12 +45,13 @@ module.exports = function(app) {
   }
 
   if ('development' === env || 'test' === env) {
-    //app.use(require('connect-livereload')());
-    var tempStaticRoot = path.join(config.root, '.tmp');
-    var clientStaticRoot = path.join(config.root, 'client');
-    console.log('public assets: ', tempStaticRoot, clientStaticRoot);
-    app.use(express.static(tempStaticRoot));
-    app.use(express.static(clientStaticRoot));
+    var proxy = httpProxy.createProxyServer();
+    app.all('/assets/*', function (req, res) {
+      proxy.web(req, res, {
+        target: 'http://localhost:9001'
+      });
+    });
+
     app.set('appPath', 'client');
     app.use(morgan('dev'));
     app.disable('etag');

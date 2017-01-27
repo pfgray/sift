@@ -8,6 +8,12 @@
 
 var webpack = require('webpack');
 
+// PATHS
+var PATHS = {
+  app: __dirname + '/client',
+  target: __dirname + '/dist'
+};
+
 module.exports = {
 
   output: {
@@ -29,7 +35,8 @@ module.exports = {
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin()
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en$/)
   ],
 
   resolve: {
@@ -45,7 +52,11 @@ module.exports = {
 
     loaders: [{
       test: /\.js$/,
-      loader: 'jsx-loader?harmony'
+      loader: 'babel?' + JSON.stringify({
+        plugins: ['transform-runtime'],
+        presets: ['react', 'es2015', 'stage-1']
+      }),
+      include: PATHS.app
     }, {
       test: /\.css$/,
       loader: 'style-loader!css-loader'
