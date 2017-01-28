@@ -1,10 +1,9 @@
-'use strict';
-
-var React = require('react/addons');
-var Event = require('./Event.js');
-var eventService = require('./EventService.js');
-var Message = require('./Message.js');
-var _ = require('lodash');
+import React from 'react';
+import { findDOMNode } from 'react-dom';
+import Event from './Event.js';
+import eventService from './EventService.js';
+import Message from './Message.js';
+import _ from 'lodash';
 
 require('./console.less');
 
@@ -59,12 +58,12 @@ var EventStream = React.createClass({
     this.removeEventListener();
   },
   componentWillUpdate: function() {
-    var node = this.getDOMNode();
+    var node = findDOMNode(this);
     this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
   },
   componentDidUpdate: function() {
     if (this.shouldScrollBottom) {
-      var node = this.getDOMNode();
+      var node = findDOMNode(this);
       node.scrollTop = node.scrollHeight;
     }
   },

@@ -25,7 +25,7 @@ module.exports = {
 
   cache: true,
   debug: true,
-  devtool: false,
+  devtool: '#inline-source-map',
   watch:true,
   entry: [
       'webpack-dev-server/client?http://localhost:9001/',

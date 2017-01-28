@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react/addons');
+var React = require('react');
 var eventService = require('../events/EventService.js');
 var dates = require('../DateService.js');
 

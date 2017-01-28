@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react/addons');
+var React = require('react');
 var EventBarGraph = require('./EventBarGraph.js');
 var PartyGraph = require('./PartyGraph.js');
 

@@ -1,23 +1,14 @@
-'use strict';
+import React from 'react';
+import { Route, Link } from 'react-router';
+import { Col, Row, Grid, ButtonGroup, Button } from 'react-bootstrap';
+import Total from './Total.js';
+import UserProfile from './UserProfile.js';
+import eventService from './events/EventService.js';
+import dates from './DateService.js';
 
-var React = require('react/addons');
-var Router = require('react-router');
-var { Route, DefaultRoute, RouteHandler, Link } = Router;
-var Col = require('react-bootstrap/Col');
-var Row = require('react-bootstrap/Row');
-var Grid = require('react-bootstrap/Grid');
-var ButtonGroup = require('react-bootstrap/ButtonGroup');
-var Button = require('react-bootstrap/Button');
-var Total = require('./Total.js');
-var UserProfile = require('./UserProfile.js');
-var CryptoJS = require('crypto-js');
-var eventService = require('./events/EventService.js');
-var dates = require('./DateService.js');
-
-require ('./dashboard.less');
+import './dashboard.less';
 
 var Dashboard = React.createClass({
-  mixins: [ Router.Navigation, Router.State ],
   getInitialState: function() {
     return {
       user:null,
@@ -79,7 +70,8 @@ var Dashboard = React.createClass({
         );
         subRoute = !this.state.initiated ?
             (<div className="subroute-spinner"><i className="fa fa-refresh fa-spin"></i></div>) :
-            (<RouteHandler user={this.state.user} eventStream={this.state.eventStream}/>);
+            (this.props.children)
+            //(<RouteHandler user={this.state.user} eventStream={this.state.eventStream}/>);
     } else {
         //TODO: add loading icon here?
         profile = (<div className="sidebar-spinner"><i className="fa fa-refresh fa-spin"></i></div>)

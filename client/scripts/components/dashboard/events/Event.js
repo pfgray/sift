@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react/addons');
+var React = require('react');
 var moment = require('moment');
 
 var Event = React.createClass({

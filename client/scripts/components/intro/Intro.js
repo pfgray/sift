@@ -1,11 +1,7 @@
 'use strict';
 
-var React = require('react/addons');
-var Col = require('react-bootstrap/Col');
-var Row = require('react-bootstrap/Row');
-var Grid = require('react-bootstrap/Grid');
-var ButtonGroup = require('react-bootstrap/ButtonGroup');
-var Button = require('react-bootstrap/Button');
+import React from 'react';
+import { Col, Row, Grid, ButtonGroup, Button } from 'react-bootstrap';
 
 require('./intro.css');
 
@@ -34,7 +30,7 @@ var Intro = React.createClass({
         </Row>
         <Row className="intro-login">
           <Col xs={12} md={6} mdOffset={3}>
-              <Button onClick={this.signInAnon} className="branded-login" bsStyle=""><i className="fa fa-user"></i>Use Anonymously</Button>
+              <Button onClick={this.signInAnon} className="branded-login" bsStyle="default"><i className="fa fa-user"></i>Use Anonymously</Button>
           </Col>
         </Row>
       </Grid>
