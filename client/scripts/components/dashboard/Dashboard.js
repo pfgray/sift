@@ -40,7 +40,6 @@ var Dashboard = React.createClass({
             eventStream:stream
         });
     }.bind(this), function(error){
-        console.log('got error, going to intro...');
         this.transitionTo('intro');
     }.bind(this));
   },
@@ -70,8 +69,10 @@ var Dashboard = React.createClass({
         );
         subRoute = !this.state.initiated ?
             (<div className="subroute-spinner"><i className="fa fa-refresh fa-spin"></i></div>) :
-            (this.props.children)
-            //(<RouteHandler user={this.state.user} eventStream={this.state.eventStream}/>);
+            (React.cloneElement(this.props.children, {
+              user: this.state.user,
+              eventStream: this.state.eventStream
+            }))
     } else {
         //TODO: add loading icon here?
         profile = (<div className="sidebar-spinner"><i className="fa fa-refresh fa-spin"></i></div>)

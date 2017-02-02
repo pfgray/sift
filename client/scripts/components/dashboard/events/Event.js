@@ -8,13 +8,11 @@ var Event = React.createClass({
     return {jsonVisible:false};
   },
   switchJson: function(){
-  	console.log('got called...');
   	this.setState({
   		jsonVisible: !this.state.jsonVisible
   	});
   },
   render: function() {
-    console.log("Now rendering Event: ", this.props);
     //support the new envelope, eventually this will be the default,
     // but for now we need to stll support the poc code.
     var action = this.props.action || '';

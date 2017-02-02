@@ -32,10 +32,7 @@ var EventStream = React.createClass({
   },
   initiateEventListener:function(stream){
     if(stream){
-      stream.on('event', e => {
-        console.log('Streaming event: ', e);
-        this.addEvent(e);
-      });
+      stream.on('event', this.addEvent);
     }
   },
   removeEventListener: function(){
