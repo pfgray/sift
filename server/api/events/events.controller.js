@@ -81,19 +81,18 @@ exports.add = function(req, res) {
         if(user && req.params.userid === user._id){
             var processEvent = function(event){
                 //TODO: add some sort of validation... where is the spec???
-                dispatcher.stream(user._id, req.body);
-                res.status(200).json({
-                    success:true
-                });
+                dispatcher.stream(user._id, event);
+
             };
             //if the request body is an array, process all of the events
             if(_.isArray(req.body)){
-                _.each(req.body, function(event){
-                    processEvent(event);
-                });
+                _.each(req.body, processEvent);
             } else {
                 processEvent(req.body);
             }
+            res.status(200).json({
+                success:true
+            });
         } else if(user){
             res.status(403).json({
                 success:false,
