@@ -22,7 +22,7 @@ gulp.task('build', function(){
   //Client app build
   gulp.src('client/scripts/components/main.js')
     .pipe(gulpWebpack(distWebpackConfig, webpack))
-    .pipe(gulp.dest('dist/client'));
+    .pipe(gulp.dest('dist/client/assets'));
 
   // critical app functionality
   gulp.src(['client/favicon.ico', 'client/index.html' ])
