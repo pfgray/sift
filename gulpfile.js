@@ -25,7 +25,7 @@ gulp.task('build', function(){
     .pipe(gulp.dest('dist/client'));
 
   // critical app functionality
-  gulp.src('client/favicon.ico')
+  gulp.src(['client/favicon.ico', 'client/index.html' ])
     .pipe(gulp.dest('dist/client'));
 
   //server app
