@@ -20,8 +20,12 @@ gulp.task('serve', function(){
 gulp.task('build', function(){
 
   //Client app build
-  gulp.src('client/app/app.js')
+  gulp.src('client/scripts/components/main.js')
     .pipe(gulpWebpack(distWebpackConfig, webpack))
+    .pipe(gulp.dest('dist/client'));
+
+  // critical app functionality
+  gulp.src('client/favicon.ico')
     .pipe(gulp.dest('dist/client'));
 
   //server app
