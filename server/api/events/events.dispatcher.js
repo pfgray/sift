@@ -17,7 +17,6 @@ var cacheEvent = function(userid, event){
     }
 }
 
-
 var eventStream = {
     //listeners will hold a map, where the key is
     //a user's id, and the value is an array of
