@@ -3,6 +3,10 @@
 var React = require('react');
 var moment = require('moment');
 
+function after(s, c) {
+    return s ? s.substring(s.lastIndexOf(c) + 1) : '';
+}
+
 var Event = React.createClass({
   getInitialState: function(){
     return {jsonVisible:false};
@@ -13,20 +17,22 @@ var Event = React.createClass({
   	});
   },
   render: function() {
+
     //support the new envelope, eventually this will be the default,
     // but for now we need to stll support the poc code.
     var action = this.props.action || '';
-    var actor = this.props.actor ? this.props.actor['@id'] : '';
+    var actor = this.props.actor ? after(this.props.actor['@id'], '/') : '';
+    var actorType = this.props.actor ? after(this.props.actor['@type'], '/') : '';
     var object = this.props.object ? this.props.object['@type'] : '';
-    var objectText = object ? object.substring(object.lastIndexOf("/") + 1) : '';
+    var objectText = after(object, '/');
 
-    var objectLabel = this.props.object ? `${objectText} (${this.props.object['@id']})`: '';
-    var actionLabel = action ? action.substring(action.lastIndexOf("#") + 1) : '';
+    var objectLabel = this.props.object ? `${objectText}`: '';
+    var actionLabel = after(action, '#');
 
     return (
       <div>
         <div className='event' onClick={() => this.switchJson()}>
-          <span className='actor'>{actor}</span>
+          <span className='actor'>{`${actorType} / ${actor}`}</span>
           <span className='action'>{actionLabel}</span>
           <span className='type'>{objectLabel}</span>
           <span className='time'>{moment(this.props.eventTime).format('MMMM Do YYYY, h:mm:ss a')}</span>

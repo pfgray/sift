@@ -12,16 +12,12 @@ var EventStream = React.createClass({
     this.addEvents([event]);
   },
   addEvents:function(events) {
-    console.log('Adding events: ', events)
+    console.log('Adding events: ', events);
     const messages =
-      events.filter(e => _.isArray(e.caliperObject.data))
-      .map(event => {
-        console.log('Mapping: ', event);
-        return event.caliperObject.data.map(data => ({
-          comp: Event,
-          props: data
-        }))
-      }).reduce((arr, i) => arr.concat(i), []);
+      events.map(event => ({
+        comp: Event,
+        props: event.caliperObject
+      }));
     console.log('Adding events: ', messages ,'to:', this.state.log);
     this.setState({
       log: this.state.log.concat(messages)
