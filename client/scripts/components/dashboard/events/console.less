@@ -9,6 +9,7 @@
   position:relative;
   .console{
     padding-left:0.5em;
+    padding-bottom: .25em;
     font-size:1.25em;
     position:absolute;
     overflow-y: auto;
@@ -60,4 +61,20 @@
   background-color:rgba(0,0,0,0);
   border:none;
   padding:0;
+}
+
+
+.console-footer {
+    position: fixed;
+    bottom: 0.25em;
+    right: 1em;
+}
+.btn.outline {
+  background-color: rgba(0,0,0,0);
+  color: white;
+
+  &:hover, &:focus {
+    background-color: rgba(255,255,255,0.25);
+    color: white;
+  }
 }
