@@ -5,15 +5,25 @@ var model = require('../../database');
 
 module.exports = {
     storeEvent:function(userid, event, callback){
+        var transformedEvent = null;
+        try {
+          transformedEvent = transformEvent(event);
+        } catch(e) {
+          transformedEvent = event;
+        }
+
         var toStore = {
-            scoped_caliper_user_id: userid,
-            recieved: new Date(),
-            type:'caliperEvent',
-            caliperObject:event
+          scoped_caliper_user_id: userid,
+          recieved: new Date(),
+          type:'caliperEvent',
+          caliperObject: transformedEvent
         };
+
         var db = model.getDatabase();
         db.save(toStore, function (err, res) {
-            callback(err, toStore, res);
+            callback(err, Object.assign(toStore, {
+                caliperObject: event
+            }), res);
         });
     },
     getEventCountForUser:function(userid, afterDate, callback){
@@ -46,4 +56,31 @@ module.exports = {
             callback(err, result);
         });
     }
+}
+
+function after(s, c) {
+  return s ? s.substring(s.lastIndexOf(c) + 1) : '';
+}
+
+function fixType(obj) {
+  delete obj['@context'];
+
+  obj.id = obj['@id'];
+  delete obj['@id'];
+
+  obj.type = after(obj['@type'], '/');
+  delete obj['@type'];
+}
+
+function transformEvent(event) {
+  var event = Object.assign({}, event);
+  fixType(event);
+
+  fixType(event.actor);
+  fixType(event.object);
+  event.group && fixType(event.group);
+
+  event.action = after(event.action, '#');
+
+  return event;
 }

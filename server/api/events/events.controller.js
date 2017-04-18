@@ -64,7 +64,6 @@ exports.eventsByType = function(req, res) {
 
 exports.add = function(req, res) {
     //req.header --> check apiKey here
-    console.log('streaming: ', req.body);
 
     var apiKey = req.header('Authorization');
     if(!apiKey){
@@ -80,15 +79,12 @@ exports.add = function(req, res) {
     apiKeyModel.getUserForApiKey(apiKey, function(err, user){
         if(user && req.params.userid === user._id){
             var processEvent = function(event){
-                //TODO: add some sort of validation... where is the spec???
                 dispatcher.stream(user._id, event);
-
             };
-            //if the request body is an array, process all of the events
-            if(_.isArray(req.body)){
-                _.each(req.body, processEvent);
+            if(_.isArray(req.body.data)){
+                req.body.data.forEach(processEvent);
             } else {
-                processEvent(req.body);
+                processEvent(req.body.data);
             }
             res.status(200).json({
                 success:true

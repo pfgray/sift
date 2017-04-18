@@ -3,6 +3,7 @@ import { findDOMNode } from 'react-dom';
 import Event from './Event.js';
 import eventService from './EventService.js';
 import Message from './Message.js';
+import { Col, Row, Grid, ButtonGroup, Button } from 'react-bootstrap';
 import _ from 'lodash';
 
 require('./console.less');
@@ -12,17 +13,11 @@ var EventStream = React.createClass({
     this.addEvents([event]);
   },
   addEvents:function(events) {
-    console.log('Adding events: ', events)
     const messages =
-      events.filter(e => _.isArray(e.caliperObject.data))
-      .map(event => {
-        console.log('Mapping: ', event);
-        return event.caliperObject.data.map(data => ({
-          comp: Event,
-          props: data
-        }))
-      }).reduce((arr, i) => arr.concat(i), []);
-    console.log('Adding events: ', messages ,'to:', this.state.log);
+      events.map(event => ({
+        comp: Event,
+        props: event.caliperObject
+      }));
     this.setState({
       log: this.state.log.concat(messages)
     });
@@ -64,10 +59,18 @@ var EventStream = React.createClass({
       node.scrollTop = node.scrollHeight;
     }
   },
+  clear: function() {
+    this.setState({
+      log: []
+    });
+  },
   render: function() {
     return (
       <div className='console'>
         {this.state.log.map((m, i) => <m.comp {...m.props} key={i} />)}
+        <div className="console-footer">
+          <Button onClick={this.clear} className="outline" bsStyle="default">clear</Button>
+        </div>
       </div>
     );
   }
