@@ -13,13 +13,11 @@ var EventStream = React.createClass({
     this.addEvents([event]);
   },
   addEvents:function(events) {
-    console.log('Adding events: ', events);
     const messages =
       events.map(event => ({
         comp: Event,
         props: event.caliperObject
       }));
-    console.log('Adding events: ', messages ,'to:', this.state.log);
     this.setState({
       log: this.state.log.concat(messages)
     });
@@ -71,7 +69,7 @@ var EventStream = React.createClass({
       <div className='console'>
         {this.state.log.map((m, i) => <m.comp {...m.props} key={i} />)}
         <div className="console-footer">
-            <Button onClick={this.clear} className="outline" bsStyle="default">clear</Button>
+          <Button onClick={this.clear} className="outline" bsStyle="default">clear</Button>
         </div>
       </div>
     );

@@ -4,7 +4,7 @@ var React = require('react');
 var moment = require('moment');
 
 function after(s, c) {
-    return s ? s.substring(s.lastIndexOf(c) + 1) : '';
+  return s ? s.substring(s.lastIndexOf(c) + 1) : '';
 }
 
 var Event = React.createClass({
@@ -12,18 +12,18 @@ var Event = React.createClass({
     return {jsonVisible:false};
   },
   switchJson: function(){
-  	this.setState({
-  		jsonVisible: !this.state.jsonVisible
-  	});
+    this.setState({
+      jsonVisible: !this.state.jsonVisible
+    });
   },
   render: function() {
 
     //support the new envelope, eventually this will be the default,
     // but for now we need to stll support the poc code.
     var action = this.props.action || '';
-    var actor = this.props.actor ? after(this.props.actor['@id'], '/') : '';
-    var actorType = this.props.actor ? after(this.props.actor['@type'], '/') : '';
-    var object = this.props.object ? this.props.object['@type'] : '';
+    var actor = this.props.actor ? after(this.props.actor['id'], '/') : '';
+    var actorType = this.props.actor ? after(this.props.actor['type'], '/') : '';
+    var object = this.props.object ? this.props.object['type'] : '';
     var objectText = after(object, '/');
 
     var objectLabel = this.props.object ? `${objectText}`: '';
