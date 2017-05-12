@@ -108,10 +108,17 @@ exports.countEventsByActor = function(req, res) {
     eventsModel.getEventsCountForActorInDateRange(
         req.user._id, actorId, after, before,
         function(err, result){
+            if(err) {
+              res.status(500).json({
+                  success: false,
+                  err: err
+              });
+          } else {
             res.status(200).json({
                 success:true,
                 count: result[0].value
             });
+          }
         }
     );
 }
