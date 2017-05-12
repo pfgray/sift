@@ -11,7 +11,7 @@ module.exports = function(rights){
                 error:true,
                 message: 'Authentication missing'
             }, 401);
-        } else{
+        } else {
             if(onlyAuth){
                 next();
                 return;

@@ -63,43 +63,55 @@ exports.eventsByType = function(req, res) {
 };
 
 exports.add = function(req, res) {
-    //req.header --> check apiKey here
-
-    var apiKey = req.header('Authorization');
-    if(!apiKey){
-        res.status(400).json({
-            success: false,
-            error: "An api key is required for submitting events"
-        });
-        return;
+    var processEvent = function(event){
+        dispatcher.stream(req.user._id, event);
+    };
+    if(_.isArray(req.body.data)){
+        req.body.data.forEach(processEvent);
     } else {
-        apiKey = apiKey.trim();
+        processEvent(req.body.data);
     }
+    res.status(200).json({
+        success:true
+    });
+}
 
-    apiKeyModel.getUserForApiKey(apiKey, function(err, user){
-        if(user && req.params.userid === user._id){
-            var processEvent = function(event){
-                dispatcher.stream(user._id, event);
-            };
-            if(_.isArray(req.body.data)){
-                req.body.data.forEach(processEvent);
-            } else {
-                processEvent(req.body.data);
-            }
+exports.eventsByActor = function(req, res) {
+    var actorId = req.query.actorId;
+    var before = req.query.before;
+    var after = req.query.after;
+
+    var limit = req.query.limit || 30;
+    var skip = req.query.offset || 0;
+
+    eventsModel.getEventsForActorInDateRange(
+        req.user._id, actorId, after, before, limit, skip,
+        function(err, results){
+
+            var events = results.toArray().map(function(e){
+                return e.caliperObject;
+            });
+
             res.status(200).json({
-                success:true
-            });
-        } else if(user){
-            res.status(403).json({
-                success:false,
-                error:"Key: " + apiKey + " does not belong to user"
-            });
-        } else {
-            res.status(400).json({
-                success:false,
-                error:"No user found for key: " + apiKey
+                success:true,
+                events: events
             });
         }
-    });
+    );
+}
 
+exports.countEventsByActor = function(req, res) {
+    var actorId = req.query.actorId;
+    var before = req.query.before;
+    var after = req.query.after;
+
+    eventsModel.getEventsCountForActorInDateRange(
+        req.user._id, actorId, after, before,
+        function(err, result){
+            res.status(200).json({
+                success:true,
+                count: result[0].value
+            });
+        }
+    );
 }

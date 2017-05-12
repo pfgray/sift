@@ -44,6 +44,20 @@ module.exports = {
         }
       }
     },
+    events_by_actor: {
+      map: function (doc){
+        if(doc.type === 'caliperEvent'){
+          emit([doc.scoped_caliper_user_id, doc.caliperObject.actor.id, doc.recieved], doc);
+        }
+      },
+      reduce: function (key, values, rereduce) {
+        if (rereduce) {
+          return sum(values);
+        } else {
+          return values.length;
+        }
+      }
+    },
     events_by_type: {
       map: function(doc){
         if(doc.type === 'caliperEvent'){
