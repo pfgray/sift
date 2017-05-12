@@ -55,7 +55,33 @@ module.exports = {
             console.log('got:', err, result);
             callback(err, result);
         });
+    },
+    getEventsForActorInDateRange:function(userid, actorId, startDate, endDate, limit, offset, callback){
+        queryEventsByActor(false, userid, actorId, startDate, endDate, limit, offset, callback);
+    },
+    getEventsCountForActorInDateRange: function(userid, actorId, startDate, endDate, callback){
+        queryEventsByActor(true, userid, actorId, startDate, endDate, null, 0, callback);
     }
+}
+
+function queryEventsByActor(reduce, userid, actorId, startDate, endDate, limit, offset, callback) {
+    var db = model.getDatabase();
+    var startkey = startDate ? [userid, actorId, startDate]         : [userid, actorId];
+    var endkey   = endDate ? [userid, actorId, endDate, {}]         : [userid, actorId, {}];
+
+    var opts = {
+        startkey: startkey,
+        endkey: endkey,
+        reduce: reduce,
+        skip: offset
+    };
+    if(limit !== null) {
+        opts.limit = limit;
+    }
+    db.view('caliper/events_by_actor', opts, function(err, result){
+        console.log('got:', err, result);
+        callback(err, result);
+    });
 }
 
 function after(s, c) {
