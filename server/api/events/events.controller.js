@@ -87,7 +87,6 @@ exports.eventsByActor = function(req, res) {
     eventsModel.getEventsForActorInDateRange(
         req.user._id, actorId, after, before, limit, skip,
         function(err, results){
-
             var events = results.toArray().map(function(e){
                 return e.caliperObject;
             });
@@ -114,9 +113,10 @@ exports.countEventsByActor = function(req, res) {
                   err: err
               });
           } else {
+            var count = result[0] ? result[0].value : 0;
             res.status(200).json({
                 success:true,
-                count: result[0].value
+                count: count
             });
           }
         }
