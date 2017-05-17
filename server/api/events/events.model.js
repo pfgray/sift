@@ -63,7 +63,7 @@ module.exports = {
         queryEventsByActor(true, userid, actorId, startDate, endDate, null, 0, callback);
     },
     getEventsForActorInCaliperDateRange:function(userid, actorId, startDate, endDate, limit, offset, callback){
-        queryEventsByActor(false, userid, actorId, startDate, endDate, limit, offset, callback);
+        queryEventsByActorWithCaliperDate(false, userid, actorId, startDate, endDate, limit, offset, callback);
     }
 }
 
