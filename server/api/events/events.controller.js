@@ -99,6 +99,29 @@ exports.eventsByActor = function(req, res) {
     );
 }
 
+exports.eventsByActorCaliperDate = function(req, res) {
+    var actorId = req.query.actorId;
+    var before = req.query.before;
+    var after = req.query.after;
+
+    var limit = req.query.limit || 30;
+    var skip = req.query.offset || 0;
+
+    eventsModel.getEventsForActorInCaliperDateRange(
+        req.user._id, actorId, after, before, limit, skip,
+        function(err, results){
+            var events = results.toArray().map(function(e){
+                return e.caliperObject;
+            });
+
+            res.status(200).json({
+                success:true,
+                events: events
+            });
+        }
+    );
+}
+
 exports.countEventsByActor = function(req, res) {
     var actorId = req.query.actorId;
     var before = req.query.before;

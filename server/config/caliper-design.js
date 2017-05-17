@@ -58,6 +58,13 @@ module.exports = {
         }
       }
     },
+    events_by_actor_caliper_date: {
+      map: function (doc){
+        if(doc.type === 'caliperEvent'){
+          emit([doc.scoped_caliper_user_id, doc.caliperObject.actor.id, doc.caliperObject.eventTime], doc);
+        }
+      }
+    },
     events_by_type: {
       map: function(doc){
         if(doc.type === 'caliperEvent'){

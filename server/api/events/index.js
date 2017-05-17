@@ -8,6 +8,7 @@ var router = express.Router();
 
 router.post('/users/:userid/events', authorizeKey, controller.add);
 router.get('/users/:userid/events', authorizeKey, controller.eventsByActor);
+router.get('/users/:userid/eventsByCaliperDate', authorizeKey, controller.eventsByActorCaliperDate);
 router.get('/users/:userid/eventsCount', authorizeKey, controller.countEventsByActor);
 router.get('/me/eventCount', controller.total);
 router.get('/me/eventsByType', controller.eventsByType);

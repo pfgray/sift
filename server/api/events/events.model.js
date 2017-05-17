@@ -61,7 +61,30 @@ module.exports = {
     },
     getEventsCountForActorInDateRange: function(userid, actorId, startDate, endDate, callback){
         queryEventsByActor(true, userid, actorId, startDate, endDate, null, 0, callback);
+    },
+    getEventsForActorInCaliperDateRange:function(userid, actorId, startDate, endDate, limit, offset, callback){
+        queryEventsByActor(false, userid, actorId, startDate, endDate, limit, offset, callback);
     }
+}
+
+function queryEventsByActorWithCaliperDate(reduce, userid, actorId, startDate, endDate, limit, offset, callback) {
+    var db = model.getDatabase();
+    var startkey = startDate ? [userid, actorId, startDate]         : [userid, actorId];
+    var endkey   = endDate ? [userid, actorId, endDate, {}]         : [userid, actorId, {}];
+
+    var opts = {
+        startkey: startkey,
+        endkey: endkey,
+        reduce: reduce,
+        skip: offset
+    };
+    if(limit !== null) {
+        opts.limit = limit;
+    }
+    db.view('caliper/events_by_actor_caliper', opts, function(err, result){
+        console.log('got:', err, result);
+        callback(err, result);
+    });
 }
 
 function queryEventsByActor(reduce, userid, actorId, startDate, endDate, limit, offset, callback) {
