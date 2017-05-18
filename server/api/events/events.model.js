@@ -81,7 +81,7 @@ function queryEventsByActorWithCaliperDate(reduce, userid, actorId, startDate, e
     if(limit !== null) {
         opts.limit = limit;
     }
-    db.view('caliper/events_by_actor_caliper', opts, function(err, result){
+    db.view('caliper/events_by_actor_caliper_date', opts, function(err, result){
         console.log('got:', err, result);
         callback(err, result);
     });
