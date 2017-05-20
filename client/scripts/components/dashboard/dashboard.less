@@ -5,19 +5,56 @@
 @events-per-minute-color: #C7C725;
 @code-bg-color: #000;
 @sidebar-width: 25em;
+@sidebar-collapsed-width: 5em;
 
-.dash-sidebar{
+.dash-sidebar {
   background-color:fade(@bg-color, 75%);
   height:100vh;
-  width:@sidebar-width;
+  width: @sidebar-collapsed-width;
   position: fixed;
   overflow-y:auto;
   .thin-scrollbar(3px, @bg-color);
+
+  &.open {
+    width:@sidebar-width;
+
+    i.fa-chevron-right:before {
+      content: "\f053";
+    }
+  }
 }
 
-.user{
+.dash-sidebar + .dash-main {
+  margin-left: @sidebar-collapsed-width;
+}
+
+.dash-sidebar.open + .dash-main {
+  margin-left: @sidebar-width;
+}
+
+.hide-closed {
+  display: none;
+}
+
+.open .hide-closed {
+  display: initial;
+}
+
+.collapse-container {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  padding: 1em 1em 0 1em;
+
+  i {
+    color: #bbb;
+    font-size: 1.5em;
+    cursor: pointer;
+  }
+}
+
+.user {
   text-align: center;
-  padding-top:3em;
 }
 .user *{
   vertical-align:middle;

@@ -14,13 +14,19 @@ var Dashboard = React.createClass({
       user:null,
       totalEvents:null,
       eventStream:null,
-      initiated:false
+      initiated:false,
+      sidebarOpen: true, //todo: save this in localstorage
     };
   },
   incrementEventCount: function(event){
     this.setState({
       totalEvents: this.state.totalEvents+1
     });
+  },
+  toggleSidebar: function() {
+    this.setState(prev => ({
+      sidebarOpen: !prev.sidebarOpen
+    }));
   },
   componentDidMount:function(){
     var MINUTE_COUNT = 5;
@@ -53,9 +59,14 @@ var Dashboard = React.createClass({
     if(this.state.user){
         profile = (
           <div>
-            <UserProfile user={this.state.user} />
-            <Total label="Total events captured:" total={this.state.totalEvents} className="events" />
-            <Total label="Events per minute:" total={this.state.eventsPerMinute} className="events-per-minute" />
+            <div className='collapse-container'>
+                <i className="fa fa-chevron-right" aria-hidden="true" onClick={this.toggleSidebar}></i>
+            </div>
+            <div className="hide-closed">
+                <UserProfile user={this.state.user} />
+                <Total label="Total events captured:" total={this.state.totalEvents} className="events" />
+                <Total label="Events per minute:" total={this.state.eventsPerMinute} className="events-per-minute" />
+            </div>
 {/*}
             <div className="code-block">
               {
@@ -80,7 +91,7 @@ var Dashboard = React.createClass({
     }
     return (
       <div>
-        <div className="dash-sidebar">
+        <div className={"dash-sidebar" + (this.state.sidebarOpen ? ' open' : '')}>
           {profile}
         </div>
         <div className="dash-main">
