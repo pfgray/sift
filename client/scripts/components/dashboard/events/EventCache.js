@@ -10,7 +10,6 @@ var EventCache = function(eventLimit){
         if(this.cachedEvents.length > eventLimit){
             this.cachedEvents.shift();
         }
-        console.log('eventCacheNowContains: ', this.cachedEvents);
     };
 
     this.setInitialEvents = function(initialEvents){

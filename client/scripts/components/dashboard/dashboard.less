@@ -5,7 +5,7 @@
 @events-per-minute-color: #C7C725;
 @code-bg-color: #000;
 @sidebar-width: 25em;
-@sidebar-collapsed-width: 5em;
+@sidebar-collapsed-width: 3em;
 
 .dash-sidebar {
   background-color:fade(@bg-color, 75%);
@@ -40,9 +40,13 @@
   display: initial;
 }
 
+.open .collapse-container {
+  align-items: flex-end;
+}
+
 .collapse-container {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   flex-direction: column;
   padding: 1em 1em 0 1em;
 

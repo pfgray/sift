@@ -7,7 +7,8 @@
 .console-wrapper{
   height:100vh;
   position:relative;
-  .console{
+
+  .console {
     padding-left:0.5em;
     padding-bottom: .25em;
     font-size:1.25em;
@@ -76,5 +77,83 @@
   &:hover, &:focus {
     background-color: rgba(255,255,255,0.25);
     color: white;
+  }
+}
+
+
+.stream-filters {
+  transition: 0.25s all ease-in-out;
+  @bg-color: darken(#25c786, 10%);
+  @tab-height: 21px;
+  transform: translate3d(0, calc(-100% ~"+" @tab-height), 0);
+  text-align: right;
+  //display: inline-flex;
+  flex-direction: column;
+  position: absolute;
+  right: 30px;
+  top: 0;
+  line-height: initial;
+
+  .filters-collapse {
+    background-color: @bg-color;
+    padding: 1em;
+    display: flex;
+    text-align: left;
+    //width: 0;
+
+    > .filter-section {
+      &:first-child {
+        margin-right:1em;
+      }
+
+      >:first-child {
+        text-align: center;
+        margin-bottom: 0.25em;
+        border-bottom: 1px solid white;
+      }
+    }
+  }
+
+  &.open, &:hover {
+    transform: translate3d(0, 0, 0);
+    .filters-collapse {
+      //width: 500px;
+    }
+  }
+
+  .filters-tab {
+    font-size: 0.75em;
+    display: inline-block;
+    padding: 0.25em 0.5em;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    background-color: @bg-color;
+    height: @tab-height;
+    text-align: center;
+    width: 100px;
+  }
+
+  .filter-text {
+    text-align: right;
+    > input {
+      color: #777;
+      margin-left: 0.5em;
+    }
+  }
+
+  .filter-check {
+    > input {
+      margin-right: 0.25em;
+    }
+  }
+
+  .filter-check, .filter-text {
+    font-weight: normal;
+    display: block;
+    vertical-align: middle;
+  }
+
+  .accent {
+    color: #E78839
   }
 }

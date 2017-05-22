@@ -4,9 +4,21 @@ import Event from './Event.js';
 import eventService from './EventService.js';
 import Message from './Message.js';
 import { Col, Row, Grid, ButtonGroup, Button } from 'react-bootstrap';
+import StreamFilters from './StreamFilters';
 import _ from 'lodash';
 
 require('./console.less');
+
+const EventTypes = ['LoggedIn', 'LoggedOut', 'NavigatedTo'];
+
+const initialFilters = {
+  name: "",
+  id: "",
+  types: EventTypes.map(t => ({
+    visible: true,
+    type: t
+  }))
+}
 
 var EventStream = React.createClass({
   addEvent:function(event){
@@ -23,7 +35,10 @@ var EventStream = React.createClass({
     });
   },
   getInitialState: function() {
-    return {log: []};
+    return {
+      log: [],
+      filters: initialFilters
+    };
   },
   initiateEventListener:function(stream){
     if(stream){
@@ -64,14 +79,35 @@ var EventStream = React.createClass({
       log: []
     });
   },
+  updateFilter: function(filters){
+    this.setState({
+      filters
+    });
+  },
+  logShouldBeShown: function(log) {
+    // is the type in any visible types?
+    // this.state.filters.types.some(t => t.type === )
+    if(log.comp === Event){
+      const actionIsMatched = this.state.filters.types.some(t => {
+        return t.visible && log.props.action.indexOf(t.type) !== -1;
+      });
+      const actorIsMatched = log.props.actor.id.indexOf(this.state.filters.id) !== -1;
+      return actionIsMatched && actorIsMatched;
+    } else {
+      return true;
+    }
+  },
   render: function() {
     return (
-      <div className='console'>
-        {this.state.log.map((m, i) => <m.comp {...m.props} key={i} />)}
-        <div className="console-footer">
-          <Button onClick={this.clear} className="outline" bsStyle="default">clear</Button>
+        <div>
+          <StreamFilters onFilterUpdate={this.updateFilter} initialFilters={initialFilters} eventTypes={EventTypes}/>
+          <div className='console'>
+            {this.state.log.filter(this.logShouldBeShown).map((m, i) => <m.comp {...m.props} key={i} />)}
+            <div className="console-footer">
+              <Button onClick={this.clear} className="outline" bsStyle="default">clear</Button>
+            </div>
+          </div>
         </div>
-      </div>
     );
   }
 });
