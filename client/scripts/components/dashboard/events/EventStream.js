@@ -11,14 +11,35 @@ require('./console.less');
 
 const EventTypes = ['LoggedIn', 'LoggedOut', 'NavigatedTo'];
 
+function after(s, c) {
+  return s ? s.substring(s.lastIndexOf(c) + 1) : '';
+}
+
+const uniqueTypes = (events) => {
+  const toReturn = events
+    .reduce((types, event) => {
+      // console.log('looking at event: ', event.props);
+      const action = after(event.props.action, '#');
+      if(types.indexOf(action) !== -1){
+        return types;
+      } else {
+        return types.concat([action]);
+      }
+    }, []);
+    console.log('computed unique events: ', toReturn);
+    return toReturn;
+}
+
 const initialFilters = {
   name: "",
   id: "",
-  types: EventTypes.map(t => ({
-    visible: true,
-    type: t
-  }))
+  types: EventTypes.reduce((types, type)  => ({
+    ...types,
+    [type]: true
+  }), {})
 }
+
+console.log("#### event types:", initialFilters)
 
 var EventStream = React.createClass({
   addEvent:function(event){
@@ -30,9 +51,18 @@ var EventStream = React.createClass({
         comp: Event,
         props: event.caliperObject
       }));
-    this.setState({
-      log: this.state.log.concat(messages)
-    });
+    const types = uniqueTypes(messages).reduce((types, t) => ({...types,[t]:true}), {});
+    console.log('computed types: ', types, 'from: ', messages, this.state.filters.types);
+    this.setState(prevState => ({
+      log: prevState.log.concat(messages),
+      filters: {
+        ...prevState.filters,
+        types: {
+          ...types,
+          ...prevState.filters.types
+        }
+      }
+    }), () => {console.log('Woot! got:', this.state)});
   },
   getInitialState: function() {
     return {
@@ -88,9 +118,10 @@ var EventStream = React.createClass({
     // is the type in any visible types?
     // this.state.filters.types.some(t => t.type === )
     if(log.comp === Event){
-      const actionIsMatched = this.state.filters.types.some(t => {
-        return t.visible && log.props.action.indexOf(t.type) !== -1;
-      });
+      const currAction = after(log.props.action, '#')
+      const actionIsMatched = this.state.filters.types[currAction];
+      // console.log('cuurr', currAction,  this.state.filters.types, 'log :', log, "should be shown:", actionIsMatched);
+
       const actorIsMatched = log.props.actor.id.indexOf(this.state.filters.id) !== -1;
       return actionIsMatched && actorIsMatched;
     } else {
@@ -98,9 +129,10 @@ var EventStream = React.createClass({
     }
   },
   render: function() {
+    // compute the filters?
     return (
         <div>
-          <StreamFilters onFilterUpdate={this.updateFilter} initialFilters={initialFilters} eventTypes={EventTypes}/>
+          <StreamFilters onFilterUpdate={this.updateFilter} filters={this.state.filters} />
           <div className='console'>
             {this.state.log.filter(this.logShouldBeShown).map((m, i) => <m.comp {...m.props} key={i} />)}
             <div className="console-footer">

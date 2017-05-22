@@ -11,8 +11,7 @@ const ActorAttributes = [/*{
 var StreamFilters = React.createClass({
   getInitialState: function() {
     return {
-      showFilters: false,
-      ...this.props.initialFilters
+      showFilters: false
     };
   },
   show: function(){
@@ -49,36 +48,30 @@ var StreamFilters = React.createClass({
   },
   updateVal: function(name) {
     return e => {
-      const value = e.target.value;
-      this.setState(prevState => ({
-        [name]: value
-      }), () => this.props.onFilterUpdate(this.state));
+      this.props.onFilterUpdate({
+        ...this.props.filters,
+        [name]: e.target.value
+      });
     };
   },
   updateType: function(type) {
     return e => {
-      const value = e.target.checked;
-      this.setState(prevState => ({
-        types: prevState.types.map(t => {
-          if(t.type === type){
-            return {
-              visible: value,
-              type: t.type
-            }
-          } else {
-            return t;
-          }
-        })
-      }), () => this.props.onFilterUpdate(this.state));
+      this.props.onFilterUpdate({
+        ...this.props.filters,
+        types: {
+          ...this.props.filters.types,
+          [type]: e.target.checked
+        }
+      });
     };
   },
   typeIsVisible: function(type){
-    return this.state.types.some(t => (
-      t.type === type && t.visible
-    ));
+    return this.props.filters.types[type] === true;
   },
   filtersActive: function(){
-    return this.state.name !== '' || this.state.id !== '' || this.state.types.some(t => !t.visible)
+    const actorFiltersActive = this.props.filters.name !== '' || this.props.filters.id !== '';
+    const eventFiltersActive = Object.keys(this.props.filters.types).some(t => !this.props.filters.types[t]);
+    return actorFiltersActive || eventFiltersActive;
   },
   render: function() {
     return (
@@ -92,7 +85,7 @@ var StreamFilters = React.createClass({
                 <input
                   type="text"
                   name={attr.name}
-                  value={this.state[attr.name]}
+                  value={this.props.filters[attr.name]}
                   onChange={this.updateVal(attr.name)}
                   ref={node => this[attr.name] = node}/>
               </label>
@@ -100,9 +93,9 @@ var StreamFilters = React.createClass({
           </div>
           <div className="filter-section">
             <div>Type</div>
-            {this.props.eventTypes.map(type => (
+            {Object.keys(this.props.filters.types).map(type => (
               <label key={type} className="filter-check">
-                <input type="checkbox" name={type} onChange={this.updateType(type)} checked={this.typeIsVisible(type)}/>
+                <input type="checkbox" name={type} onChange={this.updateType(type)} checked={this.typeIsVisible(type)} />
                 {type}
               </label>
             ))}
