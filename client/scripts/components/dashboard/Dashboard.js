@@ -5,6 +5,7 @@ import Total from './Total.js';
 import UserProfile from './UserProfile.js';
 import eventService from './events/EventService.js';
 import dates from './DateService.js';
+import batch from './events/batch';
 
 import './dashboard.less';
 
@@ -18,9 +19,9 @@ var Dashboard = React.createClass({
       sidebarOpen: true, //todo: save this in localstorage
     };
   },
-  incrementEventCount: function(event){
+  incrementEventCount: function(count){
     this.setState({
-      totalEvents: this.state.totalEvents+1
+      totalEvents: this.state.totalEvents + count
     });
   },
   toggleSidebar: function() {
@@ -37,7 +38,8 @@ var Dashboard = React.createClass({
                 initiated:true
             });
         }.bind(this));
-        stream.on('event', this.incrementEventCount);
+        const eventListener = batch(arr => this.incrementEventCount(arr.length), 1000);
+        stream.on('event', eventListener);
 
         this.setState({
             user:user,

@@ -6,6 +6,7 @@ import Message from './Message.js';
 import { Col, Row, Grid, ButtonGroup, Button } from 'react-bootstrap';
 import StreamFilters from './StreamFilters';
 import _ from 'lodash';
+import batch from './batch';
 
 require('./console.less');
 
@@ -26,7 +27,7 @@ const uniqueTypes = (events) => {
         return types.concat([action]);
       }
     }, []);
-    console.log('computed unique events: ', toReturn);
+    // console.log('computed unique events: ', toReturn);
     return toReturn;
 }
 
@@ -39,20 +40,19 @@ const initialFilters = {
   }), {})
 }
 
-console.log("#### event types:", initialFilters)
+console.log("#### event types:", initialFilters);
 
 var EventStream = React.createClass({
   addEvent:function(event){
     this.addEvents([event]);
   },
-  addEvents:function(events) {
+  addEvents: function(events) {
     const messages =
       events.map(event => ({
         comp: Event,
         props: event.caliperObject
       }));
     const types = uniqueTypes(messages).reduce((types, t) => ({...types,[t]:true}), {});
-    console.log('computed types: ', types, 'from: ', messages, this.state.filters.types);
     this.setState(prevState => ({
       log: prevState.log.concat(messages),
       filters: {
@@ -62,7 +62,7 @@ var EventStream = React.createClass({
           ...prevState.filters.types
         }
       }
-    }), () => {console.log('Woot! got:', this.state)});
+    }));
   },
   getInitialState: function() {
     return {
@@ -71,25 +71,20 @@ var EventStream = React.createClass({
     };
   },
   initiateEventListener:function(stream){
+    this.eventListener = batch(this.addEvents, 250);
     if(stream){
-      stream.on('event', this.addEvent);
+      stream.on('event', this.eventListener);
     }
   },
   removeEventListener: function(){
     if(this.props.eventStream){
-      this.props.eventStream.removeEventListener('event', this.addEvent);
+      this.props.eventStream.removeEventListener('event', this.eventListener);
     }
   },
   componentDidMount: function(){
-    this.state.log.push({comp: Message, props: {message: "connecting to: [" + window.location.origin + "]..."}});
-    this.state.log.push({comp: Message, props: {message: "[connected]", className: "success" }});
 
     this.initiateEventListener(this.props.eventStream);
     this.addEvents(eventService.getCachedEvents());
-  },
-  componentWillReceiveProps: function(nextProps){
-    this.removeEventListener();
-    this.initiateEventListener(nextProps.eventStream);
   },
   componentWillUnmount: function(){
     this.removeEventListener();
@@ -116,11 +111,9 @@ var EventStream = React.createClass({
   },
   logShouldBeShown: function(log) {
     // is the type in any visible types?
-    // this.state.filters.types.some(t => t.type === )
     if(log.comp === Event){
       const currAction = after(log.props.action, '#')
       const actionIsMatched = this.state.filters.types[currAction];
-      // console.log('cuurr', currAction,  this.state.filters.types, 'log :', log, "should be shown:", actionIsMatched);
 
       const actorIsMatched = log.props.actor.id.indexOf(this.state.filters.id) !== -1;
       return actionIsMatched && actorIsMatched;
@@ -134,7 +127,9 @@ var EventStream = React.createClass({
         <div>
           <StreamFilters onFilterUpdate={this.updateFilter} filters={this.state.filters} />
           <div className='console'>
-            {this.state.log.filter(this.logShouldBeShown).map((m, i) => <m.comp {...m.props} key={i} />)}
+            <Message message={"connecting to: [" + window.location.origin + "]..."}/>
+            <Message message={"[connected]"} className="success" />
+            {this.state.log.filter(this.logShouldBeShown).map((m, i) => <m.comp {...m.props} key={m.props.eventTime + m.props.action + m.props.actor.id} />)}
             <div className="console-footer">
               <Button onClick={this.clear} className="outline" bsStyle="default">clear</Button>
             </div>
