@@ -86,16 +86,7 @@ exports.eventsByActor = function(req, res) {
 
     eventsModel.getEventsForActorInDateRange(
         req.user._id, actorId, after, before, limit, skip,
-        function(err, results){
-            var events = results.toArray().map(function(e){
-                return e.caliperObject;
-            });
-
-            res.status(200).json({
-                success:true,
-                events: events
-            });
-        }
+        handleEventsResults(res)
     );
 }
 
@@ -109,17 +100,27 @@ exports.eventsByActorCaliperDate = function(req, res) {
 
     eventsModel.getEventsForActorInCaliperDateRange(
         req.user._id, actorId, after, before, limit, skip,
-        function(err, results){
-            var events = results.toArray().map(function(e){
-                return e.caliperObject;
-            });
-
-            res.status(200).json({
-                success:true,
-                events: events
-            });
-        }
+        handleEventsResults(res)
     );
+}
+
+function handleEventsResults(res){
+  return function(err, results){
+    if(err) {
+        res.status(500).json({
+            success: false,
+            err: err
+        });
+    } else {
+      var events = results.toArray().map(function(e){
+          return e.caliperObject;
+      });
+      res.status(200).json({
+          success:true,
+          events: events
+      });
+    }
+  }
 }
 
 exports.countEventsByActor = function(req, res) {
@@ -130,7 +131,7 @@ exports.countEventsByActor = function(req, res) {
     eventsModel.getEventsCountForActorInDateRange(
         req.user._id, actorId, after, before,
         function(err, result){
-            if(err) {
+          if(err) {
               res.status(500).json({
                   success: false,
                   err: err
