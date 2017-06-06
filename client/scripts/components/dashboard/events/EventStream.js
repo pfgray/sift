@@ -129,7 +129,7 @@ var EventStream = React.createClass({
           <div className='console'>
             <Message message={"connecting to: [" + window.location.origin + "]..."}/>
             <Message message={"[connected]"} className="success" />
-            {this.state.log.filter(this.logShouldBeShown).map((m, i) => <m.comp {...m.props} key={m.props.eventTime + m.props.action + m.props.actor.id} />)}
+            {this.state.log.filter(this.logShouldBeShown).map((m, i) => <m.comp {...m.props} key={JSON.stringify(m.props)} />)}
             <div className="console-footer">
               <Button onClick={this.clear} className="outline" bsStyle="default">clear</Button>
             </div>
