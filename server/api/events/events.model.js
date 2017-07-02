@@ -18,43 +18,45 @@ module.exports = {
           type:'caliperEvent',
           caliperObject: transformedEvent
         };
-
-        var db = model.getDatabase();
-        db.save(toStore, function (err, res) {
-            callback(err, Object.assign(toStore, {
-                caliperObject: event
-            }), res);
-        });
+        model.getDatabase().then(function(db){
+          db.save(toStore, function (err, res) {
+              callback(err, Object.assign(toStore, {
+                  caliperObject: event
+              }), res);
+          });
+        }).catch(callback);
     },
     getEventCountForUser:function(userid, afterDate, callback){
-        var db = model.getDatabase();
-        var startkey = afterDate ? [userid, afterDate]           : [userid];
-        var endkey   = afterDate ? [userid, new Date().toJSON()] : [userid, {}];
-        console.log('querying dates: ', startkey, endkey);
-        db.view('caliper/events_by_user', {
-            startkey: startkey,
-            endkey: endkey,
-            reduce: true
-        }, function (err, res) {
-            callback(err, _.transform(res, function(result, entity){
-                return result.push(entity.value);
-            })[0]);
-        });
+        model.getDatabase().then(function(db){
+          var startkey = afterDate ? [userid, afterDate]           : [userid];
+          var endkey   = afterDate ? [userid, new Date().toJSON()] : [userid, {}];
+          console.log('querying dates: ', startkey, endkey);
+          db.view('caliper/events_by_user', {
+              startkey: startkey,
+              endkey: endkey,
+              reduce: true
+          }, function (err, res) {
+              callback(err, _.transform(res, function(result, entity){
+                  return result.push(entity.value);
+              })[0]);
+          });
+        }).catch(callback);
     },
     getEventsByTypeAfterDate:function(userid, afterDate, callback){
-        var db = model.getDatabase();
-        var startkey = afterDate ? [userid, afterDate]                     : [userid];
-        var endkey   = afterDate ? [userid, new Date().toJSON(), {}]       : [userid, {}];
-        console.log('querying event types: ', startkey, endkey);
-        db.list('caliper/group_by_type/events_by_type', {
-            startkey: startkey,
-            endkey: endkey,
-            reduce:true,
-            group_level:3
-        }, function(err, result){
-            console.log('got:', err, result);
-            callback(err, result);
-        });
+        model.getDatabase().then(function(db){
+          var startkey = afterDate ? [userid, afterDate]                     : [userid];
+          var endkey   = afterDate ? [userid, new Date().toJSON(), {}]       : [userid, {}];
+          console.log('querying event types: ', startkey, endkey);
+          db.list('caliper/group_by_type/events_by_type', {
+              startkey: startkey,
+              endkey: endkey,
+              reduce:true,
+              group_level:3
+          }, function(err, result){
+              console.log('got:', err, result);
+              callback(err, result);
+          });
+        }).catch(callback);
     },
     getEventsForActorInDateRange:function(userid, actorId, startDate, endDate, limit, offset, callback){
         queryEventsByActor(false, userid, actorId, startDate, endDate, limit, offset, callback);
@@ -68,43 +70,45 @@ module.exports = {
 }
 
 function queryEventsByActorWithCaliperDate(reduce, userid, actorId, startDate, endDate, limit, offset, callback) {
-    var db = model.getDatabase();
-    var startkey = startDate ? [userid, actorId, startDate]         : [userid, actorId];
-    var endkey   = endDate ? [userid, actorId, endDate, {}]         : [userid, actorId, {}];
+    model.getDatabase().then(function(db){
+      var startkey = startDate ? [userid, actorId, startDate]         : [userid, actorId];
+      var endkey   = endDate ? [userid, actorId, endDate, {}]         : [userid, actorId, {}];
 
-    var opts = {
-        startkey: startkey,
-        endkey: endkey,
-        reduce: reduce,
-        skip: offset
-    };
-    if(limit !== null) {
-        opts.limit = limit;
-    }
-    db.view('caliper/events_by_actor_caliper_date', opts, function(err, result){
-        console.log('got:', err, result);
-        callback(err, result);
-    });
+      var opts = {
+          startkey: startkey,
+          endkey: endkey,
+          reduce: reduce,
+          skip: offset
+      };
+      if(limit !== null) {
+          opts.limit = limit;
+      }
+      db.view('caliper/events_by_actor_caliper_date', opts, function(err, result){
+          console.log('got:', err, result);
+          callback(err, result);
+      });
+    }).catch(callback);
 }
 
 function queryEventsByActor(reduce, userid, actorId, startDate, endDate, limit, offset, callback) {
-    var db = model.getDatabase();
-    var startkey = startDate ? [userid, actorId, startDate]         : [userid, actorId];
-    var endkey   = endDate ? [userid, actorId, endDate, {}]         : [userid, actorId, {}];
+    model.getDatabase().then(function(db){
+      var startkey = startDate ? [userid, actorId, startDate]         : [userid, actorId];
+      var endkey   = endDate ? [userid, actorId, endDate, {}]         : [userid, actorId, {}];
 
-    var opts = {
-        startkey: startkey,
-        endkey: endkey,
-        reduce: reduce,
-        skip: offset
-    };
-    if(limit !== null) {
-        opts.limit = limit;
-    }
-    db.view('caliper/events_by_actor', opts, function(err, result){
-        console.log('got:', err, result);
-        callback(err, result);
-    });
+      var opts = {
+          startkey: startkey,
+          endkey: endkey,
+          reduce: reduce,
+          skip: offset
+      };
+      if(limit !== null) {
+          opts.limit = limit;
+      }
+      db.view('caliper/events_by_actor', opts, function(err, result){
+          console.log('got:', err, result);
+          callback(err, result);
+      });
+    }).catch(callback);
 }
 
 function after(s, c) {
