@@ -12,6 +12,7 @@ router.get('/users/:userid/eventsByCaliperDate', authorizeKey, controller.events
 router.get('/users/:userid/eventsCount', authorizeKey, controller.countEventsByActor);
 router.get('/me/eventCount', controller.total);
 router.get('/me/eventsByType', controller.eventsByType);
+router.get('/pgtest', controller.pgtest);
 
 module.exports.router = router;
 module.exports.dispatcher = require('./events.dispatcher').dispatcher;

@@ -25,7 +25,6 @@ module.exports = {
               //TODO: is there a better way to find a single entity?
               console.log('got res: ', res);
               if(res.length < 1){
-                  var db = model.getDatabase();
                   identifier.type = "user";
                   keyGenerator.generateApiKey(function(err, apiKey){
                       identifier.apiKey = apiKey;
@@ -37,7 +36,6 @@ module.exports = {
                           }));
                       });
                   });
-
               } else {
                   callback(err, _.transform(res, function(result, entity){
                       return result.push(entity.value);

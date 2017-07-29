@@ -146,3 +146,21 @@ exports.countEventsByActor = function(req, res) {
         }
     );
 }
+
+const { Pool, Client } = require('pg')
+exports.pgtest = function(req, res) {
+
+  // pools will use environment variables
+  // for connection information
+  const pool = new Pool()
+
+  pool.query('SELECT NOW()', (err, result) => {
+    res.status(200).json({
+      err: err,
+      result:result
+    });
+    pool.end()
+  })
+
+
+}
