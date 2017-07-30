@@ -18,7 +18,7 @@ module.exports = {
           type:'caliperEvent',
           caliperObject: transformedEvent
         };
-        model.getDatabase().then(function(db){
+        model.getEventStore().then(function(db){
           db.save(toStore, function (err, res) {
               callback(err, Object.assign(toStore, {
                   caliperObject: event
@@ -27,7 +27,7 @@ module.exports = {
         }).catch(callback);
     },
     getEventCountForUser:function(userid, afterDate, callback){
-        model.getDatabase().then(function(db){
+        model.getEventStore().then(function(db){
           var startkey = afterDate ? [userid, afterDate]           : [userid];
           var endkey   = afterDate ? [userid, new Date().toJSON()] : [userid, {}];
           console.log('querying dates: ', startkey, endkey);
@@ -43,7 +43,7 @@ module.exports = {
         }).catch(callback);
     },
     getEventsByTypeAfterDate:function(userid, afterDate, callback){
-        model.getDatabase().then(function(db){
+        model.getEventStore().then(function(db){
           var startkey = afterDate ? [userid, afterDate]                     : [userid];
           var endkey   = afterDate ? [userid, new Date().toJSON(), {}]       : [userid, {}];
           console.log('querying event types: ', startkey, endkey);
@@ -70,7 +70,7 @@ module.exports = {
 }
 
 function queryEventsByActorWithCaliperDate(reduce, userid, actorId, startDate, endDate, limit, offset, callback) {
-    model.getDatabase().then(function(db){
+    model.getEventStore().then(function(db){
       var startkey = startDate ? [userid, actorId, startDate]         : [userid, actorId];
       var endkey   = endDate ? [userid, actorId, endDate, {}]         : [userid, actorId, {}];
 
@@ -91,7 +91,7 @@ function queryEventsByActorWithCaliperDate(reduce, userid, actorId, startDate, e
 }
 
 function queryEventsByActor(reduce, userid, actorId, startDate, endDate, limit, offset, callback) {
-    model.getDatabase().then(function(db){
+    model.getEventStore().then(function(db){
       var startkey = startDate ? [userid, actorId, startDate]         : [userid, actorId];
       var endkey   = endDate ? [userid, actorId, endDate, {}]         : [userid, actorId, {}];
 

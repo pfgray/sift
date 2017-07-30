@@ -18,7 +18,10 @@ require('./config/express')(app);
 require('./routes')(app, io);
 
 //Setup db:
-require('./database').init();
+var db = require('./database');
+db.initES();
+db.initRel();
+
 
 //Setup authentication scheme:
 //require('./config/passport.js').init(config);

@@ -6,7 +6,7 @@ var keyGenerator = require('../key/key.generator.js');
 
 module.exports = {
     getUser:function(username, callback){
-        model.getDatabase().then(function(db){
+        model.getEventStore().then(function(db){
           db.view('caliper/users', {key:username}, function (err, res) {
               //TODO: is there a better way to find a single entity?
               callback(err, _.transform(res, function(result, entity){
@@ -16,7 +16,7 @@ module.exports = {
         }).catch(callback);
     },
     findOrCreate:function(identifier, user, callback){
-        model.getDatabase().then(function(db){
+        model.getEventStore().then(function(db){
           db.view('caliper/users', {key:identifier}, function (err, res) {
               if(err){
                   callback(err);

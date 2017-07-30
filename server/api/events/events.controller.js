@@ -15,6 +15,8 @@ var dispatcher = require('./events.dispatcher');
 var apiKeyModel = require('../key/key.model');
 var eventsModel = require('./events.model');
 
+var model = require('../../database');
+
 // Get list of things
 exports.total = function(req, res) {
     if(!req.user){
@@ -147,20 +149,15 @@ exports.countEventsByActor = function(req, res) {
     );
 }
 
-const { Pool, Client } = require('pg')
 exports.pgtest = function(req, res) {
 
-  // pools will use environment variables
-  // for connection information
-  const pool = new Pool()
-
-  pool.query('SELECT NOW()', (err, result) => {
-    res.status(200).json({
-      err: err,
-      result:result
+  model.getRelDatabase().then(pool => {
+    pool.query('SELECT NOW()', (err, result) => {
+      res.status(200).json({
+        err: err,
+        result:result
+      });
     });
-    pool.end()
-  })
-
+  });
 
 }
