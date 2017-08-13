@@ -103,51 +103,39 @@ module.exports = {
    * Inits the Relational database.
    */
   initRel: function(){
-    esInitting = true;
+    relInitting = true;
     console.log('initing relational store...');
     return Q.nfapply(fs.readFile, [path.join(__dirname, 'initRel.sql'), 'utf-8']).then(sql => {
       console.log('executing sql with: ', sql);
       return pg_pool.query(sql);
     }).then(res => {
-      esInitted = true;
-      esInitting = false;
-      console.log('initted: ', res);
-      dbEmitter.emit(ES_INITTED, null, pg_pool);
+      relInitted = true;
+      relInitting = false;
+      console.log('initted db: ', res);
+      dbEmitter.emit(REL_INITTED, null, pg_pool);
       return pg_pool;
     }).catch(err => {
-      esInitting = false;
-      console.log('error initting: ', err);
-      dbEmitter.emit(ES_INITTED, err);
+      relInitting = false;
+      console.log('error initting db: ', err);
+      dbEmitter.emit(REL_INITTED, err);
       throw err;
     });
   },
   _getRelDatabase: function() {
-    const handleRes = def => (err, pg_pool) => {
-      if(err) {
-        console.log('got error initting rel db:');
-        deferred.reject(err);
-      } else {
-        console.log('finished initting rel db:');
-        deferred.resolve(pg_pool);
-      }
-    }
     if(relInitting){
-      console.log('were currently initting the es, so just wait for the event');
-      this.initRel();
       const deferred = Q.defer();
-      dbEmitter.on(REL_INITTED, handleRes(deferred));
+      dbEmitter.on(REL_INITTED, (err, pg_pool) => {
+        err ? def.reject(err) : def.resolve(pg_pool);
+      });
       return deferred;
-    } else if(!relInitting) {
-      console.log("ok, let's start and wait for the event");
-      const deferred = Q.defer();
-      dbEmitter.on(REL_INITTED, handleRes(deferred));
-      return deferred;
+    } else if(!relInitted) {
+      return this.initRel();
     } else {
       return Q.when(pg_pool);
     }
   },
   getRelDatabase: function(){
     console.log('getting the rel db...');
-    return Q.ninvoke(this, '_getRelDatabase');
+    return this._getRelDatabase();
   }
 }

@@ -4,11 +4,12 @@ services:
     build: .
     ports:
       - "9000:9000"
+      - "9001:9001"
     links:
       - couch
       - postgres
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       COUCH_HOST: couch
       COUCH_PORT: 5984
       COUCH_DB_NAME: sift
@@ -20,6 +21,8 @@ services:
       PGDATABASE: sift
       PGUSER: admin
       PGPASSWORD: supersecret
+    volumes:
+      - ./:/app
   couch:
     image: klaemo/couchdb:2.0.0
     expose:

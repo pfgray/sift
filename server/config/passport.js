@@ -13,24 +13,27 @@ module.exports.init = function(app, config){
     app.use(passport.initialize());
     app.use(passport.session());
     var url = config.protocol + '://' + config.domain + ':' + config.port;
-    passport.use(new GoogleStrategy({
-            clientID: process.env.CALIPER_GOOGLE_CLIENT_ID,
-            clientSecret: process.env.CALIPER_GOOGLE_CLIENT_SECRET,
-            callbackURL: url + "/auth/google/callback"
-        }, function(accessToken, refreshToken, profile, done) {
-            console.log('got: ', accessToken, refreshToken, profile);
-            var googleUser = profile._json;
-            googleUser.googleId = profile.id;
-            googleUser.displayName = profile.displayName;
-            googleUser.googleAccessToken = accessToken;
-            googleUser.googleRefreshToken = refreshToken;
-            userModel.findOrCreate({
-                googleId: profile.id
-            }, googleUser, function(err, user) {
-                return done(err, user);
-            });
-        })
-    );
+    if(process.env.CALIPER_GOOGLE_CLIENT_ID &&
+       process.env.CALIPER_GOOGLE_CLIENT_SECRET){
+      passport.use(new GoogleStrategy({
+              clientID: process.env.CALIPER_GOOGLE_CLIENT_ID,
+              clientSecret: process.env.CALIPER_GOOGLE_CLIENT_SECRET,
+              callbackURL: url + "/auth/google/callback"
+          }, function(accessToken, refreshToken, profile, done) {
+              console.log('got: ', accessToken, refreshToken, profile);
+              var googleUser = profile._json;
+              googleUser.googleId = profile.id;
+              googleUser.displayName = profile.displayName;
+              googleUser.googleAccessToken = accessToken;
+              googleUser.googleRefreshToken = refreshToken;
+              userModel.findOrCreate({
+                  googleId: profile.id
+              }, googleUser, function(err, user) {
+                  return done(err, user);
+              });
+          })
+      );
+    }
     passport.serializeUser(function(user, done) {
         done(null, user);
     });

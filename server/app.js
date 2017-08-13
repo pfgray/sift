@@ -22,7 +22,6 @@ var db = require('./database');
 db.initES();
 db.initRel();
 
-
 //Setup authentication scheme:
 //require('./config/passport.js').init(config);
 

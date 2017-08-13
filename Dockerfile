@@ -10,9 +10,7 @@ ADD ./yarn.lock /app/yarn.lock
 WORKDIR /app
 RUN yarn install
 
-ADD ./ /app
-RUN yarn run build
-
 EXPOSE 9000
+EXPOSE 9001
 
-CMD ["/bin/bash", "/app/docker/run.sh"]
+CMD ["yarn", "start"]

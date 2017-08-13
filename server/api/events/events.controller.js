@@ -158,6 +158,11 @@ exports.pgtest = function(req, res) {
         result:result
       });
     });
+  }).catch(err => {
+    console.log('ok, we got an error gettin the rel db...');
+    res.status(500).json({
+      err: err
+    });
   });
 
 }
