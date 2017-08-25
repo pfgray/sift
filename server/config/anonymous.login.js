@@ -4,9 +4,7 @@ var passport = require('passport');
 var userModel = require('../api/user/user.model.js');
 
 module.exports.login = function(req, res, next){
-    userModel.findOrCreate({
-        username:"anonymous"
-    }, {
+    userModel.findOrCreate("anonymous", {
         username:"anonymous",
         displayName:"Anonymous"
     }, function(err, user) {

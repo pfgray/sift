@@ -3,46 +3,32 @@
 var _ = require('lodash');
 var model = require('../../database');
 var keyGenerator = require('../key/key.generator.js');
+var knex = require('knex')({client: 'pg'});
 
 module.exports = {
-    getUser:function(username, callback){
-        model.getEventStore().then(function(db){
-          db.view('caliper/users', {key:username}, function (err, res) {
-              //TODO: is there a better way to find a single entity?
-              callback(err, _.transform(res, function(result, entity){
-                  return result.push(entity.value);
-              })[0]);
-          });
-        }).catch(callback);
+    getUser:function(username){
+      return model.getRelDatabase()
+        .then(pool => {
+          const query = knex.select('id', 'username')
+            .where('username', username)
+            .from('users').toString();
+          return pool.query(query)
+            .then(resp => resp[0]);
+        });
     },
-    findOrCreate:function(identifier, user, callback){
-        console.log('finding or creating: ', identifier, ' :~: ', user);
-        model.getEventStore().then(function(db){
-          db.view('caliper/users', {key:identifier}, function (err, res) {
-              if(err){
-                  callback(err);
-                  return;
-              }
-              //TODO: is there a better way to find a single entity?
-              console.log('got res: ', res);
-              if(res.length < 1){
-                  identifier.type = "user";
-                  keyGenerator.generateApiKey(function(err, apiKey){
-                      identifier.apiKey = apiKey;
-                      var newUser = _.merge(user, identifier);
-                      console.log('creating user... ', JSON.stringify(newUser));
-                      db.save(newUser, function (err, res) {
-                          callback(err, _.merge(newUser, {
-                            _id:res.id
-                          }));
-                      });
-                  });
-              } else {
-                  callback(err, _.transform(res, function(result, entity){
-                      return result.push(entity.value);
-                  })[0]);
-              }
-          });
-        }).catch(callback);
+    createUser: function(user){
+      return model.getRelDatabase().then(pool => {
+        const insert = knex('users').insert(user).toString();
+        return Q.all([pool, pool.query(insert)]);
+      }).then(([pool, user]) => {
+        console.log('okay, created user: ', user);
+        // const defaultBucket = {
+        //   name: 'Default',
+        //   apiKey: keyGenerator.generateApiKey()
+        // };
+        // const insert = knex('users').insert(user).toString();
+
+        // todo: create bucket
+      })
     }
 }

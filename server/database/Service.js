@@ -30,6 +30,7 @@ module.exports = function(config){
           })
           .catch(err => {
             serviceEmitter.emit(eventName, err);
+            throw err;
           });
       }
     }

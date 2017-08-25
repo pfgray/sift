@@ -7,20 +7,11 @@ var possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456
 var keyLength = 30;
 
 module.exports = {
-    generateApiKey:function(callback){
+    generateApiKey:function(){
         var apiKey = "";
         for(var i=0; i<keyLength; i++){
             apiKey += possibleChars.charAt(Math.floor(Math.random() * possibleChars.length));
         }
-        model.getUserForApiKey(apiKey, function(err, user){
-            if(err){
-                callback(err);
-            } else if(user != null){
-                this.generateApiKey(user);
-                this.generateApiKey(callback);
-            } else {
-                callback(null, apiKey);
-            }
-        }.bind(this));
+        return apikey;
     }
 }
