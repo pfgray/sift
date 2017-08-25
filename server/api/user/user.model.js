@@ -16,6 +16,7 @@ module.exports = {
         }).catch(callback);
     },
     findOrCreate:function(identifier, user, callback){
+        console.log('finding or creating: ', identifier, ' :~: ', user);
         model.getEventStore().then(function(db){
           db.view('caliper/users', {key:identifier}, function (err, res) {
               if(err){
