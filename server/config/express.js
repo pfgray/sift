@@ -45,6 +45,7 @@ module.exports = function(app) {
   }
 
   if ('development' === env || 'test' === env) {
+    console.log('STARTING WDS PROXY')
     var proxy = httpProxy.createProxyServer();
     app.all('/assets/*', function (req, res) {
       proxy.web(req, res, {

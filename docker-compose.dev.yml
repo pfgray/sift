@@ -1,0 +1,41 @@
+version: '2'
+services:
+  caliper:
+    build:
+      context: .
+      dockerfile: Dockerfiledev
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    links:
+      - couch
+      - postgres
+    environment:
+      NODE_ENV: development
+      COUCH_HOST: couch
+      COUCH_PORT: 5984
+      COUCH_DB_NAME: sift
+      HOST_PROTOCOL: http
+      HOST_DOMAIN: "${HOST_DOMAIN}"
+      HOST_PORT: "${HOST_DOMAIN}"
+      PGHOST: postgres
+      PGPORT: 5432
+      PGDATABASE: sift
+      PGUSER: admin
+      PGPASSWORD: supersecret
+    volumes:
+      - ./:/app
+  couch:
+    image: klaemo/couchdb:2.0.0
+    expose:
+      - "5984"
+  postgres:
+    image: postgres
+    expose:
+      - "5432"
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: supersecret
+      POSTGRES_DB: sift
