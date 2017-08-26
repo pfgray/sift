@@ -10,19 +10,26 @@ services:
     links:
       - couch
       - postgres
+      - redis
     environment:
       NODE_ENV: development
-      COUCH_HOST: couch
-      COUCH_PORT: 5984
-      COUCH_DB_NAME: sift
       HOST_PROTOCOL: http
       HOST_DOMAIN: "${HOST_DOMAIN}"
       HOST_PORT: "${HOST_DOMAIN}"
+
+      COUCH_HOST: couch
+      COUCH_PORT: 5984
+      COUCH_DB_NAME: sift
+
       PGHOST: postgres
       PGPORT: 5432
       PGDATABASE: sift
       PGUSER: admin
       PGPASSWORD: supersecret
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: reallysupersecret
     volumes:
       - './:/app'
       - /app/node_modules
@@ -40,3 +47,11 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: supersecret
       POSTGRES_DB: sift
+  redis:
+    image: bitnami/redis:latest
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_PASSWORD: reallysupersecret

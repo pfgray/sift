@@ -1,16 +1,24 @@
 const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const Q = require('q');
 
+const model = require('../database');
 const userModel = require('../api/user/user.model.js');
 const {hash, verify} = require('./hasher.js');
+const {client} = require('../database/keystore/keystore.js') ;
 
 module.exports.init = function(app, config){
+
     app.use(session({
-        secret: 'keyboard cat',
-        resave: false,
-        saveUninitialized: true
+      secret: 'keyboard cat',
+      resave: false,
+      saveUninitialized: true,
+      store: new RedisStore({
+        client,
+        logErrors: true
+      })
     }));
     app.use(passport.initialize());
     app.use(passport.session());
@@ -39,9 +47,11 @@ module.exports.init = function(app, config){
     ));
 
     passport.serializeUser(function(user, done) {
-        done(null, user);
+      done(null, user.username);
     });
-    passport.deserializeUser(function(user, done) {
+    passport.deserializeUser(function(username, done) {
+      userModel.getUser(username).then(user => {
         done(null, user);
+      }).catch(err => done(null, {}));
     });
 };

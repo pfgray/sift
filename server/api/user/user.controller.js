@@ -1,5 +1,3 @@
-'use strict';
-
 var _ = require('lodash');
 var model = require('./user.model');
 
@@ -30,4 +28,12 @@ exports.currentUser = function(req, res){
   } else {
     res.status(200).json(req.user);
   }
+}
+
+exports.buckets = function(req, res) {
+  console.log('Fetching buckets for user with id: ', req.user);
+  model.getBuckets(req.user.id)
+    .then(buckets => {
+      res.json({data: buckets}).status(200);
+    });
 }

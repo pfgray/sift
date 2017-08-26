@@ -24,8 +24,13 @@ module.exports = {
             .then(result => result.get({plain: true}));
         });
     },
-    createUser: function(user){
+    createUser: function(user) {
       return create(user);
+    },
+    getBuckets: function(userId) {
+      return model.getRelDatabase()
+        .then(models => models.Bucket.findAll({ where: { userId } }))
+        //.then(result => result.get({plain: true}));
     },
     UserAlreadyExistsError,
     UnkownError

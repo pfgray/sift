@@ -21,7 +21,7 @@ const Login =
         }).then(resp => {
           console.log('got response: ', resp);
           // redirect to /dashboard?
-          window.location = '/dashboard';
+          window.location = '/overview';
         }).catch(err => {
           props.setLoggingIn(false);
         })

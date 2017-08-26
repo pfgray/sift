@@ -9,6 +9,7 @@ import GridView from './dashboard/graphs/GridView';
 import Admin from './admin/Admin';
 import Login from './login/Login';
 import Signup from './login/Signup';
+import Overview from './overview/Overview';
 
 import '../../styles/normalize.css';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -25,6 +26,7 @@ render(
       <IndexRoute name='eventstream' component={EventStream}></IndexRoute>
       <Route name='graphs' path='/dashboard/graphs' component={GridView}></Route>
     </Route>
+    <Route name='overview' path='/overview' component={Overview}/>
   </Router>,
   document.getElementById('content')
 );

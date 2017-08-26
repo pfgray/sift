@@ -24,7 +24,7 @@ const sequelize = new Sequelize(
 var models;
 
 module.exports = service({
-  prefix: 'COUCH',
+  prefix: 'POSTGRES',
   get: function(){
     return Q.when(models);
   },
@@ -33,10 +33,10 @@ module.exports = service({
       .authenticate()
       .then(() => {
         console.log('connected successfully to rel database ', process.env.PGDATABASE);
-
         models = relations(sequelize);
         //init all of them in order
         console.log('initializing models...', models);
+
         return Object.keys(models).reduce((proms, key) => {
           console.log('initializing model...', key, 'with', proms);
           return proms.then(() => models[key].sync())

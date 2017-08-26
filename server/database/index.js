@@ -1,8 +1,9 @@
 var rel = require('./rel/relational');
 var events = require('./events/eventStore');
+var keystore = require('./keystore/keystore');
 
-// todo: should these be named by what they store, instead of what they are?
 module.exports = {
   getRelDatabase: rel.get,
-  getEventStore: events.get
+  getEventStore: events.get,
+  getKeystore: keystore.get
 };
