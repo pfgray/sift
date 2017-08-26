@@ -1,8 +1,8 @@
-var pg = require('./postgres');
-var couch = require('./couchdb');
+var rel = require('./rel/relational');
+var events = require('./events/eventStore');
 
 // todo: should these be named by what they store, instead of what they are?
 module.exports = {
-  getRelDatabase: pg.get,
-  getEventStore: couch.get
+  getRelDatabase: rel.get,
+  getEventStore: events.get
 };

@@ -7,11 +7,11 @@ var possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456
 var keyLength = 30;
 
 module.exports = {
-    generateApiKey:function(){
-        var apiKey = "";
-        for(var i=0; i<keyLength; i++){
-            apiKey += possibleChars.charAt(Math.floor(Math.random() * possibleChars.length));
-        }
-        return apikey;
+  generateApiKey:function(){
+    var apiKey = "";
+    for(var i=0; i<keyLength; i++){
+        apiKey += possibleChars.charAt(Math.floor(Math.random() * possibleChars.length));
     }
+    return apiKey;
+  }
 }

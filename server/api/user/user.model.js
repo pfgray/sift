@@ -1,34 +1,58 @@
-'use strict';
-
 var _ = require('lodash');
 var model = require('../../database');
 var keyGenerator = require('../key/key.generator.js');
-var knex = require('knex')({client: 'pg'});
+var Q = require('q');
+const {hash} = require('../../config/hasher.js');
+
+const UserAlreadyExistsError = {
+  status: 'error',
+  message: 'User with this username already exists',
+  code: 'user_exists'
+};
+
+const UnkownError = {
+  status: 'error',
+  message: 'Unknown error happened',
+  code: 'unknown'
+};
 
 module.exports = {
     getUser:function(username){
       return model.getRelDatabase()
-        .then(pool => {
-          const query = knex.select('id', 'username')
-            .where('username', username)
-            .from('users').toString();
-          return pool.query(query)
-            .then(resp => resp[0]);
+        .then(models => {
+          return models.User.findOne({ where: {username: username} })
+            .then(result => result.get({plain: true}));
         });
     },
     createUser: function(user){
-      return model.getRelDatabase().then(pool => {
-        const insert = knex('users').insert(user).toString();
-        return Q.all([pool, pool.query(insert)]);
-      }).then(([pool, user]) => {
-        console.log('okay, created user: ', user);
-        // const defaultBucket = {
-        //   name: 'Default',
-        //   apiKey: keyGenerator.generateApiKey()
-        // };
-        // const insert = knex('users').insert(user).toString();
+      return create(user);
+    },
+    UserAlreadyExistsError,
+    UnkownError
+}
 
-        // todo: create bucket
-      })
+async function create(inUser){
+  try {
+    const models = await model.getRelDatabase();
+
+    const password = await hash(inUser.password);
+
+    const defaults = { password };
+    const [user, created] = await models.User.findOrCreate({
+      where: {username: inUser.username}, defaults
+    }).then(([user, created]) => [user.get({plain: true}), created]);
+
+    if(!created) {
+      throw UserAlreadyExistsError;
     }
+    const inBucket = {
+      userId: user.id,
+      apiKey: keyGenerator.generateApiKey(),
+      name: 'Default'
+    };
+    const bucket = await models.Bucket.create(inBucket);
+    return [user, bucket.get({plain: true})];
+  } catch(err) {
+    return Promise.reject(err);
+  }
 }

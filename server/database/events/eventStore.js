@@ -1,8 +1,8 @@
 var Q = require('q');
 
-var couch_design = require('../config/caliper-design.js');
-var couch = require('../config/environment').couch;
-var service = require('./Service.js');
+var couch_design = require('./sift-design.js');
+var couch = require('../../config/environment').couch;
+var service = require('../Service.js');
 var cradle = require('cradle');
 
 module.exports = service({

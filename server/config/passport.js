@@ -1,8 +1,10 @@
-var session = require('express-session');
-var passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const Q = require('q');
 
-var userModel = require('../api/user/user.model.js');
+const userModel = require('../api/user/user.model.js');
+const {hash, verify} = require('./hasher.js');
 
 module.exports.init = function(app, config){
     app.use(session({
@@ -13,27 +15,29 @@ module.exports.init = function(app, config){
     app.use(passport.initialize());
     app.use(passport.session());
     var url = config.protocol + '://' + config.domain + ':' + config.port;
-    if(process.env.CALIPER_GOOGLE_CLIENT_ID &&
-       process.env.CALIPER_GOOGLE_CLIENT_SECRET){
-      passport.use(new GoogleStrategy({
-              clientID: process.env.CALIPER_GOOGLE_CLIENT_ID,
-              clientSecret: process.env.CALIPER_GOOGLE_CLIENT_SECRET,
-              callbackURL: url + "/auth/google/callback"
-          }, function(accessToken, refreshToken, profile, done) {
-              console.log('got: ', accessToken, refreshToken, profile);
-              var googleUser = profile._json;
-              googleUser.googleId = profile.id;
-              googleUser.displayName = profile.displayName;
-              googleUser.googleAccessToken = accessToken;
-              googleUser.googleRefreshToken = refreshToken;
-              userModel.findOrCreate({
-                  googleId: profile.id
-              }, googleUser, function(err, user) {
-                  return done(err, user);
-              });
+
+    passport.use(new LocalStrategy({
+        usernameField: 'username',
+        passwordField: 'password'
+      },
+      function(username, password, done) {
+        console.log('okay, verifying user:', username, password);
+        userModel.getUser(username)
+          .then(user => {
+            // todo: verify password
+            return Q.all([user, verify(password, user.password)]);
           })
-      );
-    }
+          .then(([user, verified]) => {
+            if(!verified){
+              done(true);
+            } else {
+              done(null, user);
+            }
+          })
+          .catch(err => done(err));
+      }
+    ));
+
     passport.serializeUser(function(user, done) {
         done(null, user);
     });

@@ -29,6 +29,7 @@ module.exports = function(config){
             return service;
           })
           .catch(err => {
+            console.log('Failed to start service: ', err);
             serviceEmitter.emit(eventName, err);
             throw err;
           });
