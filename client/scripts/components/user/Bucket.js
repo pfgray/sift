@@ -8,28 +8,20 @@ import classNames from 'classnames';
 import axios from 'axios';
 import withFetch from '../util/withFetch';
 import Dashboard from '../dashboard/Dashboard.js';
-import EventStream from '../dashboard/events/EventStream.js';
-import eventService from '../dashboard/events/EventService.js';
+import EventStreamDisplay from '../dashboard/events/EventStreamDisplay.js';
 
 function fetchStuff({params}) {
-  return new Promise(function(resolve, reject){
-    axios.get(`/api/buckets/${params.id}`, {withCredentials:true})
-      .then(res => res.data)
-      .then(bucket => {
-        eventService.getEventStreamForBucket(bucket, (stream, initialEvents) => {
-          resolve([bucket, stream, initialEvents]);
-        });
-      });
-  });
-}
+  return axios.get(`/api/buckets/${params.id}`, {withCredentials:true})
+      .then(res => res.data);
+} 
 
 export default compose(
   connect(state => state),
   withFetch(fetchStuff)
 )(({userState, resolved, failed, data}) => (
   resolved ? (
-    <Dashboard bucket={data[0]}>
-      <EventStream bucket={data[0]} stream={data[1]} initialEvents={data[2]}/>
+    <Dashboard bucket={data}>
+      <EventStreamDisplay bucket={data} />
     </Dashboard>
   ) : (
     <Row className='vert-center'>

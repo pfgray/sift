@@ -63,7 +63,7 @@ exports.eventsByType = function(req, res) {
 
 exports.add = function(req, res) {
     var processEvent = function(event){
-        dispatcher.stream(req.bucket._id, event);
+        dispatcher.stream(req.bucket.id, event);
     };
     if(_.isArray(req.body.data)){
         req.body.data.forEach(processEvent);

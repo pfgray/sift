@@ -8,6 +8,8 @@ var eventCache = {};
 var eventCacheLimit = 30;
 
 var cacheEvent = function(bucketId, event){
+    console.log('caching event for: ', bucketId);
+    console.log('eventCache contains: ', eventCache);
     if(!eventCache[bucketId]){
         eventCache[bucketId] = [];
     }
@@ -24,6 +26,7 @@ var eventStream = {
     listeners:{},
     pushEvent:function(bucketId, event){
         cacheEvent(bucketId, event);
+        console.log('okay, we got event for bucket: ', bucketId, ' and we have listeners: ', this.listeners);
         if(this.listeners[bucketId]){
             _.each(this.listeners[bucketId], function(listener){
                 listener(event);
@@ -74,9 +77,9 @@ module.exports.dispatcher = function(io) {
                 }
             }).catch(err => console.error(err));
         });
-        socket.on('disconnect', function(){
+        socket.on('disconnect', function() {
             disconnected = true;
-            if(connectedBucketId){
+            if(connectedBucketId) {
                 eventStream.removeListener(connectedBucketId, listener);
             }
         });
@@ -86,7 +89,8 @@ module.exports.dispatcher = function(io) {
 module.exports.stream = function(bucketId, event){
     //todo: implement model.storeEvent for redis...
     
+    console.log('Okay, now streaming event: ', event);
     //model.storeEvent(bucketId, event, function(err, storedEvent){
-        eventStream.pushEvent(bucketId, storedEvent);    
+        eventStream.pushEvent(bucketId, event);    
     //});
 };
