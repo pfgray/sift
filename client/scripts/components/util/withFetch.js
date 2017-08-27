@@ -14,12 +14,12 @@ const withFetch = promiseGenerator => WrappedComponent => {
       };
     }
     componentDidMount() {
-      promiseGenerator()
+      promiseGenerator(this.props)
         .then(result => this.setState({resolved: true, data: result}))
         .catch(err => this.setState({resolved: true, err}))
     }
     render() {
-      return <WrappedComponent {...this.state} />;
+      return <WrappedComponent {...this.state} {...this.props} />;
     }
   };
 }

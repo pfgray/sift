@@ -30,10 +30,37 @@ exports.currentUser = function(req, res){
   }
 }
 
+exports.getBucket = function(req, res) {
+  console.log('Fetching bucket for user with id: ', req.params);
+  model.getBucket(req.params.bucketId).then(bucket => {
+    if(bucket.userId !== req.user.id){
+      res.json({
+        status: 'error',
+        message: "this bucket doesn't belog to you."
+      }).status(403);
+    } else {
+      res.json(bucket).status(200);
+    }
+  });
+}
+
 exports.buckets = function(req, res) {
   console.log('Fetching buckets for user with id: ', req.user);
   model.getBuckets(req.user.id)
     .then(buckets => {
       res.json({data: buckets}).status(200);
+    });
+}
+
+exports.createBucket = function(req, res) {
+  console.error('user: ', req.user, 'is creating bucket', req.body.name);
+  model.createBucketForUser(req.user.id, req.body.name)
+    .then(bucket => {
+      console.error('success creating bucket: ', bucket);
+      res.json(buckets).status(200);
+    })
+    .catch(err => {
+      console.error('Error creating bucket: ', err);
+      res.json(err).status(500)
     });
 }

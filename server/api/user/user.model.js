@@ -24,6 +24,27 @@ module.exports = {
             .then(result => result.get({plain: true}));
         });
     },
+    getUserById:function(id){
+      return model.getRelDatabase()
+        .then(models => {
+          return models.User.findOne({ where: {id} })
+            .then(result => result.get({plain: true}));
+        });
+    },
+    createBucketForUser: function(id, name){
+      return Q.all([
+        model.getRelDatabase(),
+        this.getUserById(id)
+      ]).then(([models, user]) => {
+        const inBucket = {
+          userId: user.id,
+          apiKey: keyGenerator.generateApiKey(),
+          name
+        };
+        return models.Bucket.create(inBucket)
+          .then(r => r.get({plain: true}));
+      });
+    },
     createUser: function(user) {
       return create(user);
     },
@@ -31,6 +52,10 @@ module.exports = {
       return model.getRelDatabase()
         .then(models => models.Bucket.findAll({ where: { userId } }))
         //.then(result => result.get({plain: true}));
+    },
+    getBucket: function(id) {
+      return model.getRelDatabase()
+        .then(models => models.Bucket.findOne({ where: { id } }));
     },
     UserAlreadyExistsError,
     UnkownError
