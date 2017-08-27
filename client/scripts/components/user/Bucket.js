@@ -7,19 +7,35 @@ import { compose, withState, withProps } from 'recompose';
 import classNames from 'classnames';
 import axios from 'axios';
 import withFetch from '../util/withFetch';
+import Dashboard from '../dashboard/Dashboard.js';
+import EventStream from '../dashboard/events/EventStream.js';
+import eventService from '../dashboard/events/EventService.js';
+
+function fetchStuff({params}) {
+  return new Promise(function(resolve, reject){
+    axios.get(`/api/buckets/${params.id}`, {withCredentials:true})
+      .then(res => res.data)
+      .then(bucket => {
+        eventService.getEventStreamForBucket(bucket, (stream, initialEvents) => {
+          resolve([bucket, stream, initialEvents]);
+        });
+      });
+  });
+}
 
 export default compose(
   connect(state => state),
-  withFetch(({params}) => axios.get(`/api/buckets/${params.id}`, {withCredentials:true}).then(res => res.data))
+  withFetch(fetchStuff)
 )(({userState, resolved, failed, data}) => (
-  <Row className='vert-center'>
-    <Col xs={12} sm={4} smOffset={4}>
-      {resolved ? (
-        <div>
-          this is the single bucket!
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-      ) : 'loading...'}
-    </Col>
-  </Row>
+  resolved ? (
+    <Dashboard bucket={data[0]}>
+      <EventStream bucket={data[0]} stream={data[1]} initialEvents={data[2]}/>
+    </Dashboard>
+  ) : (
+    <Row className='vert-center'>
+      <Col xs={12} sm={4} smOffset={4}>
+        loading...
+      </Col>
+    </Row>
+  )
 ));

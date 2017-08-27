@@ -77,14 +77,15 @@ var EventStream = React.createClass({
     }
   },
   removeEventListener: function(){
-    if(this.props.eventStream){
-      this.props.eventStream.removeEventListener('event', this.eventListener);
+    if(this.props.stream){
+      this.props.stream.removeEventListener('event', this.eventListener);
     }
   },
   componentDidMount: function(){
-
-    this.initiateEventListener(this.props.eventStream);
-    this.addEvents(eventService.getCachedEvents());
+    if(this.props.stream){
+      this.initiateEventListener(this.props.stream);
+      this.addEvents(eventService.getCachedEvents());
+    }
   },
   componentWillUnmount: function(){
     this.removeEventListener();

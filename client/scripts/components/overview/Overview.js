@@ -18,8 +18,8 @@ const Login = compose(
         <div>
           <h3>{userState.user.username}'s buckets</h3>
           {data.data.map(bucket => (
-            <div>
-              <Link to={`/bucket/${bucket.id}`} className='btn btn-primary btn-block'>{bucket.name}</Link>
+            <div key={bucket.id}>
+              <Link to={`/bucket/${bucket.id}`} className='btn btn-info btn-block'>{bucket.name}</Link>
             </div>
           ))}
           <div>

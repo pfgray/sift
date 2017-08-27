@@ -1,33 +1,29 @@
 
 var apiKeyModel = require('./key.model');
+const model = require('../../database');
 
-module.exports = function(req, res, next) {
-    var apiKey = req.header('Authorization');
-    if(!apiKey){
+module.exports = function (req, res, next) {
+    const apiKey = req.header('Authorization');
+    if (!apiKey) {
         res.status(400).json({
             success: false,
             error: "An api key is required for submitting events"
         });
-        return;
     } else {
         req.apiKey = apiKey.trim();
-
-        apiKeyModel.getUserForApiKey(apiKey, function(err, user){
-            if(user && req.params.userid === user._id){
-                req.user = user;
-                next();
-            } else if(user){
-                res.status(403).json({
-                    success:false,
-                    error:"Key: " + apiKey + " does not belong to user"
+        model.getRelDatabase().then(models => {
+            return models.Bucket.findOne({ where: { id: req.params.bucketId } })
+                .then(result => result.get({plain: true}));
+        }).then(bucket => {
+            if(bucket.apiKey !== req.apiKey){
+                res.status(400).json({
+                    success: false,
+                    error: "This key is not for this bucket."
                 });
             } else {
-                res.status(403).json({
-                    success:false,
-                    error:"No user found for key: " + apiKey
-                });
+                req.bucket = bucket;
+                next();
             }
         });
     }
-
 }

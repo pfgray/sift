@@ -7,8 +7,6 @@
  * DELETE  /things/:id          ->  destroy
  */
 
-'use strict';
-
 var _ = require('lodash');
 var async = require('async');
 var dispatcher = require('./events.dispatcher');
@@ -17,7 +15,6 @@ var eventsModel = require('./events.model');
 
 var model = require('../../database');
 
-// Get list of things
 exports.total = function(req, res) {
     if(!req.user){
         res.status(400).json({error:"missing authentication"});
@@ -66,7 +63,7 @@ exports.eventsByType = function(req, res) {
 
 exports.add = function(req, res) {
     var processEvent = function(event){
-        dispatcher.stream(req.user._id, event);
+        dispatcher.stream(req.bucket._id, event);
     };
     if(_.isArray(req.body.data)){
         req.body.data.forEach(processEvent);

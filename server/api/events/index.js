@@ -6,7 +6,8 @@ var authorizeKey = require('../key/keyAuthorize.js');
 
 var router = express.Router();
 
-router.post('/users/:userid/events', authorizeKey, controller.add);
+router.post('/buckets/:bucketId/events', authorizeKey, controller.add);
+
 router.get('/users/:userid/events', authorizeKey, controller.eventsByActor);
 router.get('/users/:userid/eventsByCaliperDate', authorizeKey, controller.eventsByActorCaliperDate);
 router.get('/users/:userid/eventsCount', authorizeKey, controller.countEventsByActor);

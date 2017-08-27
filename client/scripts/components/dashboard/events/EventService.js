@@ -18,27 +18,26 @@ var EventService = {
             errorCallback(error);
         });
     },
-    getEventStreamForUser: function(user, onInitialEvents){
+    getEventStreamForBucket: function(bucket, onInitialEvents){
         if(!this.eventSocket){
           this.eventSocket = io();
-          this.eventSocket.emit('connectStream', user.apiKey);
-          this.eventSocket.on('event', function(event){
+          this.eventSocket.emit('connectStream', bucket.apiKey);
+          this.eventSocket.on('event', event => {
               this.eventCache.cacheEvent(event);
-          }.bind(this));
-          this.eventSocket.once('initialEvents', function(initialEvents){
+          });
+          this.eventSocket.once('initialEvents', initialEvents => {
               console.log('got initial events:', initialEvents);
               this.eventCache.setInitialEvents(initialEvents);
-              onInitialEvents && onInitialEvents(initialEvents);
-          }.bind(this));
+              onInitialEvents && onInitialEvents(this.eventSocket, initialEvents);
+          });
         } else {
-          onInitialEvents && setTimeout(onInitialEvents, 0);
+          onInitialEvents && setTimeout(() => onInitialEvents(this.eventSocket, []), 0);
         }
-        return this.eventSocket;
     },
     getEventCountMap: function(pastDate, successCallback, errorCallback){
         $.ajax("/api/me/eventsByType?afterDate=" + JSON.stringify(pastDate))
-        .done(successCallback)
-        .fail(errorCallback);
+            .done(successCallback)
+            .fail(errorCallback);
     },
     cacheEvent: function(event){
         this.eventCache.cacheEvent(event);
