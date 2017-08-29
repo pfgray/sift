@@ -76,3 +76,28 @@ h1, h2, h3, h4, h5 {
 .btn-block {
   margin-bottom: 1rem;
 }
+
+
+.submit-wrapper {
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+
+  span {
+    text-align: center;
+    display: inline-block;
+    color: #f9ff3f;
+  }
+  i {
+    margin-right: 0.25em;
+  }
+
+  button {
+    margin-bottom: 0;
+    flex: 1;
+    margin-right: 0.5em;
+    &:only-child {
+      margin-right: 0;
+    }
+  }
+}

@@ -12,10 +12,14 @@ exports.signup = function(req, res) {
     username: req.body.username,
     password: req.body.password
   })
-  .then(userAndBucket => {
-    res.json(userAndBucket, 200);
+  .then(([user, bucket]) => {
+    console.log('created user: ', user)
+    req.login(user, () => {
+      res.json({user, bucket}, 200);
+    });
   })
   .catch(err => {
+    console.log('#######got err:', err);
     res.json(err, 400);
   });
 }

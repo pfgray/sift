@@ -33,14 +33,16 @@ module.exports.init = function(app, config){
         console.log('okay, verifying user:', username, password);
         userModel.getUser(username)
           .then(user => {
-            // todo: verify password
-            return Q.all([user, verify(password, user.password)]);
-          })
-          .then(([user, verified]) => {
-            if(!verified){
-              done(true);
+            if(user === null){
+              done(false)
             } else {
-              done(null, user);
+              verify(password, user.password).then(verified => {
+                if(!verified){
+                  done(null, false);
+                } else {
+                  done(null, user);
+                }
+              });
             }
           })
           .catch(err => done(err));

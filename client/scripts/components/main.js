@@ -19,7 +19,7 @@ import Bucket from './user/Bucket.js';
 import '../../styles/normalize.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
-import '../../styles/main.css';
+import '../../styles/main.less';
 
 const store = createStore(browserHistory);
 

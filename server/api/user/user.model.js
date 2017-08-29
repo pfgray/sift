@@ -16,19 +16,21 @@ const UnkownError = {
   code: 'unknown'
 };
 
+const resolveEntity = result => result === null ? null : result.get({plain: true});
+
 module.exports = {
     getUser:function(username){
       return model.getRelDatabase()
         .then(models => {
           return models.User.findOne({ where: {username: username} })
-            .then(result => result.get({plain: true}));
+            .then(resolveEntity);
         });
     },
     getUserById:function(id){
       return model.getRelDatabase()
         .then(models => {
           return models.User.findOne({ where: {id} })
-            .then(result => result.get({plain: true}));
+            .then(resolveEntity);
         });
     },
     createBucketForUser: function(id, name){
@@ -42,7 +44,7 @@ module.exports = {
           name
         };
         return models.Bucket.create(inBucket)
-          .then(r => r.get({plain: true}));
+          .then(resolveEntity);
       });
     },
     createUser: function(user) {
