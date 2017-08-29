@@ -42,8 +42,6 @@ export default function getStreamForBucket(apiKey){
         console.log('initiating bucket for: ', apiKey);
         eventSocket.emit('connectStream', apiKey);
     }
-
-    console.log('okay, now returning');
     
     return {
         initiate,

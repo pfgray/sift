@@ -1,8 +1,13 @@
 body{
-  background-image: url("../../../images/rocks.jpg");
+  background-image: url("https://images.unsplash.com/photo-1486622110335-37445f9e37bd?dpr=1&auto=format&fit=crop&w=1500&h=844&q=80&cs=tinysrgb&crop=");
+  background-image: url("https://images.unsplash.com/photo-1500229285422-9508ce34dedc?dpr=2&auto=format&fit=crop&w=1080&h=715&q=80&cs=tinysrgb&crop=");
   background-size: cover;
   background-position: center center;
   height:100vh;
+}
+
+#content {
+  background-color: rgba(0,0,0,0.60)
 }
 
 .intro-header{

@@ -10,7 +10,7 @@ const generateUser = config => {
             "extensions": {
                 "externalId": null
             },
-            "id": `"demo2-cbl.difference-engine.com/caliper/Person/${config.actorId}`,
+            "id": `demo2-cbl.difference-engine.com/caliper/Person/${config.actorId}`,
             "type": "Person"
         },
         "action": "http://purl.imsglobal.org/vocab/caliper/v1/action#LoggedOut",
@@ -35,10 +35,11 @@ const generateUser = config => {
 const output = {
   data: []
 };
-for (var i=0; i < 50; i++) {
+for (var i=0; i < 5; i++) {
+    const date = new Date();
     output.data = output.data.concat([generateUser({
-        date: new Date(i*100),
-        actorId: i*100
+        date: new Date(date.setDate(date.getDate() - i)),
+        actorId: 50000
     })])
 }
 

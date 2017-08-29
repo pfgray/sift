@@ -11,7 +11,7 @@ module.exports.md5 = md5;
 const keyOf = arr => arr.map(i => i.toString()).join(".");
 module.exports.keyOf = keyOf;
 
-const EVENT_TTL = '60';
+const EVENT_TTL = '10';
 
 const cacheEvent = function(bucketId, event){
     if(!eventCache[bucketId]){
@@ -91,23 +91,29 @@ module.exports.dispatcher = function(io) {
 };
 
 module.exports.stream = function(bucketId, event){
-    //todo: implement model.storeEvent for redis...
+
+    //todo: can we simply batch all of the streams?
     const now = (new Date()).getTime();
+    const caliperTime = new Date(event.eventTime).getTime();
     const actorId = md5(event.actor.id);
     model.getKeystore().then(client => {
 
         const eventKey = keyOf(['event', bucketId, actorId, now]);
-        console.log('Storing event in redis...', eventKey);
+        const eventCaliperKey = keyOf(['eventCaliper', bucketId, actorId, caliperTime]);
+        console.log('Storing event in redis...', eventKey, 'for caliper time: ', caliperTime);
 
         // todo: use client.multi() to batch these?
 
+        // todo: remove indexing by caliper date
         const batched = client.multi()
           .lpush(eventKey, JSON.stringify(event))
+          .lpush(eventCaliperKey, JSON.stringify(event))
           .zadd([keyOf(['eventTimes', bucketId, actorId]), now, eventKey])
-          .zadd([keyOf(['eventTimesCaliper', bucketId, actorId]), now, eventKey])
+          .zadd([keyOf(['eventTimesCaliper', bucketId, actorId]), caliperTime, eventCaliperKey])
           .expire(eventKey, EVENT_TTL)
-          .expire(keyOf(['eventTimes', bucketId, actorId]), EVENT_TTL)
-          .expire(keyOf(['eventTimesCaliper', bucketId, actorId]), EVENT_TTL)
+          .expire(eventCaliperKey, EVENT_TTL)
+          .expire(keyOf(['eventTimes', bucketId, actorId]), EVENT_TTL * 2)
+          .expire(keyOf(['eventTimesCaliper', bucketId, actorId]), EVENT_TTL * 2)
 
         return Q.ninvoke(batched, 'exec');
     })
@@ -115,4 +121,20 @@ module.exports.stream = function(bucketId, event){
         console.log('Streaming to browser....');
         eventStream.pushEvent(bucketId, event);
     }).catch(err => console.error(err));
+};
+
+module.exports.cleanup = function() {
+    // removes keys in scored ranges that don't exist anymore.
+    model.getKeystore().then(client => {
+        const now = new Date();
+        now.setSeconds(now.getSeconds() - 5 - EVENT_TTL);
+        const timeAgo = now.getTime();
+        Q.ninvoke(client, 'keys', "eventTimes*").then(keys => {
+            console.log('Found: ', keys, 'to cleanup from before', timeAgo);
+            const batched = keys.reduce((multi, key) => multi.zremrangebyscore([key, '-inf', timeAgo]), client.multi());
+            return Q.ninvoke(batched, 'exec');
+        }).then(result => {
+            console.log('removed', result, 'entries');
+        }).catch(console.error);
+    }).catch(console.error);
 };

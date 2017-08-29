@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function({bucket}) {
-    const eventsUrl = `/api/bucket${bucket.id}/events`;
+    const eventsUrl = `/api/buckets/${bucket.id}/events`;
     return (
       <div>
         <div className="bucket">

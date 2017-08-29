@@ -28,11 +28,6 @@ var Intro = React.createClass({
               <Button onClick={this.signInGoogle} className="branded-login" bsStyle="info">Log In / Sign Up</Button>
           </Col>
         </Row>
-        <Row className="intro-login">
-          <Col xs={12} md={6} mdOffset={3}>
-              <Button onClick={this.signInAnon} className="branded-login" bsStyle="default">Use Anonymously</Button>
-          </Col>
-        </Row>
       </Grid>
     );
   }

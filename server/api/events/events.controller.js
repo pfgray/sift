@@ -14,6 +14,7 @@ exports.add = function(req, res) {
     } else {
         processEvent(req.body.data);
     }
+    dispatcher.cleanup();
     res.status(200).json({
         success:true
     });
@@ -36,10 +37,13 @@ function createEventRequestHandler(eventRangeKey) {
         const [begin, end] = getRange(req.query.before, req.query.after);
         const key = dispatcher.keyOf([eventRangeKey, req.bucket.id, actorId]);
 
+        console.log('Okay, now querying: ', key, 'with: ', begin, ' to: ', end);
+
         model.getKeystore().then(client => {
             return Q.all([client, Q.ninvoke(client, 'zrangebyscore', [dispatcher.keyOf([key]), begin, end])]);
         })
         .then(([client, results]) => {
+            console.log('Okay, got results ', results);
             const batched = results.reduce((builder, key) => {
                 return builder.lrange([key, 0, -1]);
             }, client.multi());
