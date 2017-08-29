@@ -14,22 +14,25 @@ module.exports = function(config){
       if(state.initted){
         return config.get();
       } else if(state.initting){
-        const deferred = Q.defer();
+        const def = Q.defer();
         serviceEmitter.on(eventName, (err, service) => {
           err ? def.reject(err) : def.resolve(service);
         });
-        return deferred;
+        return def.promise;
       } else {
+        console.log('######Now initted,',eventName);
         state.initting = true;
         return config.init()
           .then(config.get)
           .then(service => {
             state.initted = true;
+            state.initting = false;
             serviceEmitter.emit(eventName, null, service);
             return service;
           })
           .catch(err => {
             console.log('Failed to start service: ', err);
+            state.initting = false;
             serviceEmitter.emit(eventName, err);
             throw err;
           });

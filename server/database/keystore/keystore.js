@@ -12,7 +12,7 @@ const client = redis.createClient({
 
 
 client.on("error", function (err) {
-    console.log("Error " + err);
+  console.log("Error " + err);
 });
 
 module.exports = service({
@@ -21,7 +21,6 @@ module.exports = service({
     return Q.when(client);
   },
   init: function(){
-    client.set("string key", "string val", redis.print);
     // no initialization necessary
     return Q.when(client);
   }

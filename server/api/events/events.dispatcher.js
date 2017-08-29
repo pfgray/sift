@@ -1,15 +1,12 @@
-'use strict';
+const _ = require('lodash');
+const Q = require('q');
+const model = require('../../database');
+const crypto = require('crypto');
 
-var _ = require('lodash');
-var model = require('../../database');
-var apiKeyModel = require('../key/key.model.js');
+const eventCache = {};
+const eventCacheLimit = 30;
 
-var eventCache = {};
-var eventCacheLimit = 30;
-
-var cacheEvent = function(bucketId, event){
-    console.log('caching event for: ', bucketId);
-    console.log('eventCache contains: ', eventCache);
+const cacheEvent = function(bucketId, event){
     if(!eventCache[bucketId]){
         eventCache[bucketId] = [];
     }
@@ -19,14 +16,14 @@ var cacheEvent = function(bucketId, event){
     }
 }
 
-var eventStream = {
+const eventStream = {
     //listeners will hold a map, where the key is
     //a user's id, and the value is an array of
     //listeners listening to that user's event stream.
     listeners:{},
     pushEvent:function(bucketId, event){
+        // todo: is this cache even necessary now that we have redis?
         cacheEvent(bucketId, event);
-        console.log('okay, we got event for bucket: ', bucketId, ' and we have listeners: ', this.listeners);
         if(this.listeners[bucketId]){
             _.each(this.listeners[bucketId], function(listener){
                 listener(event);
@@ -86,11 +83,44 @@ module.exports.dispatcher = function(io) {
     });
 };
 
+const md5 = str => crypto.createHash('md5').update(str).digest("hex");
+module.exports.md5 = md5;
+const keyOf = arr => arr.map(i => i.toString()).join(".");
+module.exports.keyOf = keyOf;
+
+const EVENT_TTL = '60';
+
 module.exports.stream = function(bucketId, event){
     //todo: implement model.storeEvent for redis...
-    
-    console.log('Okay, now streaming event: ', event);
-    //model.storeEvent(bucketId, event, function(err, storedEvent){
-        eventStream.pushEvent(bucketId, event);    
-    //});
+    const now = (new Date()).getTime();
+    const actorId = md5(event.actor.id);
+    model.getKeystore().then(client => {
+
+        const eventKey = keyOf(['event', bucketId, actorId, now]);
+        console.log('Storing event in redis...', eventKey);
+
+        // todo: use client.multi() to batch these?
+
+        const batched = client.multi()
+          .lpush(eventKey, JSON.stringify(event))
+          .zadd([keyOf(['eventTimes', bucketId, actorId]), now, eventKey])
+          .zadd([keyOf(['eventTimes', bucketId]), now, eventKey])
+          .expire(eventKey, EVENT_TTL)
+          .expire(keyOf(['eventTimes', bucketId, actorId]), EVENT_TTL)
+          .expire(keyOf(['eventTimes', bucketId]), EVENT_TTL)
+
+        return Q.ninvoke(batched, 'exec');
+        // return Q.all([
+        //     Q.ninvoke(client, 'lpush', eventKey, JSON.stringify(event)),
+        //     Q.ninvoke(client, 'zadd', [keyOf(['eventTimes', bucketId, actorId]), now, eventKey]),
+        //     Q.ninvoke(client, 'zadd', [keyOf(['eventTimes', bucketId]), now, eventKey]),
+        //     Q.ninvoke(client, 'expire', eventKey, EVENT_TTL),
+        //     Q.ninvoke(client, 'expire', keyOf(['eventTimes', bucketId, actorId]), EVENT_TTL),
+        //     Q.ninvoke(client, 'expire', keyOf(['eventTimes', bucketId]), EVENT_TTL)
+        // ]);
+    })
+    .then(() => {
+        console.log('Streaming to browser....');
+        eventStream.pushEvent(bucketId, event);
+    }).catch(err => console.error(err));
 };

@@ -8,6 +8,7 @@
  */
 
 var _ = require('lodash');
+var Q = require('q');
 var async = require('async');
 var dispatcher = require('./events.dispatcher');
 var apiKeyModel = require('../key/key.model');
@@ -75,20 +76,48 @@ exports.add = function(req, res) {
     });
 }
 
-exports.eventsByActor = function(req, res) {
-    var actorId = req.query.actorId;
-    var before = req.query.before;
-    var after = req.query.after;
-
-    var limit = req.query.limit || 30;
-    var skip = req.query.offset || 0;
-
-    eventsModel.getEventsForActorInDateRange(
-        req.user._id, actorId, after, before, limit, skip,
-        handleEventsResults(res)
-    );
+function getRange(before, after) {
+    const end = before ? new Date(before).getTime(): '+inf';
+    const begin = after ? new Date(after).getTime(): '-inf';
+    return [begin, end];
 }
 
+exports.eventsByActor = function(req, res) {
+    var actorId = dispatcher.md5(req.query.actorId);
+
+    const [begin, end] = getRange(req.query.before, req.query.after);
+    const key = dispatcher.keyOf(['eventTimes', req.bucket.id, actorId]);
+
+    console.log('Okay, now querying for: ', actorId, begin, end, key);
+
+    model.getKeystore().then(client => {
+        return Q.all([client, Q.ninvoke(client, 'zrangebyscore', [dispatcher.keyOf([key]), begin, end])]);
+    })
+    .then(([client, results]) => {
+        console.log('Found matching events: ', results);
+        
+        const batched = results.reduce((builder, key) => {
+            return builder.lrange([key, 0, -1]);
+        }, client.multi());
+
+        return Q.ninvoke(batched, 'exec');
+    })
+    .then(events => {
+        // events is an array of arrays, let's flatten them
+        const flattened = [].concat.apply([], events);
+        console.log('okay, retrieved: ', events);
+        res.json({
+            success: true,
+            events: flattened.map(JSON.parse)
+        }).status(200);
+    })
+    .catch(err => {
+        console.error(err);
+        res.json(err).status(500)
+    });
+}
+
+// todo: whyyyyyyy
 exports.eventsByActorCaliperDate = function(req, res) {
     var actorId = req.query.actorId;
     var before = req.query.before;
@@ -144,22 +173,4 @@ exports.countEventsByActor = function(req, res) {
           }
         }
     );
-}
-
-exports.pgtest = function(req, res) {
-
-  model.getRelDatabase().then(pool => {
-    pool.query('SELECT NOW()', (err, result) => {
-      res.status(200).json({
-        err: err,
-        result:result
-      });
-    });
-  }).catch(err => {
-    console.log('ok, we got an error gettin the rel db...');
-    res.status(500).json({
-      err: err
-    });
-  });
-
 }

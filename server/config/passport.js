@@ -17,7 +17,8 @@ module.exports.init = function(app, config){
       saveUninitialized: true,
       store: new RedisStore({
         client,
-        logErrors: true
+        logErrors: true,
+        ttl: 1200 // 20 mins
       })
     }));
     app.use(passport.initialize());
