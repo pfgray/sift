@@ -6,6 +6,13 @@ const crypto = require('crypto');
 const eventCache = {};
 const eventCacheLimit = 30;
 
+const md5 = str => crypto.createHash('md5').update(str).digest("hex");
+module.exports.md5 = md5;
+const keyOf = arr => arr.map(i => i.toString()).join(".");
+module.exports.keyOf = keyOf;
+
+const EVENT_TTL = '60';
+
 const cacheEvent = function(bucketId, event){
     if(!eventCache[bucketId]){
         eventCache[bucketId] = [];
@@ -83,13 +90,6 @@ module.exports.dispatcher = function(io) {
     });
 };
 
-const md5 = str => crypto.createHash('md5').update(str).digest("hex");
-module.exports.md5 = md5;
-const keyOf = arr => arr.map(i => i.toString()).join(".");
-module.exports.keyOf = keyOf;
-
-const EVENT_TTL = '60';
-
 module.exports.stream = function(bucketId, event){
     //todo: implement model.storeEvent for redis...
     const now = (new Date()).getTime();
@@ -104,20 +104,12 @@ module.exports.stream = function(bucketId, event){
         const batched = client.multi()
           .lpush(eventKey, JSON.stringify(event))
           .zadd([keyOf(['eventTimes', bucketId, actorId]), now, eventKey])
-          .zadd([keyOf(['eventTimes', bucketId]), now, eventKey])
+          .zadd([keyOf(['eventTimesCaliper', bucketId, actorId]), now, eventKey])
           .expire(eventKey, EVENT_TTL)
           .expire(keyOf(['eventTimes', bucketId, actorId]), EVENT_TTL)
-          .expire(keyOf(['eventTimes', bucketId]), EVENT_TTL)
+          .expire(keyOf(['eventTimesCaliper', bucketId, actorId]), EVENT_TTL)
 
         return Q.ninvoke(batched, 'exec');
-        // return Q.all([
-        //     Q.ninvoke(client, 'lpush', eventKey, JSON.stringify(event)),
-        //     Q.ninvoke(client, 'zadd', [keyOf(['eventTimes', bucketId, actorId]), now, eventKey]),
-        //     Q.ninvoke(client, 'zadd', [keyOf(['eventTimes', bucketId]), now, eventKey]),
-        //     Q.ninvoke(client, 'expire', eventKey, EVENT_TTL),
-        //     Q.ninvoke(client, 'expire', keyOf(['eventTimes', bucketId, actorId]), EVENT_TTL),
-        //     Q.ninvoke(client, 'expire', keyOf(['eventTimes', bucketId]), EVENT_TTL)
-        // ]);
     })
     .then(() => {
         console.log('Streaming to browser....');
