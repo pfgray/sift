@@ -13,7 +13,7 @@ import EventStreamDisplay from '../dashboard/events/EventStreamDisplay.js';
 function fetchStuff({params}) {
   return axios.get(`/api/buckets/${params.id}`, {withCredentials:true})
       .then(res => res.data);
-} 
+}
 
 export default compose(
   connect(state => state),
