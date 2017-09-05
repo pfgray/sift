@@ -9,6 +9,15 @@ const userModel = require('../api/user/user.model.js');
 const {hash, verify} = require('./hasher.js');
 const {client} = require('../database/keystore/keystore.js') ;
 
+
+module.exports.isLoggedIn = function(req, res, next){
+  if(!req.user) {
+    res.status(401).json({status:'error', message: 'You are not logged in'});
+  } else {
+    next();
+  }
+}
+
 module.exports.init = function(app, config){
 
     app.use(session({

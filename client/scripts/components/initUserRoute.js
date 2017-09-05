@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { browserHistory } from 'react-router';
 
 export default function initUserRoute(store) {
   return function() {
@@ -12,7 +13,9 @@ export default function initUserRoute(store) {
             type: 'RECEIVE_USER',
             payload: user
           });
-        })
+        }).catch(err => {
+          browserHistory.push( '/login')
+        });
     }
   }
 }

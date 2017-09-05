@@ -51,7 +51,5 @@ services:
     image: bitnami/redis:latest
     expose:
       - "6379"
-    ports:
-      - "6379:6379"
     environment:
       REDIS_PASSWORD: reallysupersecret

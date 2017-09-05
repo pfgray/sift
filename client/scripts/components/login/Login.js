@@ -5,6 +5,7 @@ import { Col, Row, Grid, ButtonGroup, Button, FormControl, FormGroup } from 'rea
 import { compose, withState, withProps } from 'recompose';
 import classNames from 'classnames';
 import axios from 'axios';
+import Brand from '../intro/Brand';
 
 const Login =
   compose(
@@ -32,21 +33,19 @@ const Login =
       }
     }))
   )(({username, setUsername, password, setPassword, loggingIn, up, login, errorCount}) => (
-      <Row className='vert-center'>
-        <Col xs={12} sm={4} smOffset={4}>
-          <form onSubmit={login}>
-            <FormGroup>
-              <FormControl type='input'    value={username} name='username' placeholder='username' onChange={up(setUsername)}/>
-              <FormControl type='password' value={password} name='password' placeholder='password' onChange={up(setPassword)}/>
-              <div className={classNames('submit-wrapper', {'hasError': errorCount > 0})}>
-                <Button block bsStyle="info" className="branded-login" disabled={loggingIn} type="submit">Log In</Button>
-                {errorCount > 0 ? <span><i className='fa fa-warning'/>{errorCount}</span>: null}
-              </div>
-            </FormGroup>
-          </form>
-          <div className='subtext'>Don't have a login? <Link to='/signup'>Sign up</Link></div>
-        </Col>
-      </Row>
+    <Brand>
+      <form onSubmit={login}>
+        <FormGroup>
+          <FormControl type='input'    value={username} name='username' placeholder='username' onChange={up(setUsername)}/>
+          <FormControl type='password' value={password} name='password' placeholder='password' onChange={up(setPassword)}/>
+          <div className={classNames('submit-wrapper', {'hasError': errorCount > 0})}>
+            <Button block bsStyle="info" className="branded-login" disabled={loggingIn} type="submit">Log In</Button>
+            {errorCount > 0 ? <span><i className='fa fa-warning'/>{errorCount}</span>: null}
+          </div>
+        </FormGroup>
+      </form>
+      <div className='subtext'>Don't have a login? <Link to='/signup'>Sign up</Link></div>
+    </Brand>
   ));
 
 export default Login;

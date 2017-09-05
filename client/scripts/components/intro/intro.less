@@ -25,3 +25,49 @@ body{
 .intro-header, .intro-subheader, .intro-login {
   text-align:center;
 }
+
+svg.logo{
+  path {
+    fill:none;
+    fill-rule:evenodd;
+    stroke:#5bc0de;
+    stroke-width:10;
+  }
+}
+
+.brand-container {
+  padding-top: 20%;
+}
+
+.brand-front {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+
+  * > {
+    margin:0;
+    //height: 5em;
+  }
+  .logo {
+    height: 4em;
+    width: 4em;
+  }
+
+  form {
+    width: 100%;
+  }
+
+}
+
+.logo-container {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  h1 {
+    margin-left: 1rem;
+    font-size: 6rem;
+    &:only-child {
+      margin-left: 0;
+    }
+  }
+}

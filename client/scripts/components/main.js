@@ -16,7 +16,7 @@ import initUserRoute from './initUserRoute.js';
 import BucketForm from './user/BucketForm.js';
 import Bucket from './user/Bucket.js';
 
-import '../../styles/normalize.css';
+//import '../../styles/normalize.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
 import '../../styles/main.less';
