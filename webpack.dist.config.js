@@ -25,6 +25,7 @@ module.exports = {
   debug: false,
   devtool: false,
   entry: './client/scripts/components/main.js',
+  bail: true,
 
   stats: {
     colors: true,
@@ -36,7 +37,10 @@ module.exports = {
     new webpack.optimize.UglifyJsPlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en$/)
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en$/),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    })
   ],
 
   resolve: {

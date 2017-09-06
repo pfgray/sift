@@ -10,7 +10,7 @@ import EventStream from './dashboard/events/EventStream';
 import GridView from './dashboard/graphs/GridView';
 import Admin from './admin/Admin';
 import Login from './login/Login';
-import Signup from './login/Signup';
+import Signup from './login/SignUp';
 import Overview from './overview/Overview';
 import initUserRoute from './initUserRoute.js';
 import BucketForm from './user/BucketForm.js';
