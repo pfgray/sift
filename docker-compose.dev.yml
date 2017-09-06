@@ -30,6 +30,9 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: reallysupersecret
+
+      ADMIN_USER: administrator
+      ADMIN_PW: password
     volumes:
       - './:/app'
       - /app/node_modules

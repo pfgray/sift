@@ -4,6 +4,7 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize) {
   const User = sequelize.define('users', {
     id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+    role: { type: Sequelize.STRING, allowNull: false, defaultValue: 'user' },
     username: { type: Sequelize.STRING, allowNull: false, unique: true },
     password: { type: Sequelize.STRING, allowNull: false },
     enabled: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true }

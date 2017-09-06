@@ -20,7 +20,6 @@ module.exports = function(config){
         });
         return def.promise;
       } else {
-        console.log('######Now initted,',eventName);
         state.initting = true;
         return config.init()
           .then(config.get)

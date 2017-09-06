@@ -3,6 +3,8 @@ const { Pool, Client } = require('pg');
 var fs = require('fs');
 var path = require('path');
 const Sequelize = require('sequelize');
+const config = require('../../config/environment');
+const userCreator = require('../../api/user/userCreator.js');
 
 var service = require('../Service.js');
 var relations = require('./relations.js');
@@ -32,16 +34,27 @@ module.exports = service({
     return sequelize
       .authenticate()
       .then(() => {
-        console.log('connected successfully to rel database ', process.env.PGDATABASE);
         models = relations(sequelize);
         //init all of them in order
         console.log('initializing models...', models);
-
         return Object.keys(models).reduce((proms, key) => {
           console.log('initializing model...', key, 'with', proms);
           return proms.then(() => models[key].sync())
         }, Q.when(true)).then(() => models);
       })
+      .then(() => {
+        // initialize admins?
+        if(config.admin.username && config.admin.pw){
+          return userCreator({
+            username: config.admin.username,
+            password: config.admin.pw,
+            role: 'admin'
+          })(models);
+        } else {
+          return Q.when(true);
+        }
+      })
       .then(() => models);
   }
 });
+

@@ -1,8 +1,9 @@
-var _ = require('lodash');
-var model = require('../../database');
-var keyGenerator = require('../key/key.generator.js');
-var Q = require('q');
+const _ = require('lodash');
+const model = require('../../database/index.js');
+const keyGenerator = require('../key/key.generator.js');
+const Q = require('q');
 const {hash} = require('../../config/hasher.js');
+const create = require('./userCreator.js');
 
 const UserAlreadyExistsError = {
   status: 'error',
@@ -19,10 +20,11 @@ const UnkownError = {
 const resolveEntity = result => result === null ? null : result.get({plain: true});
 
 module.exports = {
-    getUser:function(username){
+    getUser: function(username){
+      console.log('hrm...', model);
       return model.getRelDatabase()
         .then(models => {
-          return models.User.findOne({ where: {username: username} })
+          return models.User.findOne({ where: { username } })
             .then(resolveEntity);
         });
     },
@@ -48,7 +50,8 @@ module.exports = {
       });
     },
     createUser: function(user) {
-      return create(user);
+      return model.getRelDatabase()
+               .then(create(user));
     },
     getBuckets: function(userId) {
       return model.getRelDatabase()
@@ -59,32 +62,7 @@ module.exports = {
       return model.getRelDatabase()
         .then(models => models.Bucket.findOne({ where: { id } }));
     },
+    create: create,
     UserAlreadyExistsError,
     UnkownError
-}
-
-async function create(inUser){
-  try {
-    const models = await model.getRelDatabase();
-
-    const password = await hash(inUser.password);
-
-    const defaults = { password };
-    const [user, created] = await models.User.findOrCreate({
-      where: {username: inUser.username}, defaults
-    }).then(([user, created]) => [user.get({plain: true}), created]);
-
-    if(!created) {
-      throw UserAlreadyExistsError;
-    }
-    const inBucket = {
-      userId: user.id,
-      apiKey: keyGenerator.generateApiKey(),
-      name: 'Default'
-    };
-    const bucket = await models.Bucket.create(inBucket);
-    return [user, bucket.get({plain: true})];
-  } catch(err) {
-    return Promise.reject(err);
-  }
 }

@@ -10,17 +10,21 @@ exports.login = function(req, res) {
 exports.signup = function(req, res) {
   model.createUser({
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    role: 'user'
   })
-  .then(([user, bucket]) => {
-    console.log('created user: ', user)
-    req.login(user, () => {
-      res.json({user, bucket}, 200);
-    });
+  .then(([user, created]) => {
+    if(created){
+      req.login(user, () => {
+        res.json({user}, 200);
+      });
+    } else {
+      res.status(400).json(model.UserAlreadyExistsError);
+    }
   })
   .catch(err => {
     console.log('#######got err:', err);
-    res.json(err, 400);
+    res.status(400).json(err);
   });
 }
 

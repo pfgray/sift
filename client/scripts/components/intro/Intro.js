@@ -19,7 +19,7 @@ var Intro = React.createClass({
     return (
       <Brand>
         <Button onClick={this.signInGoogle} className="branded-login" bsStyle="info">Log In / Sign Up</Button>
-      </Brand>    
+      </Brand>
     );
   }
 });
