@@ -1,28 +1,35 @@
 version: '2'
 services:
   caliper:
-    build: .
+    image: pfgray/caliper:sift
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "17000:9000"
     links:
       - couch
       - postgres
+      - redis
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
+      HOST_PROTOCOL: http
+      HOST_DOMAIN: "${HOST_DOMAIN}"
+      HOST_PORT: ""
+
       COUCH_HOST: couch
       COUCH_PORT: 5984
       COUCH_DB_NAME: sift
-      HOST_PROTOCOL: http
-      HOST_DOMAIN: "${HOST_DOMAIN}"
-      HOST_PORT: "${HOST_DOMAIN}"
+
       PGHOST: postgres
       PGPORT: 5432
       PGDATABASE: sift
-      PGUSER: admin
-      PGPASSWORD: supersecret
-    volumes:
-      - ./:/app
+      PGUSER: caliper_administrator
+      PGPASSWORD: pw
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: pw
+
+      ADMIN_USER: admin
+      ADMIN_PW: password
   couch:
     image: klaemo/couchdb:2.0.0
     expose:
@@ -31,9 +38,13 @@ services:
     image: postgres
     expose:
       - "5432"
-    ports:
-      - "5433:5432"
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: supersecret
+      POSTGRES_USER: caliper_administrator
+      POSTGRES_PASSWORD: pw
       POSTGRES_DB: sift
+  redis:
+    image: bitnami/redis:latest
+    expose:
+      - "6379"
+    environment:
+      REDIS_PASSWORD: pw
