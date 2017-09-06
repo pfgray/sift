@@ -7,7 +7,7 @@ module.exports = function create(inUser){
       try {
         const password = await hash(inUser.password);
     
-        const defaults = { password };
+        const defaults = { password, role: inUser.role };
         const [user, created] = await models.User.findOrCreate({
           where: {username: inUser.username}, defaults
         }).then(([user, created]) => [user.get({plain: true}), created]);
