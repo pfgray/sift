@@ -21,9 +21,9 @@ var Event = React.createClass({
     //support the new envelope, eventually this will be the default,
     // but for now we need to stll support the poc code.
     var action = this.props.action || '';
-    var actor = this.props.actor ? after(this.props.actor['id'], '/') : '';
-    var actorType = this.props.actor ? after(this.props.actor['type'], '/') : '';
-    var object = this.props.object ? this.props.object['type'] : '';
+    var actor = this.props.actor ? after(this.props.actor['@id'], '/') : '';
+    var actorType = this.props.actor ? after(this.props.actor['@type'], '/') : '';
+    var object = this.props.object ? this.props.object['@type'] : '';
     var objectText = after(object, '/');
 
     var objectLabel = this.props.object ? `${objectText}`: '';

@@ -11,7 +11,7 @@ module.exports.md5 = md5;
 const keyOf = arr => arr.map(i => i.toString()).join(".");
 module.exports.keyOf = keyOf;
 
-const EVENT_TTL = '10';
+const EVENT_TTL = '350'; // 5 minutes, in seconds
 
 const cacheEvent = function(bucketId, event){
     if(!eventCache[bucketId]){
@@ -95,7 +95,8 @@ module.exports.stream = function(bucketId, event){
     //todo: can we simply batch all of the streams?
     const now = (new Date()).getTime();
     const caliperTime = new Date(event.eventTime).getTime();
-    const actorId = md5(event.actor.id);
+    // console.log('okay, now storing:', event.actor)
+    const actorId = md5(event.actor['@id']);
     model.getKeystore().then(client => {
 
         const eventKey = keyOf(['event', bucketId, actorId, now]);

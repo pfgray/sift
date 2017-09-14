@@ -98,7 +98,7 @@ var EventStreamDisplay = React.createClass({
       const currAction = after(log.props.action, '#')
       const actionIsMatched = this.state.filters.types[currAction];
 
-      const actorIsMatched = log.props.actor.id.indexOf(this.state.filters.id) !== -1;
+      const actorIsMatched = log.props.actor.['@id'].indexOf(this.state.filters.id) !== -1;
       return actionIsMatched && actorIsMatched;
     } else {
       return true;
