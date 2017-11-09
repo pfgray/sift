@@ -1,47 +1,68 @@
-'use strict';
+const _ = require('lodash');
+const model = require('../../database/index.js');
+const keyGenerator = require('../key/key.generator.js');
+const Q = require('q');
+const {hash} = require('../../config/hasher.js');
+const create = require('./userCreator.js');
 
-var _ = require('lodash');
-var model = require('../../database');
-var keyGenerator = require('../key/key.generator.js');
+const UserAlreadyExistsError = {
+  status: 'error',
+  message: 'User with this username already exists',
+  code: 'user_exists'
+};
+
+const UnkownError = {
+  status: 'error',
+  message: 'Unknown error happened',
+  code: 'unknown'
+};
+
+const resolveEntity = result => result === null ? null : result.get({plain: true});
 
 module.exports = {
-    getUser:function(username, callback){
-        model.getEventStore().then(function(db){
-          db.view('caliper/users', {key:username}, function (err, res) {
-              //TODO: is there a better way to find a single entity?
-              callback(err, _.transform(res, function(result, entity){
-                  return result.push(entity.value);
-              })[0]);
-          });
-        }).catch(callback);
+    getUser: function(username){
+      console.log('hrm...', model);
+      return model.getRelDatabase()
+        .then(models => {
+          return models.User.findOne({ where: { username } })
+            .then(resolveEntity);
+        });
     },
-    findOrCreate:function(identifier, user, callback){
-        model.getEventStore().then(function(db){
-          db.view('caliper/users', {key:identifier}, function (err, res) {
-              if(err){
-                  callback(err);
-                  return;
-              }
-              //TODO: is there a better way to find a single entity?
-              console.log('got res: ', res);
-              if(res.length < 1){
-                  identifier.type = "user";
-                  keyGenerator.generateApiKey(function(err, apiKey){
-                      identifier.apiKey = apiKey;
-                      var newUser = _.merge(user, identifier);
-                      console.log('creating user... ', JSON.stringify(newUser));
-                      db.save(newUser, function (err, res) {
-                          callback(err, _.merge(newUser, {
-                            _id:res.id
-                          }));
-                      });
-                  });
-              } else {
-                  callback(err, _.transform(res, function(result, entity){
-                      return result.push(entity.value);
-                  })[0]);
-              }
-          });
-        }).catch(callback);
-    }
+    getUserById:function(id){
+      return model.getRelDatabase()
+        .then(models => {
+          return models.User.findOne({ where: {id} })
+            .then(resolveEntity);
+        });
+    },
+    createBucketForUser: function(id, name){
+      return Q.all([
+        model.getRelDatabase(),
+        this.getUserById(id)
+      ]).then(([models, user]) => {
+        const inBucket = {
+          userId: user.id,
+          apiKey: keyGenerator.generateApiKey(),
+          name
+        };
+        return models.Bucket.create(inBucket)
+          .then(resolveEntity);
+      });
+    },
+    createUser: function(user) {
+      return model.getRelDatabase()
+               .then(create(user));
+    },
+    getBuckets: function(userId) {
+      return model.getRelDatabase()
+        .then(models => models.Bucket.findAll({ where: { userId } }))
+        //.then(result => result.get({plain: true}));
+    },
+    getBucket: function(id) {
+      return model.getRelDatabase()
+        .then(models => models.Bucket.findOne({ where: { id } }));
+    },
+    create: create,
+    UserAlreadyExistsError,
+    UnkownError
 }

@@ -14,7 +14,7 @@ module.exports = function() {
   	},
     hot: true,
     quiet: false
-  }).listen(9001, "localhost", function(err) {
+  }).listen(9001, "0.0.0.0", function(err) {
   	if(err) throw new Error("webpack-dev-server", err);
     console.log('Bundling project, please wait...');
   });

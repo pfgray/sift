@@ -1,18 +1,21 @@
 version: '2'
 services:
   caliper:
-    image: pfgray/caliper:sift
+    build:
+      context: .
+      dockerfile: Dockerfiledev
     ports:
-      - "17000:9000"
+      - "9000:9000"
+      - "9001:9001"
     links:
       - couch
       - postgres
       - redis
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       HOST_PROTOCOL: http
       HOST_DOMAIN: "${HOST_DOMAIN}"
-      HOST_PORT: ""
+      HOST_PORT: "${HOST_DOMAIN}"
 
       COUCH_HOST: couch
       COUCH_PORT: 5984
@@ -21,15 +24,18 @@ services:
       PGHOST: postgres
       PGPORT: 5432
       PGDATABASE: sift
-      PGUSER: caliper_administrator
-      PGPASSWORD: pw
+      PGUSER: admin
+      PGPASSWORD: supersecret
 
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      REDIS_PASSWORD: pw
+      REDIS_PASSWORD: reallysupersecret
 
-      ADMIN_USER: admin
+      ADMIN_USER: administrator
       ADMIN_PW: password
+    volumes:
+      - './:/app'
+      - /app/node_modules
   couch:
     image: klaemo/couchdb:2.0.0
     expose:
@@ -38,13 +44,15 @@ services:
     image: postgres
     expose:
       - "5432"
+    ports:
+      - "5433:5432"
     environment:
-      POSTGRES_USER: caliper_administrator
-      POSTGRES_PASSWORD: pw
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: supersecret
       POSTGRES_DB: sift
   redis:
     image: bitnami/redis:latest
     expose:
       - "6379"
     environment:
-      REDIS_PASSWORD: pw
+      REDIS_PASSWORD: reallysupersecret

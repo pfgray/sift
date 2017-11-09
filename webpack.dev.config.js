@@ -35,7 +35,7 @@ module.exports = {
 
   stats: {
     colors: true,
-    modules:true,
+    modules: false,
     reasons: true
   },
 

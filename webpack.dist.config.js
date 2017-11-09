@@ -23,8 +23,9 @@ module.exports = {
   },
 
   debug: false,
-  devtool: false,
+  devtool: 'source-map',
   entry: './client/scripts/components/main.js',
+  bail: true,
 
   stats: {
     colors: true,
@@ -33,10 +34,15 @@ module.exports = {
 
   plugins: [
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true
+    }),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en$/)
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /en$/),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    })
   ],
 
   resolve: {

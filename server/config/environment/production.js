@@ -21,6 +21,11 @@ module.exports = {
     host: process.env.COUCH_HOST,
     port: process.env.COUCH_PORT,
     db_name: process.env.COUCH_DB_NAME
+  },
+
+  admin: {
+    username: process.env.ADMIN_USER,
+    pw: process.env.ADMIN_PW,
   }
 
 };

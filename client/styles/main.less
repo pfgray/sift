@@ -1,0 +1,109 @@
+/* Stiziles */
+
+html, body {
+  background-color: #222222;
+  height:100vh;
+}
+
+body{
+  background-image: url("../images/rocks.jpg");
+  background-size: cover;
+  background-position: center center;
+}
+
+/* main */
+
+.main {
+  width: 100%;
+  height: 100%;
+  background: #222222;
+  color: #fff;
+}
+
+.main img {
+  width: 103px;
+  height: 89px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* transitions */
+
+.fade-enter {
+  opacity: 0.01;
+  transition: opacity .5s ease-in;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+}
+
+.fade-leave {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}
+
+.fade-leave.fade-leave-active {
+  opacity: 0.01;
+}
+
+#content {
+  height: 100%;
+}
+
+.vert-center {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.vert-center.row {
+  margin: 0;
+}
+
+.form-group > * {
+  margin-bottom: 1em;
+}
+
+input.form-control {
+  background-color: rgba(0,0,0,0);
+  color: #fff;
+}
+.subtext {
+  margin-top: 2rem;
+  color: #bbb;
+  text-align: right;
+}
+
+h1, h2, h3, h4, h5 {
+  color: #fff;
+}
+
+.btn-block {
+  margin-bottom: 1rem;
+}
+
+
+.submit-wrapper {
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+
+  span {
+    text-align: center;
+    display: inline-block;
+    color: #f9ff3f;
+  }
+  i {
+    margin-right: 0.25em;
+  }
+
+  button {
+    margin-bottom: 0;
+    flex: 1;
+    margin-right: 0.5em;
+    &:only-child {
+      margin-right: 0;
+    }
+  }
+}
