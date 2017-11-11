@@ -85,7 +85,7 @@ exports.deleteBucket = function(req, res) {
       model.deleteBucket(bucket.id)
         .then(bucket => {
           console.error('success deleting bucket: ', req.params.bucketId);
-          res.status(204);
+          res.json({}).status(204);
         })
         .catch(err => {
           console.error('Error deleting bucket: ', err);
