@@ -9,18 +9,31 @@ import axios from 'axios';
 import withFetch from '../util/withFetch';
 
 const Login = compose(
-  connect(state => state),
-  withFetch(() => axios.get('/api/buckets', {withCredentials:true}).then(res => res.data))
-)(({resolved, failed, data, userState}) => (
+  connect(state => state, d => ({dispatch: d})),
+  withFetch(() => axios.get('/api/buckets', {withCredentials:true}).then(res => res.data)),
+  withProps(props => ({
+    deleteBucket: (bucketId) => {
+      axios.delete(`/api/buckets/${bucketId}`, {withCredentials:true})
+        .then(res => {
+          //res.data
+          props.refetch();
+        });
+    }
+  }))
+)(({resolved, failed, data, userState, deleteBucket}) => (
   <Row className='vert-center'>
-    <Col xs={12} sm={4} smOffset={4}>
+    <Col xs={12} sm={6} smOffset={3}>
       {(resolved && !userState.loading) ? (
         <div>
-          <h3>{userState.user.username}'s buckets</h3>
           {data.data.map(bucket => (
-            <div key={bucket.id}>
-              <Link to={`/bucket/${bucket.id}`} className='btn btn-info btn-block btn-lg'><i className='fa fa-shopping-basket'/>{bucket.name}</Link>
-            </div>
+            <Row key={bucket.id} style={{display:'flex', alignItems: 'center', marginBottom: '1em'}}>
+              <Col xs={11} >
+                <Link to={`/bucket/${bucket.id}`} className='btn btn-info btn-block btn-lg' style={{marginBottom:'0'}}><i className='fa fa-shopping-basket'/>{bucket.name}</Link>
+              </Col>
+              <Col xs={1} style={{textAlign: 'center', fontSize: '2.5em'}}>
+                <i className='fa fa-times text-danger' onClick={() => deleteBucket(bucket.id)} style={{cursor:'pointer'}} />
+              </Col>
+            </Row>
           ))}
           <div>
             <Link to='/bucket/new' className="branded-login">Create new</Link>

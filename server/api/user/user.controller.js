@@ -15,6 +15,7 @@ exports.signup = function(req, res) {
   })
   .then(([user, created]) => {
     if(created){
+      console.log('created user: ', user);
       req.login(user, () => {
         res.json({user}, 200);
       });
@@ -23,7 +24,6 @@ exports.signup = function(req, res) {
     }
   })
   .catch(err => {
-    console.log('#######got err:', err);
     res.status(400).json(err);
   });
 }
@@ -65,10 +65,32 @@ exports.createBucket = function(req, res) {
   model.createBucketForUser(req.user.id, req.body.name)
     .then(bucket => {
       console.error('success creating bucket: ', bucket);
-      res.json(buckets).status(200);
+      res.json(bucket).status(200);
     })
     .catch(err => {
       console.error('Error creating bucket: ', err);
       res.json(err).status(500)
     });
+}
+
+exports.deleteBucket = function(req, res) {
+  console.error('user: ', req.user, 'is deleting bucket', req.params.bucketId);
+  model.getBucket(req.params.bucketId).then(bucket => {
+    if(bucket.userId !== req.user.id){
+      res.json({
+        status: 'error',
+        message: "this bucket doesn't belog to you."
+      }).status(403);
+    } else {
+      model.deleteBucket(bucket.id)
+        .then(bucket => {
+          console.error('success deleting bucket: ', req.params.bucketId);
+          res.status(204);
+        })
+        .catch(err => {
+          console.error('Error deleting bucket: ', err);
+          res.json(err).status(500)
+        });
+    }
+  });
 }

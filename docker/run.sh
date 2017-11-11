@@ -18,4 +18,5 @@ echo "starting app with: " \
      "    HOST_DOMAIN:$HOST_DOMAIN\n"\
      "    HOST_PORT:$HOST_PORT\n"
 
+echo "wtf";
 node /app/dist/server/app.js

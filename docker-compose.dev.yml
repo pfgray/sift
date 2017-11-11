@@ -1,9 +1,9 @@
-version: '2'
+version: '3'
 services:
   caliper:
     build:
       context: .
-      dockerfile: Dockerfiledev
+      dockerfile: Dockerfile-dev
     ports:
       - "9000:9000"
       - "9001:9001"

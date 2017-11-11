@@ -6,7 +6,7 @@
 
 // Set default node environment to development
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-console.log('Running caliper-store in: ' + process.env.NODE_ENV);
+console.log('Running caliper-store in:', __dirname, "in env:", process.env.NODE_ENV);
 
 var express = require('express');
 var config = require('./config/environment');

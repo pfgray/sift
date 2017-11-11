@@ -18,8 +18,14 @@ const withFetch = promiseGenerator => WrappedComponent => {
         .then(result => this.setState({resolved: true, data: result}))
         .catch(err => this.setState({resolved: true, err}))
     }
+    refetch() {
+      this.setState({resolved: false});
+      promiseGenerator(this.props)
+        .then(result => this.setState({resolved: true, data: result}))
+        .catch(err => this.setState({resolved: true, err}))
+    }
     render() {
-      return <WrappedComponent {...this.state} {...this.props} />;
+      return <WrappedComponent {...this.state} {...this.props} refetch={this.refetch.bind(this)} />;
     }
   };
 }

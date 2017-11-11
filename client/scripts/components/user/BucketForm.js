@@ -7,9 +7,10 @@ import { compose, withState, withProps } from 'recompose';
 import classNames from 'classnames';
 import axios from 'axios';
 import withFetch from '../util/withFetch';
+import { push } from 'react-router-redux';
 
 const Login = compose(
-  connect(state => state),
+  connect(state => state, d => ({dispatch: d})),
   withState('name', 'setName', ''),
   withState('creating', 'setCreating', false),
   withProps(props => ({
@@ -20,7 +21,7 @@ const Login = compose(
         name: props.name,
       }, {withCredentials:true}).then(resp => {
         // redirect to /bucket/:id?
-        window.location = '/bucket/' + resp.data.id;
+        props.dispatch((push('/bucket/' + resp.data.id)));
       }).catch(err => {
         props.setCreating(false);
       });

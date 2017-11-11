@@ -49,9 +49,15 @@ module.exports = {
           .then(resolveEntity);
       });
     },
-    createUser: function(user) {
+    deleteBucket: function(bucketId) {
       return model.getRelDatabase()
-               .then(create(user));
+      .then(models => {
+        return models.Bucket.destroy({
+          where: {
+            id: bucketId
+          }
+        });
+      })
     },
     getBuckets: function(userId) {
       return model.getRelDatabase()

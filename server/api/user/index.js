@@ -11,5 +11,6 @@ router.get('/me', auth.isLoggedIn, controller.currentUser);
 router.get('/buckets', auth.isLoggedIn, controller.buckets);
 router.post('/buckets', auth.isLoggedIn, controller.createBucket);
 router.get('/buckets/:bucketId', auth.isLoggedIn, controller.getBucket);
+router.delete('/buckets/:bucketId', auth.isLoggedIn, controller.deleteBucket);
 
 module.exports = router;

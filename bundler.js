@@ -9,8 +9,8 @@ module.exports = function() {
   	publicPath: myConfig.output.publicPath,
   	stats: {
   		colors: true,
-      modules:true,
-      reasons: true
+      // modules:true,
+      // reasons: true
   	},
     hot: true,
     quiet: false

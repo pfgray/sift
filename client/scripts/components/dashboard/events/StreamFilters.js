@@ -30,21 +30,27 @@ var StreamFilters = React.createClass({
       showFilters: false
     }));
   },
+  keyDown: function(e) {
+    if (e.metaKey && e.keyCode == 75) {
+      this.state.showFilters ? this.hide() : this.show();
+    }
+  },
+  click: function(e) {
+    const clickIsInContainer = this.root.contains(e.target) && this.root !== e.target;
+
+    if (!clickIsInContainer) {
+      this.hide();
+    }
+  },
   componentDidMount: function(){
     // setup document listener for cmd + k
     // setup document listener for off click
-    this.shortcutListener = window.addEventListener('keydown', e => {
-      if (e.metaKey && e.keyCode == 75) {
-        this.state.showFilters ? this.hide() : this.show();
-      }
-    });
-    this.shortcutListener = window.addEventListener('click', e => {
-      const clickIsInContainer = this.root.contains(e.target) && this.root !== e.target;
-
-      if (!clickIsInContainer) {
-        this.hide();
-      }
-    });
+    window.addEventListener('keydown', this.keyDown);
+    window.addEventListener('click', this.click);
+  },
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.keyDown);
+    window.removeEventListener('click', this.click);
   },
   updateVal: function(name) {
     return e => {
