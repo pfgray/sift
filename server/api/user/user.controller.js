@@ -8,7 +8,7 @@ exports.login = function(req, res) {
 };
 
 exports.signup = function(req, res) {
-  model.createUser({
+  model.create({
     username: req.body.username,
     password: req.body.password,
     role: 'user'
