@@ -18,6 +18,18 @@ module.exports.isLoggedIn = function(req, res, next){
   }
 }
 
+module.exports.hasRole = function(roles){
+  return function(req, res, next){
+    if(!req.user) {
+      res.status(401).json({status:'error', message: 'You are not logged in'});
+    } else if(!roles.includes(req.user.role)) {
+      res.status(403).json({status:'error', message: "You're not allowed to do that"});
+    } else {
+      next();
+    }
+  }
+}
+
 module.exports.init = function(app, config){
 
     app.use(session({

@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile-dev
     ports:
-      - "9000:9000"
+      - "6506:9000"
       - "9001:9001"
     links:
       - couch

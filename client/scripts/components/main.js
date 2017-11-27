@@ -31,7 +31,7 @@ render(
       <Route name='intro' path='/' component={Intro}></Route>
       <Route name='login' path='/login' component={Login}></Route>
       <Route name='login' path='/signup' component={Signup}></Route>
-      {/* <Route name='admin' path='/admin' component={Admin}></Route> */}
+      <Route name='admin' path='/admin' component={Admin}></Route>
       {/* <Route name='dashboard' path='/dashboard' component={Dashboard}>
         <IndexRoute name='eventstream' component={EventStream}></IndexRoute>
         <Route name='graphs' path='/dashboard/graphs' component={GridView}></Route>

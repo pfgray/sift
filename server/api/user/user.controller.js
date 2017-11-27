@@ -4,7 +4,8 @@ var model = require('./user.model');
 // Get list of things
 exports.login = function(req, res) {
   console.log('okay, hit login: ', req.user);
-  res.json({}, 200);
+  delete req.user.password;
+  res.json(req.user, 200);
 };
 
 exports.signup = function(req, res) {
@@ -61,10 +62,10 @@ exports.buckets = function(req, res) {
 }
 
 exports.createBucket = function(req, res) {
-  console.error('user: ', req.user, 'is creating bucket', req.body.name);
+  console.log('user: ', req.user, 'is creating bucket', req.body.name);
   model.createBucketForUser(req.user.id, req.body.name)
     .then(bucket => {
-      console.error('success creating bucket: ', bucket);
+      console.log('success creating bucket: ', bucket);
       res.json(bucket).status(200);
     })
     .catch(err => {
@@ -74,7 +75,7 @@ exports.createBucket = function(req, res) {
 }
 
 exports.deleteBucket = function(req, res) {
-  console.error('user: ', req.user, 'is deleting bucket', req.params.bucketId);
+  console.log('user: ', req.user, 'is deleting bucket', req.params.bucketId);
   model.getBucket(req.params.bucketId).then(bucket => {
     if(bucket.userId !== req.user.id){
       res.json({
@@ -84,7 +85,7 @@ exports.deleteBucket = function(req, res) {
     } else {
       model.deleteBucket(bucket.id)
         .then(bucket => {
-          console.error('success deleting bucket: ', req.params.bucketId);
+          console.log('success deleting bucket: ', req.params.bucketId);
           res.json({}).status(204);
         })
         .catch(err => {
@@ -93,4 +94,17 @@ exports.deleteBucket = function(req, res) {
         });
     }
   });
+}
+
+exports.listAll = function(req, res) {
+  model.getAllUsers().then(users => {
+    res.json({
+      data: users.map(u => {
+        delete u.password;
+        return u;
+      })
+    }).status(200);
+  }).catch(err => {
+    res.json(err).status(500);
+  })
 }

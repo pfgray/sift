@@ -32,7 +32,7 @@ const Login = compose(
                 <Link to={`/bucket/${bucket.id}`} className='btn btn-info btn-block btn-lg' style={{marginBottom:'0'}}><i className='fa fa-shopping-basket'/>{bucket.name}</Link>
               </Col>
               <Col xs={1} style={{textAlign: 'center', fontSize: '2.5em'}}>
-                <i className='fa fa-times text-danger' onClick={() => setConfirmDeleteBucket(bucket)} style={{cursor:'pointer'}} />
+                <i className='fa fa-trash text-danger' onClick={() => setConfirmDeleteBucket(bucket)} style={{cursor:'pointer'}} />
               </Col>
             </Row>
           ))}

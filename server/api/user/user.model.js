@@ -20,6 +20,12 @@ const UnkownError = {
 const resolveEntity = result => result === null ? null : result.get({plain: true});
 
 module.exports = {
+    getAllUsers: function() {
+      return model.getRelDatabase()
+        .then(models => {
+          return models.User.findAll()
+        });
+    },
     getUser: function(username){
       console.log('hrm...', model);
       return model.getRelDatabase()

@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router';
+import { Link } from 'react-router';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import { Col, Row, Grid, ButtonGroup, Button, FormControl, FormGroup } from 'react-bootstrap';
 import { compose, withState, withProps } from 'recompose';
 import classNames from 'classnames';
@@ -13,6 +15,7 @@ const Login =
     withState('password', 'setPassword'),
     withState('loggingIn', 'setLoggingIn'),
     withState('errorCount', 'setErrorCount', 0),
+    connect(() => ({}), dispatch => ({dispatch})),
     withProps(props => ({
       up: updater => ev => {
         props.setErrorCount(0);
@@ -25,7 +28,11 @@ const Login =
           username: props.username,
           password: props.password
         }).then(resp => {
-          window.location = '/overview';
+          if(resp.data.role === "admin") {
+            props.dispatch(push('admin'));
+          } else {
+            props.dispatch(push('/overview'));
+          }
         }).catch(err => {
           props.setErrorCount(props.errorCount + 1);
           props.setLoggingIn(false);

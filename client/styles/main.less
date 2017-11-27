@@ -57,6 +57,7 @@ a {
 
 #content {
   height: 100%;
+  padding: 0.1px;
 }
 
 .vert-center {
@@ -114,4 +115,43 @@ h1, h2, h3, h4, h5 {
       margin-right: 0;
     }
   }
+}
+
+.list-group-item {
+  background: none;
+}
+
+li.user {
+  display: flex;
+  align-items: middle;
+  .username {
+    font-weight: 700;
+  }
+  .role {
+    //display: inline-block;
+    margin-left: 1em;
+    color: #999;
+    font-style: italic;
+    &.admin {
+      color: #ffff5d;
+    }
+  }
+  .delete {
+    flex: 1;
+    text-align: right;
+    cursor: pointer;
+  }
+}
+
+.modal-body.small-body {
+  padding-top: 10rem;
+  padding-bottom: 10rem;
+}
+
+.text-danger {
+  color: #ff5956;
+}
+
+.page {
+  margin-top: 5em;
 }
