@@ -68,7 +68,9 @@ module.exports = {
       return model.getRelDatabase()
         .then(models => models.Bucket.findOne({ where: { id } }));
     },
-    create: create,
+    create: function(inUser){
+      return model.getRelDatabase().then(create(inUser));
+    },
     UserAlreadyExistsError,
     UnkownError
 }
