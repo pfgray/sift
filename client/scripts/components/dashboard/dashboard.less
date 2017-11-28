@@ -24,6 +24,16 @@
   }
 }
 
+.dash-container {
+  display:flex;
+  flex-direction: row;
+  height: ~"calc(100vh - 50px)";
+  .dash-main {
+    height: 100%;
+    flex: 1;
+  }
+}
+
 .dash-sidebar + .dash-main {
   margin-left: @sidebar-collapsed-width;
 }
@@ -118,7 +128,6 @@
 .dash-main{
   color:white;
   background-color:rgba(0,0,0,0.5);
-  height:100vh;
   margin-left:@sidebar-width;
 }
 

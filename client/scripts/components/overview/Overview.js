@@ -22,28 +22,28 @@ const Login = compose(
   })),
   withState('confirmDeleteBucket', 'setConfirmDeleteBucket', null)
 )(({resolved, failed, data, userState, deleteBucket, confirmDeleteBucket, setConfirmDeleteBucket}) => (
-  <Row className='vert-center'>
-    <Col xs={12} sm={6} smOffset={3}>
-      {(resolved && !userState.loading) ? (
-        <div>
-          {data.data.map(bucket => (
-            <Row key={bucket.id} style={{display:'flex', alignItems: 'center', marginBottom: '1em'}}>
-              <Col xs={11}>
-                <Link to={`/bucket/${bucket.id}`} className='btn btn-info btn-block btn-lg' style={{marginBottom:'0'}}><i className='fa fa-shopping-basket'/>{bucket.name}</Link>
-              </Col>
-              <Col xs={1} style={{textAlign: 'center', fontSize: '2.5em'}}>
-                <i className='fa fa-trash text-danger' onClick={() => setConfirmDeleteBucket(bucket)} style={{cursor:'pointer'}} />
-              </Col>
-            </Row>
-          ))}
-          <div>
-            <Link to='/bucket/new' className="branded-login">Create new</Link>
-          </div>
-        </div>
-      ): <div>loading...</div>}
-    </Col>
-    {confirmDeleteBucket ? (<ConfirmDelete bucket={confirmDeleteBucket} del={deleteBucket} close={() => setConfirmDeleteBucket(null)}/>) : null}
-  </Row>
+  <div className='page'>
+    <Grid>
+      <Row>
+        <Col xs={12} md={6} mdOffset={3}>
+          {(resolved && !userState.loading) ? (
+            <ul className="list-group">
+              {data.data.map(bucket => (
+                <li className="list-group-item" key={bucket.id}>
+                  <Link to={`/bucket/${bucket.id}`} className='' style={{marginBottom:'0'}}>{bucket.name}</Link>
+                  <span className='delete text-danger'><i className='fa fa-trash'  onClick={() => setConfirmDeleteBucket(bucket)}/></span>
+                </li>
+              ))}
+              <div>
+                <Link to='/bucket/new' className="btn btn-success" style={{marginTop: '1rem'}}>Create new</Link>
+              </div>
+            </ul>
+          ): <div>loading...</div>}
+        </Col>
+        {confirmDeleteBucket ? (<ConfirmDelete bucket={confirmDeleteBucket} del={deleteBucket} close={() => setConfirmDeleteBucket(null)}/>) : null}
+      </Row>
+    </Grid>
+  </div>
 ));
 
 const ConfirmDelete = ({bucket, del, close}) => (

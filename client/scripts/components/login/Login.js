@@ -8,6 +8,7 @@ import { compose, withState, withProps } from 'recompose';
 import classNames from 'classnames';
 import axios from 'axios';
 import Brand from '../intro/Brand';
+import { receiveUser } from '../user/userReducer';
 
 const Login =
   compose(
@@ -28,11 +29,7 @@ const Login =
           username: props.username,
           password: props.password
         }).then(resp => {
-          if(resp.data.role === "admin") {
-            props.dispatch(push('admin'));
-          } else {
-            props.dispatch(push('/overview'));
-          }
+          props.dispatch(receiveUser(resp.data));
         }).catch(err => {
           props.setErrorCount(props.errorCount + 1);
           props.setLoggingIn(false);

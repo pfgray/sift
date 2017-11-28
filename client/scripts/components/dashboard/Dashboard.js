@@ -53,14 +53,14 @@ var Dashboard = React.createClass({
   },
   render: function() {
     return (
-      <div>
+      <div className='dash-container'>
         <div className={"dash-sidebar" + (this.state.sidebarOpen ? ' open' : '')}>
           <div>
             <div className='collapse-container'>
               <i className="fa fa-chevron-right" aria-hidden="true" onClick={this.toggleSidebar}></i>
             </div>
             <div className="hide-closed">
-               <BucketProfile bucket={this.props.bucket}/> 
+               <BucketProfile bucket={this.props.bucket}/>
             </div>
           </div>
         </div>
