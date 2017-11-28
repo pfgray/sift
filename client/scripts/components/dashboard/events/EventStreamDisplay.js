@@ -73,12 +73,12 @@ var EventStreamDisplay = React.createClass({
     this.stream.initiate();
   },
   componentWillUpdate: function() {
-    var node = findDOMNode(this);
+    var node = this.console;
     this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
   },
   componentDidUpdate: function() {
     if (this.shouldScrollBottom) {
-      var node = findDOMNode(this);
+      var node = this.console;
       node.scrollTop = node.scrollHeight;
     }
   },
@@ -107,9 +107,9 @@ var EventStreamDisplay = React.createClass({
   render: function() {
     // compute the filters?
     return (
-        <div>
+        <div style={{height: '100%'}}>
           <StreamFilters onFilterUpdate={this.updateFilter} filters={this.state.filters} />
-          <div className='console'>
+          <div className='console' ref={el => { this.console = el; }}>
             <Message message={"connecting to: [" + window.location.origin + "]..."}/>
             <Message message={"[connected]"} className="success" />
             {this.state.log.filter(this.logShouldBeShown).map((m, i) => <m.comp {...m.props} key={JSON.stringify(m.props)} />)}
