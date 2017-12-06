@@ -106,5 +106,14 @@ exports.listAll = function(req, res) {
     }).status(200);
   }).catch(err => {
     res.json(err).status(500);
-  })
+  });
+}
+
+exports.deleteUser = function(req, res){
+  console.log('deleting userId: ', req.params.userId)
+  model.deleteUser(req.params.userId).then(() => {
+    res.json({"okay": true}).status(200);
+  }).catch(err => {
+    res.json(err).status(500);
+  });
 }

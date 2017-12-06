@@ -55,6 +55,16 @@ module.exports = {
           .then(resolveEntity);
       });
     },
+    deleteUser: function(userId) {
+      return model.getRelDatabase()
+      .then(models => {
+        return models.User.destroy({
+          where: {
+            id: userId
+          }
+        });
+      })
+    },
     deleteBucket: function(bucketId) {
       return model.getRelDatabase()
       .then(models => {

@@ -15,6 +15,7 @@ module.exports = function(sequelize) {
       type: Sequelize.INTEGER,
       allowNull: false,
       field: 'user_id',
+      onDelete:'cascade',
       references: {
         model: User,
         key: 'id'
@@ -24,6 +25,22 @@ module.exports = function(sequelize) {
     name: { type: Sequelize.STRING, allowNull: false },
     enabled: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true }
   });
+
+
+  // todo: remove this
+  sequelize.query(`
+  ALTER TABLE buckets
+    DROP CONSTRAINT buckets_user_id_fkey;
+  `)
+
+  sequelize.query(`
+  ALTER TABLE buckets
+  ADD CONSTRAINT buckets_user_id_fkey
+  FOREIGN KEY (user_id)
+  REFERENCES users(id)
+  ON DELETE CASCADE;
+  `)
+
 
   return {
     User,

@@ -8,12 +8,11 @@ const Admin = compose(
   withFetch(() => axios.get('/api/users', {withCredentials:true}).then(res => res.data.data)),
   withProps(props => ({
     deleteUser: (userId) => {
-      console.log('delting user with id: ', userId);
-      // axios.delete(`/api/users/${userId}`, {withCredentials:true})
-      //   .then(res => {
-      //     //res.data
-      //     props.refetch();
-      //   });
+      axios.delete(`/api/users/${userId}`, {withCredentials:true})
+        .then(res => {
+          //res.data
+          props.refetch();
+        });
     }
   })),
   withState('confirmDeleteUser', 'setConfirmDeleteUser', null)

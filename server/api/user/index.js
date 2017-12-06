@@ -1,7 +1,7 @@
 const express = require('express');
 const controller = require('./user.controller');
 const passport = require('passport');
-const auth = require('../../config/passport.js')
+const auth = require('../../config/passport.js');
 
 const router = express.Router();
 
@@ -13,5 +13,6 @@ router.post('/buckets', auth.isLoggedIn, controller.createBucket);
 router.get('/buckets/:bucketId', auth.isLoggedIn, controller.getBucket);
 router.delete('/buckets/:bucketId', auth.isLoggedIn, controller.deleteBucket);
 router.get('/users', auth.hasRole('admin'), controller.listAll);
+router.delete('/users/:userId', auth.hasRole('admin'), controller.deleteUser);
 
 module.exports = router;

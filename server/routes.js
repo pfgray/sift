@@ -37,6 +37,12 @@ module.exports = function(app, socketio) {
   app.route('/:url(api|auth|components|app|bower_components|public)/*')
     .get(errors[404]);
 
+  app.get('/logout', function(req, res){
+    console.log('logging out');
+    req.logout();
+    res.redirect('/');
+  });
+
   // All other routes should redirect to the index.html
   app.route('/*')
     .get(function(req, res) {
