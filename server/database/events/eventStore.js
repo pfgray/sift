@@ -21,6 +21,20 @@ module.exports = service({
         raw: false,
         forceSave: true
     });
+
+    // init on first time:
+    [
+      '_users',
+      '_replicator',
+      '_global_changes'
+    ].map(name => () => createEmptyDb(c, name))
+     .reduce(Q.when, Q(true))
+     .then(() => {
+       console.log('created initial databases');
+     }).catch(err => {
+       console.error('error creating initial databases: ', err)
+     });
+
     var db = c.database(couch.db_name);
     var updateDesign = function(design){
       db.save(design._id, design);
@@ -42,3 +56,10 @@ module.exports = service({
     });
   }
 });
+
+function createEmptyDb(c, dbName) {
+  var db = c.database(dbName);
+  return Q.ninvoke(db, 'exists').then(exists => {
+    return exists ? true : Q.ninvoke(db, 'create');
+  }).then(() => true);
+}

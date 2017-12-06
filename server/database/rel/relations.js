@@ -26,22 +26,6 @@ module.exports = function(sequelize) {
     enabled: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true }
   });
 
-
-  // todo: remove this
-  sequelize.query(`
-  ALTER TABLE buckets
-    DROP CONSTRAINT buckets_user_id_fkey;
-  `)
-
-  sequelize.query(`
-  ALTER TABLE buckets
-  ADD CONSTRAINT buckets_user_id_fkey
-  FOREIGN KEY (user_id)
-  REFERENCES users(id)
-  ON DELETE CASCADE;
-  `)
-
-
   return {
     User,
     Bucket

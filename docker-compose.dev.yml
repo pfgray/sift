@@ -40,6 +40,8 @@ services:
     image: klaemo/couchdb:2.0.0
     expose:
       - "5984"
+    ports:
+      - "5985:5984"
   postgres:
     image: postgres
     expose:

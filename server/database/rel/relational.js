@@ -43,6 +43,18 @@ module.exports = service({
         }, Q.when(true)).then(() => models);
       })
       .then(() => {
+        // todo: remove this
+        return sequelize.query(`
+          ALTER TABLE buckets
+            DROP CONSTRAINT buckets_user_id_fkey;
+          ALTER TABLE buckets
+            ADD CONSTRAINT buckets_user_id_fkey
+            FOREIGN KEY (user_id)
+            REFERENCES users(id)
+            ON DELETE CASCADE;
+        `);
+      })
+      .then(() => {
         // initialize admins?
         if(config.admin.username && config.admin.pw){
           return userCreator({
