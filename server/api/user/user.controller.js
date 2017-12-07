@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var model = require('./user.model');
+const {hash} = require('../../config/hasher.js');
 
 // Get list of things
 exports.login = function(req, res) {
@@ -114,6 +115,22 @@ exports.deleteUser = function(req, res){
   model.deleteUser(req.params.userId).then(() => {
     res.json({"okay": true}).status(200);
   }).catch(err => {
+    res.json(err).status(500);
+  });
+}
+
+exports.changePassword = function(req, res) {
+  console.log('changing password for user: ', req.params.userId)
+  hash(req.body.password).then(hashed => {
+    return model.updateUser(req.params.userId, {
+      password: hashed
+    });
+  })
+  .then(() => {
+    console.log('successfully changed password?!?!?')
+    res.json({"okay": true}).status(200);
+  }).catch(err => {
+    console.error('did NOT successfully change password, got: ', err)
     res.json(err).status(500);
   });
 }

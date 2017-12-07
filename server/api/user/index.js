@@ -15,4 +15,7 @@ router.delete('/buckets/:bucketId', auth.isLoggedIn, controller.deleteBucket);
 router.get('/users', auth.hasRole('admin'), controller.listAll);
 router.delete('/users/:userId', auth.hasRole('admin'), controller.deleteUser);
 
+// todo: also allow users to update their own password?
+router.put('/users/:userId/password', auth.hasRole('admin'), controller.changePassword);
+
 module.exports = router;

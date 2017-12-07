@@ -59,11 +59,17 @@ module.exports = {
       return model.getRelDatabase()
       .then(models => {
         return models.User.destroy({
-          where: {
-            id: userId
-          }
+          where: { id: userId }
         });
       })
+    },
+    updateUser: function(userId, newUser) {
+      return model.getRelDatabase()
+      .then(models => {
+        return models.User.update(
+          newUser,
+          {where: { id: userId }})
+      });
     },
     deleteBucket: function(bucketId) {
       return model.getRelDatabase()

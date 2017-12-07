@@ -123,6 +123,17 @@ li.list-group-item {
   align-items: middle;
   background: none;
 
+  .user-opts {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: flex-end;
+    i {
+      margin-left: 0.5rem;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+  }
+
   .username {
     font-weight: 700;
   }
@@ -135,13 +146,6 @@ li.list-group-item {
       color: #ffff5d;
     }
   }
-  .delete {
-    flex: 1;
-    text-align: right;
-    i {
-      cursor: pointer;
-    }
-  }
 }
 
 .modal-body.small-body {
@@ -151,6 +155,12 @@ li.list-group-item {
 
 .text-danger {
   color: #ff5956;
+}
+.text-warning {
+  color: #ffff5d;
+}
+.text-success {
+  color: #8cff8e;
 }
 
 .page {

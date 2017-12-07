@@ -6,12 +6,12 @@ module.exports = function create(inUser){
     return async function(models){
       try {
         const password = await hash(inUser.password);
-    
+
         const defaults = { password, role: inUser.role };
         const [user, created] = await models.User.findOrCreate({
           where: {username: inUser.username}, defaults
         }).then(([user, created]) => [user.get({plain: true}), created]);
-    
+
         if(!created) {
           console.log('we didnt create this user, so not creating bucket..');
           return [user, false];
