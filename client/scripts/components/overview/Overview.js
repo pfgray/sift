@@ -31,7 +31,10 @@ const Login = compose(
               {data.data.map(bucket => (
                 <li className="list-group-item" key={bucket.id}>
                   <Link to={`/bucket/${bucket.id}`} className='' style={{marginBottom:'0'}}>{bucket.name}</Link>
-                  <span className='delete text-danger'><i className='fa fa-trash'  onClick={() => setConfirmDeleteBucket(bucket)}/></span>
+
+                  <span className='list-item-opts'>
+                    <span className='delete text-danger'><i className='fa fa-trash'  onClick={() => setConfirmDeleteBucket(bucket)}/></span>
+                  </span>
                 </li>
               ))}
               <div>

@@ -17,6 +17,9 @@ const Header = ({user, children}) => (
       <LinkContainer to="/overview">
         <NavItem>Buckets</NavItem>
       </LinkContainer>
+      <NavItem href='/logout'>
+        Logout <i className="fa fa-external-link" ></i>
+      </NavItem>
       <Navbar.Text>{user.username}</Navbar.Text>
     </Nav>
   </Navbar>
