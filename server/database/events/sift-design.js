@@ -72,6 +72,20 @@ module.exports = {
         }
       },
       reduce: function (key, values, rereduce) {  if (rereduce) {    return sum(values);  } else {    return values.length;  }}
+    },
+    count_assessment_item_starts: {
+      map: function(doc) {
+        if (doc && doc.action == 'http://purl.imsglobal.org/vocab/caliper/v1/action#Viewed' &&
+          doc.object && doc.object.type == 'http://purl.imsglobal.org/caliper/v1/lis/AssessmentItem')
+        emit(doc.bucket);
+      },
+      reduce: function (key, values, rereduce) {
+        if (rereduce) {
+          return sum(values);
+        } else {
+          return values.length;
+        }
+      }
     }
   },
   lists:{

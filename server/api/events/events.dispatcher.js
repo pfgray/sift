@@ -124,6 +124,7 @@ module.exports.stream = function(bucketId, event){
 
         function extract(event) {
             return {
+                bucket: bucketId,
                 actorId: event['actor']['@id'],
                 action: event['action'],
                 object: {
