@@ -38,7 +38,7 @@ const Admin = compose(
                 <span className={'role ' + u.role}>{u.role}</span>
                 {u.role === 'admin' ? null: (
                   <span className='list-item-opts'>
-                    <span className='delete text-success'>
+                    <span className='delete text-primary'>
                       <i className='fa fa-key'  onClick={() => setChangingPassword(u)}/>
                     </span>
                     <span className='delete text-danger'>
