@@ -7,6 +7,7 @@ const Header = ({user, children}) => (
   <Navbar inverse>
     <Navbar.Header>
       <Navbar.Brand>Sift</Navbar.Brand>
+      <Navbar.Text>{user.username}</Navbar.Text>
     </Navbar.Header>
     <Nav pullRight>
       {user.role === 'admin' ? (
@@ -20,7 +21,6 @@ const Header = ({user, children}) => (
       <NavItem href='/logout'>
         Logout <i className="fa fa-external-link" ></i>
       </NavItem>
-      <Navbar.Text>{user.username}</Navbar.Text>
     </Nav>
   </Navbar>
 );
