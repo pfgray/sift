@@ -119,6 +119,26 @@ module.exports.stream = function(bucketId, event){
         return Q.ninvoke(batched, 'exec');
     })
     .then(() => {
+        console.log('Storing event in couchdb', event['@id']);
+
+
+        function extract(event) {
+            return {
+                actorId: event['actor']['@id'],
+                action: event['action'],
+                object: {
+                    id: event['object']['@id'],
+                    type: event['object']['@type']
+                }
+            }
+        }
+
+        return model.getEventStore()
+            .then(couchdb => {
+                return Q.ninvoke(couchdb, 'save', event['@id'], extract(event));
+            })
+    })
+    .then(() => {
         console.log('Streaming to browser....');
         eventStream.pushEvent(bucketId, event);
     }).catch(err => console.error(err));
