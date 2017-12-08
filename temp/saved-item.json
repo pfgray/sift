@@ -1,0 +1,18 @@
+{
+  "@context": "http://purl.imsglobal.org/ctx/caliper/v1/Context",
+  "@id": "urn:uuid:37647eca-e39d-45d9-9523-5ee7ce15ca74",
+  "@type": "http://purl.imsglobal.org/caliper/v1/AssessmentItemEvent",
+  "eventTime": "@@timestamp",
+  "actor": {
+    "@type": "http://purl.imsglobal.org/caliper/v1/lis/Person",
+    "@id": "https://de-cbl-perf.difference-engine.com/caliper/Person/73567943"
+  },
+  "action": "Saved",
+  "object": {
+    "extensions": {
+      "attemptId": "@@attemptId"
+    },
+    "@type": "http://purl.imsglobal.org/caliper/v1/lis/AssessmentItem",
+    "@id": "https://de-cbl-perf.difference-engine.com/caliper/AssessmentItem/73435348"
+  }
+}

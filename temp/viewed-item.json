@@ -1,0 +1,29 @@
+{
+  "@context": "http://purl.imsglobal.org/ctx/caliper/v1/Context",
+  "@id": "urn:uuid:5fac58a2-ac2d-4706-83be-4b2531ea7f54",
+  "@type": "http://purl.imsglobal.org/caliper/v1/AssessmentItemEvent",
+  "eventTime": "2017-12-07T16:39:04.706Z",
+  "actor": {
+    "@type": "http://purl.imsglobal.org/caliper/v1/lis/Person",
+    "@id": "https://de-cbl-perf.difference-engine.com/caliper/Person/73567943"
+  },
+  "action": "http://purl.imsglobal.org/vocab/caliper/v1/action#Viewed",
+  "object": {
+    "extensions": {
+      "courseId": 73489824,
+      "assessmentId": 73605968,
+      "assessmentQuestionType": "SimpleQuestionType.multiChoice",
+      "competencies": [
+        {
+          "key": 69798314,
+          "guid": "f8921dcc-dddb-42d5-95f6-b2295c4cc16e",
+          "title": "Explain how a monopoly chooses the levels of output and price that maximize profit.",
+          "level": 3,
+          "type": "competency"
+        }
+      ]
+    },
+    "@type": "http://purl.imsglobal.org/caliper/v1/lis/AssessmentItem",
+    "@id": "https://de-cbl-perf.difference-engine.com/caliper/AssessmentItem/73435348"
+  }
+}

@@ -127,9 +127,11 @@ module.exports.stream = function(bucketId, event){
                 bucket: bucketId,
                 actorId: event['actor']['@id'],
                 action: event['action'],
+                eventTime: event['eventTime'],
                 object: {
                     id: event['object']['@id'],
-                    type: event['object']['@type']
+                    type: event['object']['@type'],
+                    extensions: event['object']['extensions']
                 }
             }
         }

@@ -9,6 +9,7 @@ router.post('/buckets/:bucketId/events', authorizeKey, controller.add);
 router.get( '/buckets/:bucketId/events', authorizeKey, controller.eventsByActor);
 router.get( '/buckets/:bucketId/eventsByCaliperDate', authorizeKey, controller.eventsByActorCaliperDate);
 router.get( '/buckets/:bucketId/events/aggregates', authorizeKey, aggregateController.countAssessmentItemsStarted );
+router.get( '/buckets/:bucketId/events/assessmentItemTime/:itemId', authorizeKey, aggregateController.calculateAssessmentItemTime );
 
 module.exports.router = router;
 module.exports.dispatcher = require('./events.dispatcher').dispatcher;

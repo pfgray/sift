@@ -86,6 +86,30 @@ module.exports = {
           return values.length;
         }
       }
+    },
+    average_item_time: {
+      map: function(doc) {
+        if (doc && doc.action == 'http://purl.imsglobal.org/vocab/caliper/v1/action#Viewed' &&
+          doc.object && doc.object.type == 'http://purl.imsglobal.org/caliper/v1/lis/AssessmentItem') {
+            emit([doc.bucket, doc.object.id, doc.object.extensions.attemptId, 'started'], {started: true, time: doc.eventTime})
+        } else if(doc && doc.action == 'Saved' &&
+          doc.object && doc.object.type == 'http://purl.imsglobal.org/caliper/v1/lis/AssessmentItem') {
+            emit([doc.bucket, doc.object.id, doc.object.extensions.attemptId, 'finished'], {started: false, time: doc.eventTime})
+        }
+      },
+      reduce: function (key, values, rereduce) {
+        if (rereduce) {
+          return sum(values) / values.length;
+        } else {
+          var start = values.find(function(item) {
+            return item.action == 'http://purl.imsglobal.org/vocab/caliper/v1/action#Viewed'
+          });
+          var end = values.find(function(item) {
+            return item.action == 'http://purl.imsglobal.org/vocab/caliper/v1/action#Saved'
+          });
+          return Math.floor(Date(end.eventTime).getTime() / 1000) - Math.floor(Date(start.eventTime).getTime() / 1000);
+        }
+      }
     }
   },
   lists:{
