@@ -99,8 +99,8 @@ module.exports.stream = function(bucketId, event){
     const actorId = md5(event.actor['@id']);
     model.getKeystore().then(client => {
 
-        const eventKey = keyOf(['event', bucketId, actorId, now]);
-        const eventCaliperKey = keyOf(['eventCaliper', bucketId, actorId, caliperTime]);
+        const eventKey = keyOf(['eventByActor', bucketId, actorId, now]);
+        const eventCaliperKey = keyOf(['eventCaliperActor', bucketId, actorId, caliperTime]);
         console.log('Storing event in redis...', eventKey, 'for caliper time: ', caliperTime);
 
         // todo: use client.multi() to batch these?
@@ -109,12 +109,16 @@ module.exports.stream = function(bucketId, event){
         const batched = client.multi()
           .lpush(eventKey, JSON.stringify(event))
           .lpush(eventCaliperKey, JSON.stringify(event))
-          .zadd([keyOf(['eventTimes', bucketId, actorId]), now, eventKey])
-          .zadd([keyOf(['eventTimesCaliper', bucketId, actorId]), caliperTime, eventCaliperKey])
+          .zadd([keyOf(['eventTimes', bucketId]), now, eventKey])
+          .zadd([keyOf(['eventTimesByActor', bucketId, actorId]), now, eventKey])
+          .zadd([keyOf(['eventTimesCaliper', bucketId]), caliperTime, eventCaliperKey])
+          .zadd([keyOf(['eventTimesCaliperByActor', bucketId, actorId]), caliperTime, eventCaliperKey])
           .expire(eventKey, EVENT_TTL)
           .expire(eventCaliperKey, EVENT_TTL)
-          .expire(keyOf(['eventTimes', bucketId, actorId]), EVENT_TTL * 2)
-          .expire(keyOf(['eventTimesCaliper', bucketId, actorId]), EVENT_TTL * 2)
+          .expire(keyOf(['eventTimes', bucketId]), EVENT_TTL * 2)
+          .expire(keyOf(['eventTimesByActor', bucketId, actorId]), EVENT_TTL * 2)
+          .expire(keyOf(['eventTimesCaliper', bucketId]), EVENT_TTL * 2)
+          .expire(keyOf(['eventTimesCaliperByActor', bucketId, actorId]), EVENT_TTL * 2)
 
         return Q.ninvoke(batched, 'exec');
     })
