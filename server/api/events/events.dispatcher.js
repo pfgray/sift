@@ -127,15 +127,19 @@ module.exports.stream = function(bucketId, event){
 
 
         function extract(event) {
-            return {
-                bucket: bucketId,
-                actorId: event['actor']['@id'],
-                action: event['action'],
-                object: {
-                    id: event['object']['@id'],
-                    type: event['object']['@type']
-                }
+            var eventToStore = {
+              bucket: bucketId,
+              actorId: event['actor']['@id'],
+              action: event['action'],
+            };
+
+            if(event.object) {
+              eventToStore.object = {
+                id: event.object['@id'],
+                type: event.object['@type']
+              }
             }
+            return eventToStore;
         }
 
         return model.getEventStore()
