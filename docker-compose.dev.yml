@@ -17,9 +17,9 @@ services:
       HOST_DOMAIN: "${HOST_DOMAIN}"
       HOST_PORT: "${HOST_DOMAIN}"
 
-      COUCH_HOST: couch
-      COUCH_PORT: 5984
-      COUCH_DB_NAME: sift
+      #COUCH_HOST: couch
+      #COUCH_PORT: 5984
+      #COUCH_DB_NAME: sift
 
       PGHOST: postgres
       PGPORT: 5432
