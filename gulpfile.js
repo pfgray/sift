@@ -4,6 +4,7 @@ var server = require('gulp-express');
 var webpack = require('webpack');
 var gulpWebpack = require('gulp-webpack');
 var distWebpackConfig = require('./webpack.dist.config.js');
+var mergeStream = require('merge-stream');
 
 gulp.task('serve', function(){
   server.run(['server/app.js']);
@@ -17,18 +18,21 @@ gulp.task('serve', function(){
   });
 });
 
-gulp.task('build', function(){
+gulp.task('build', function(done){
 
   //Client app build
-  gulp.src('client/scripts/components/main.js')
+  const js = gulp.src('client/scripts/components/main.js')
     .pipe(gulpWebpack(distWebpackConfig, webpack))
     .pipe(gulp.dest('dist/client/assets'));
 
   // critical app functionality
-  gulp.src(['client/favicon.ico', 'client/index.html' ])
+  const index = gulp.src(['client/favicon.ico', 'client/index.html' ])
     .pipe(gulp.dest('dist/client'));
 
   //server app
-  gulp.src('server/**/*')
+  const server = gulp.src('server/**/*')
     .pipe(gulp.dest('dist/server/'));
+
+
+  return mergeStream(js, index, server);
 });
