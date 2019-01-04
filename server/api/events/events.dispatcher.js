@@ -2,7 +2,6 @@ const _ = require('lodash');
 const Q = require('q');
 const model = require('../../database');
 const crypto = require('crypto');
-const couch = require('../../config/environment').couch;
 
 const eventCache = {};
 const eventCacheLimit = 30;
@@ -122,33 +121,6 @@ module.exports.stream = function(bucketId, event){
           .expire(keyOf(['eventTimesCaliperByActor', bucketId, actorId]), EVENT_TTL * 2)
 
         return Q.ninvoke(batched, 'exec');
-    })
-    .then(() => {
-      if(couch.enabled){
-        console.log('Storing event in couchdb', event['@id']);
-        function extract(event) {
-            var eventToStore = {
-              bucket: bucketId,
-              actorId: event['actor']['@id'],
-              action: event['action'],
-            };
-
-            if(event.object) {
-              eventToStore.object = {
-                id: event.object['@id'],
-                type: event.object['@type']
-              }
-            }
-            return eventToStore;
-        }
-
-        return model.getEventStore()
-            .then(couchdb => {
-                return Q.ninvoke(couchdb, 'save', event['@id'], extract(event));
-            })
-      } else {
-        return Promise.resolve();
-      }
     })
     .then(() => {
         console.log('Streaming to browser....');
